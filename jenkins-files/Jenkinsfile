@@ -1,0 +1,24 @@
+pipeline{
+    agent any
+    tools {
+        maven 'Maven 3.6.3'
+        jdk 'jdk8'
+    }
+
+    stages{
+        stage('Build'){
+            steps {
+                echo 'Build started'
+                sh 'mvn -Dmaven.test.failure.ignore=true install'
+                echo '======= Build finished ======='
+                }
+        }
+        stage('Testing'){
+            stage{
+                echo 'Starting testing'
+                junit 'target/surefire-reports/**/*.xml'
+                echo '======= Testing finished ========'
+                }
+        }
+    }
+}
