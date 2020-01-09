@@ -12,7 +12,7 @@ pipeline{
 	    }
             steps {
                 echo 'Build started'
-                sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml clean'
+                sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml clean jacoco:prepare-agent'
                 sh "mvn -f com.riccardomalavolti.apps.todolist/pom.xml compile -DrepoToken=${COVERALLS_TOKEN}"
                 echo '======= Build finished ======='
                 }
@@ -20,7 +20,7 @@ pipeline{
 	stage('Testing'){
 	   steps{
 		echo 'Testing started'
-                sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml test cobertura:cobertura coveralls:report'
+                sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml test -Pjacoco,mutation-testing coveralls:report'
 		junit 'com.riccardomalavolti.apps.todolist/target/surefire-reports/*.xml'
 		echo 'Ending testing phase'
 	   }
@@ -31,7 +31,7 @@ pipeline{
 	    }
 	    steps{
 		echo 'Code quality analysis started'
-		sh 'mvn clean verify sonarcloud:sonarcloud -Dsonar.login=${SONARCLOUD_TOKEN} -Pjacoco,mutation-testing'
+		sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml clean verify sonarcloud:sonarcloud -Dsonar.login=${SONARCLOUD_TOKEN} -Pjacoco,mutation-testing'
 		junit 'com.riccardomalavolti.apps.todolist/target/site/jacoco/*.xml'
 		echo 'Code analysis ended.'
 	   }
