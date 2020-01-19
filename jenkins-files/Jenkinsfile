@@ -8,12 +8,12 @@ pipeline{
     stages{
         stage('Build'){
 	    environment{
-		def COVERALLS_TOKEN = readFile('jenkins-files/coveralls-token.txt')
+		def COVERALLS_REPO_TOKEN = readFile('jenkins-files/coveralls-token.txt')
 	    }
             steps {
                 echo 'Build started'
                 sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml clean jacoco:prepare-agent'
-                sh "mvn -f com.riccardomalavolti.apps.todolist/pom.xml compile -DrepoToken=${COVERALLS_TOKEN}"
+                sh "mvn -f com.riccardomalavolti.apps.todolist/pom.xml compile"
                 echo '======= Build finished ======='
                 }
         }
