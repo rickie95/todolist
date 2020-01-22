@@ -24,7 +24,6 @@
   	<!-- Additional conf for jacoco integration -->
   	<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
   	<sonar.dynamicAnalysis>reuseReport</sonar.dynamicAnalysis>
-  	<sonar.coverage.jacoco.xml.ReportPaths>${project.basedir}/../target/jacoco.xml</sonar.coverage.jacoco.xml.ReportPaths>
   	<sonar.language>java</sonar.language>
   </properties>
 
