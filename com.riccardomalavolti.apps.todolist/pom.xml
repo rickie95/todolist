@@ -118,7 +118,7 @@
 	   	    <artifactId>jacoco-maven-plugin</artifactId>
 	    	    <version>0.8.3</version>
 	    	    <configuration>
-	    	    	<destFile>com.riccardomalavolti.todolist/target/site/jacoco/jacoco.xml</destFile>
+	    	    	<destFile>target/site/jacoco/jacoco.xml</destFile>
 	    	    	<append>true</append>
 	    	    </configuration>
 	    	    <executions>
@@ -136,7 +136,7 @@
 			<version>4.3.0</version>
 			<configuration>
 				<repoToken>${env.COVERALLS_REPO_TOKEN}</repoToken>
-				<jacocoReports>com.riccardomalavolti.todolist/target/site/jacoco/jacoco.xml</jacocoReports>
+				<jacocoReports>target/site/jacoco/jacoco.xml</jacocoReports>
 			</configuration>
 		</plugin>
 		<plugin>
