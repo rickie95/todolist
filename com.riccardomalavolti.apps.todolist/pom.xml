@@ -22,6 +22,9 @@
   	<sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
   	<!-- https://stackoverflow.com/questions/13031219/how-to-configure-multi-module-maven-sonar-jacoco-to-give-merged-coverage-rep -->
   	<!-- Additional conf for jacoco integration -->
+  	<sonar.junit.reportPaths>
+  		${project.build.directory}/surefire-reports
+  	</sonar.junit.reportPaths>
   	<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
   	<sonar.dynamicAnalysis>reuseReport</sonar.dynamicAnalysis>
   	<sonar.language>java</sonar.language>
