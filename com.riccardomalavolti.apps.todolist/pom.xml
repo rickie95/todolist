@@ -116,7 +116,7 @@
 	                <execution>
 	                    <goals>
 	            	        <goal>prepare-agent</goal>
-							<goal>reports</goal>
+							<goal>report</goal>
 	            	    </goals>
 	       		</execution>
 	    	    </executions>
