@@ -5,4 +5,4 @@ jdk: openjdk8
 install: true
 
 script:
-    - mvn -f com.riccardomalavolti.apps.todolist/pom.xml compile
+    - mvn -f com.riccardomalavolti.apps.todolist/pom.xml clean verify -Pjacoco
