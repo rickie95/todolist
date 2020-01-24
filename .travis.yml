@@ -5,7 +5,7 @@ install: true
 cache:
     directories:
         - $HOME/.m2
-	- $HOME/.sonar/cache
+        - $HOME/.sonar/cache
 env:
   global:
   - secure: qeQNir5Q4W1bHg2k4lofkWCRNZHYVuao+2ChepGQMcnYRiNsZmPrW8heRFKLinxDyExGSRRpFW20IyC1yQHyIe79ruwYUcfH300I/uuzaBlbkPJF4E+BuJ90LWmkMLlODrHNT1Z+nMLYfr7zVA/M+gEGujDJNsbZppTD0STgUSrzkVMIsDbiJOQN+Cv4h89xbgWUiW5Wk0et+NHDDnOVyUJgs64M3GqM7EnocWxopJdSV++gM9RS0jpitsDqsSy0tOs26hacUUDspOmw9FzXpjDF7WfrLNPmzCiBnAAomu7Rost5mC5787urnqgrXxsriZgRMh9p5vGtzXEcCELjlsAQJGQUhbWUbusF9oeY6AnK8fNaRgZKTJmDkyEzjattXR4URde2dpO3eDhevfcQfbO0iqZ7R40AqZ08LH86PcGrrVheVcWCxZXw9zbPejibjgLUXrBvO38lCRQpbZS4Yj3vQJz3ZeUzZhQ1qHePIJceS9e66Z37nb+IP6sXhN/IqGpoPOtb1tuH6n/eUTRw6mNG8e3d1FbTky0nReqFOkhv5NYIF2FPDtiP1YuRAMiKdVuaBxvJjt1D56kJQzNBTAUtZ90Ea4LUYJPL5nMWSbv9RMM9tFtxeUDpKy/zgKBiLX3/LQBeITZlDTSd52BmoUyp6XzWEm5yorRdosC2I5w=
@@ -14,10 +14,10 @@ env:
 
 matrix:
     include:
-	- if: type = cron
-	    env: PROFILES="jacoco,mutation-testing"
-	- if: type = push
-	    env: PROFILES="jacoco"
+        - if: type = cron
+            env: PROFILES="jacoco,mutation-testing"
+        - if: type = push
+            env: PROFILES="jacoco"
 
 script:
     - mvn -f com.riccardomalavolti.apps.todolist/pom.xml clean test verify $PROFILES jacoco:report coveralls:report sonar:sonar
