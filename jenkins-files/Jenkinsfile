@@ -15,8 +15,8 @@ pipeline{
         stage('Build'){
             steps {
                 echo 'Build started'
-                sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml clean jacoco:prepare-agent'
-                sh "mvn -f com.riccardomalavolti.apps.todolist/pom.xml compile"
+                sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml clean'
+                sh "mvn -f com.riccardomalavolti.apps.todolist/pom.xml compile jacoco:prepare-agent"
                 echo '======= Build finished ======='
                 }
         }
@@ -25,8 +25,11 @@ pipeline{
 		echo 'Testing started'
                 // sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml test -Pjacoco,mutation-testing jacoco:report coveralls:report'
 		sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml test -Pjacoco jacoco:report'
-		junit 'com.riccardomalavolti.apps.todolist/target/site/jacoco/*.xml'
-		step( [ $class: 'JacocoPublisher' ] )
+		step( [ $class: 'JacocoPublisher',
+		        execPattern: 'target/*.exec',
+                        classPattern: 'target/classes/',
+                        sourcePattern: 'src/main/java/',
+                        exclusionPattern: 'src/test*' ] )
 		echo 'Ending testing phase'
 	   }
 	}
