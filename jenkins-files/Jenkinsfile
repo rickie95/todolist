@@ -25,6 +25,7 @@ pipeline{
 		echo 'Testing started'
                 // sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml test -Pjacoco,mutation-testing jacoco:report coveralls:report'
 		sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml test -Pjacoco jacoco:report'
+		junit 'com.riccardomalavolti.apps.todolist/target/*/*.xml'
 		step( [ $class: 'JacocoPublisher',
 		        execPattern: 'target/*.exec',
                         classPattern: 'target/classes/',
