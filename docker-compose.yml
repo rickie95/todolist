@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+    jenkins:
+        build: 
+            context: ./docker-files
+            dockerfile: jenkins.dockerfile
+        image: riccardomalavolti/jenkins-opjdk8-mvn363
+        ports:
+            - "8090:8080"
+#        depends_on:
+#            - mongo
+            
+#    mongo:
+#        image: mverts/alpine-mongo
+#        networks:
+#            - riccardo-network
+            
+#networks:
+#    riccardo-network:
+#        driver: bridge
