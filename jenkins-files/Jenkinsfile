@@ -28,7 +28,6 @@ pipeline{
 	    steps{
 		echo 'Code quality analysis started'
 		sh 'mvn -f ./com.riccardomalavolti.apps.todolist/pom.xml verify -Pjacoco sonar:sonar'
-		junit 'com.riccardomalavolti.apps.todolist/target/surefire-reports/*.xml'
 		echo 'Code analysis ended.'
 	   }
 	}
