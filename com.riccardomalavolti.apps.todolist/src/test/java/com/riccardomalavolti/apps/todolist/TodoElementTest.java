@@ -36,7 +36,25 @@ public class TodoElementTest {
 	}
 	
 	@Test
+	public void testAddTag() {
+		todoelem = new TodoElement("foo");
+		
+		int prev_tag_size = todoelem.getTagSize();
+		Tag tag = new Tag("Tag #1");
+		todoelem.addTag(tag);
+		
+		int actual_tag_size = todoelem.getTagSize();
+		
+		assertEquals(prev_tag_size + 1, actual_tag_size);
+	}
+	
+	@Test
 	public void testIdIsIncremental() {
-		assertTrue(new TodoElement("").getId() < new TodoElement("").getId());
+		TodoElement te1 = new TodoElement("foo");
+		TodoElement te2 = new TodoElement("bar");
+		
+		assertTrue(te1.getId() > 0);
+		assertTrue(te2.getId() > 0);
+		assertTrue(te1.getId() < te2.getId());
 	}
 }

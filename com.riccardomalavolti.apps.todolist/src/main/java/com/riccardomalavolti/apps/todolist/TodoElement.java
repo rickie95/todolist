@@ -1,5 +1,7 @@
 package com.riccardomalavolti.apps.todolist;
 
+import java.util.ArrayList;
+
 public class TodoElement {
 	
 	private static int counter = 0;
@@ -7,10 +9,12 @@ public class TodoElement {
 	private String body;
 	private boolean completed;
 	private int id;
+	private ArrayList<Tag> tags;
 	
 	public TodoElement(String body) {
 		this.body = body;
 		this.id = counter++;
+		tags = new ArrayList<>();
 	}
 
 	public String getBody() {
@@ -31,6 +35,14 @@ public class TodoElement {
 
 	public int getId() {
 		return this.id;
+	}
+
+	public int getTagSize() {
+		return tags.size();
+	}
+
+	public void addTag(Tag tag) {
+		tags.add(tag);	
 	}
 
 }
