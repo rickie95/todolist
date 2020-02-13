@@ -7,9 +7,9 @@ services:
         image: riccardomalavolti/jenkins-opjdk8-mvn363
         ports:
             - "8090:8080"
-#        depends_on:
-#            - mongo
-            
+        env_file:
+            - variables.env
+
 #    mongo:
 #        image: mverts/alpine-mongo
 #        networks:
