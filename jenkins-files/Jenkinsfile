@@ -1,38 +1,34 @@
 pipeline{
     agent any
     tools {
-        maven 'Maven 3.6.3'
+        maven 'maven-3.6.3'
         jdk 'jdk8'
     }
 
     stages{
         stage('Build'){
-	    environment{
-		def COVERALLS_TOKEN = readFile('jenkins-files/coveralls-token.txt')
-	    }
             steps {
                 echo 'Build started'
                 sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml clean'
-                sh "mvn -f com.riccardomalavolti.apps.todolist/pom.xml compile -DrepoToken=${COVERALLS_TOKEN}"
+                sh "mvn -f com.riccardomalavolti.apps.todolist/pom.xml compile jacoco:prepare-agent"
                 echo '======= Build finished ======='
                 }
         }
 	stage('Testing'){
 	   steps{
 		echo 'Testing started'
-                sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml test cobertura:cobertura coveralls:report'
-		junit 'com.riccardomalavolti.apps.todolist/target/surefire-reports/*.xml'
+                sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml test -Pjacoco,mutation-testing jacoco:report coveralls:report'
+		junit 'com.riccardomalavolti.apps.todolist/target/*/*.xml'
+		jacoco()
 		echo 'Ending testing phase'
 	   }
 	}
+
 	stage('Verifing'){
-	   environment{
-		def SONARCLOUD_TOKEN = readFile('jenkins-files/sonarcloud-token.txt')
-	    }
 	    steps{
 		echo 'Code quality analysis started'
-		sh 'mvn clean verify sonarcloud:sonarcloud -Dsonar.login=${SONARCLOUD_TOKEN} -Pjacoco,mutation-testing'
-		junit 'com.riccardomalavolti.apps.todolist/target/site/jacoco/*.xml'
+		sh 'mvn -f ./com.riccardomalavolti.apps.todolist/pom.xml verify -Pjacoco sonar:sonar'
+		junit 'com.riccardomalavolti.apps.todolist/target/surefire-reports/*.xml'
 		echo 'Code analysis ended.'
 	   }
 	}
