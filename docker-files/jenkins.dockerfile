@@ -18,14 +18,9 @@ COPY jenkins-files/todolist-pipeline.xml /usr/share/jenkins/ref/jobs/todolist-pi
 # Jenkins configurations files
 COPY jenkins-files/config/*.xml /usr/share/jenkins/ref/
 ENV JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk
-ENV MAVEN_VERSION=${MAVEN_VERSION}
-ENV M2_HOME /usr/bin/maven
-ENV maven.home $M2_HOME
-ENV M2 $M2_HOME/bin
-ENV PATH $M2:$PATH
-
+#ENV MAVEN_VERSION=${MAVEN_VERSION}
+#ENV M2_HOME /usr/bin/maven
+#ENV maven.home $M2_HOME
+#ENV M2 $M2_HOME/bin
+#ENV PATH $M2:$PATH
 RUN echo 2.0 > /usr/share/jenkins/ref/jenkins.install.UpgradeWizard.state
-#COPY jenkins-files/env_setup.sh /home/env_setup.sh
-#COPY jenkins-files/*-token.txt /home/
-#CMD ["/bin/bash", "/home/env_setup.sh"]
-#CMD ["/sbin/tini", "--", "/usr/local/bin/jenkins.sh"]
