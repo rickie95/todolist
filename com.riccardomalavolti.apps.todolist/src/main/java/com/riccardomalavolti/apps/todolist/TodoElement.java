@@ -45,4 +45,8 @@ public class TodoElement {
 		tags.add(tag);	
 	}
 
+	public ArrayList<Tag> getTagList() {
+		return new ArrayList<Tag>(tags);
+	}
+
 }

@@ -24,6 +24,21 @@ public class TodoElementManagerTest {
 	}
 	
 	@Test
+	public void testAddTagToATodoElement() {
+		todoManager = new TodoElementManager();
+		TodoElement tElem = new TodoElement("foo");
+		TagManager tManager = new TagManager();
+		
+		Tag tag = tManager.getTagByName("bar tag");
+		tElem.addTag(tag);
+		
+		assertEquals(1, tElem.getTagSize());
+		assertTrue(tag != null);
+		Tag lastInsertedTag = tElem.getTagList().get(tElem.getTagSize() - 1);
+		assertTrue(tag.getId() == lastInsertedTag.getId());
+	}
+	
+	@Test
 	public void testSize() {
 		todoManager = new TodoElementManager();
 		assertTrue(todoManager.addTodoElement(new TodoElement("foo")));

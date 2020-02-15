@@ -1,13 +1,13 @@
 package com.riccardomalavolti.apps.todolist;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class TodoElementManager {
 
-	private Vector<TodoElement> todoCollection;
+	private ArrayList<TodoElement> todoCollection;
 	
 	public TodoElementManager() {
-		todoCollection = new Vector<TodoElement>();
+		todoCollection = new ArrayList<>();
 	}
 	
 	

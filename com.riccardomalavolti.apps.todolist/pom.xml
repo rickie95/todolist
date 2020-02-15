@@ -123,6 +123,7 @@
 	    	    <configuration>
 	    	    <excludes>
 	    	    	<exclude>**/Main.*</exclude>
+	    	    	<exclude>**/Tag.</exclude>
 	    	    </excludes>
 	    	    	<rules>
 						<rule>
@@ -141,9 +142,9 @@
 	                <execution>
 	                    <goals>
 	            	        <goal>prepare-agent</goal>
-				<goal>report</goal>
+							<goal>report</goal>
 	            	    </goals>
-	       		</execution>
+	       			</execution>
 	    	    </executions>
 		</plugin>
 		<plugin>
