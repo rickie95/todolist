@@ -29,13 +29,13 @@ public class TodoElementManagerTest {
 		TodoElement tElem = new TodoElement("foo");
 		TagManager tManager = new TagManager();
 		
-		Tag tag = tManager.getTagByName("bar tag");
+		Tag tag = tManager.newTag("bar tag");
 		tElem.addTag(tag);
 		
 		assertEquals(1, tElem.getTagSize());
-		assertTrue(tag != null);
+		assertNotNull(tag);
 		Tag lastInsertedTag = tElem.getTagList().get(tElem.getTagSize() - 1);
-		assertTrue(tag.getId() == lastInsertedTag.getId());
+		assertEquals(tag, lastInsertedTag);
 	}
 	
 	@Test
