@@ -12,9 +12,9 @@ env:
   - secure: CnMeZ1GNGH+7XayQ/eSuYa1UU+8PfPGHd8dt+7FYAN4jEe2Xx/iTm58QpO7yooPJo4cPcO6+zROT+b6SIZNnjpp/TMIt65lxt2Vkp6W9C4ZJBK89Kdj3xKcZYMeCACvqLaXqUjbbsukz/foXFL9NWWLpLHhmgsU5kt4McIa/SieiNOViNpfMwPHznmyYPKbXoiRNkecvo8nNnt+MPqhxX1puWWzN3YsZNDCbx6Z5DhfipeBqH27x3YisStT2Srl5yxQVtr3zmQabDW+9oHbhKNcyXmYzzDGzWnu9DL3edPDT1QPzbSLkF+ktC9ps66eJJv5YnlMuv9WnbF3i4u23HRW2SWGCSUymXHCIOpgfuE84t0RVlkoZYWxNgpb9/nRoqmtcQtELvpU+DgIlu+Zb6eLlTfKHAkE0hpVsNGiFYZh3eDtaqSg4EM2RrIumjpHwiAmUfoaf64JEuTScso4LpYsiYSEklR7tCuAfCIt9/mejp4ACxF76HyBxKbO0Tbf1qmFL+UiRmXrSGs01j4CgxPlABDVShE8L8qhnz2Q+sWg4/qEwM1qFpg4QEeM2zAQx6tt2cVY8XkqifK6B6/2XgwEfdnpk7ZsmCnOiifmNYUQ94DDXQkBoC25r3VGhc32sPHNCQX5/AyY3C4bBp891lrJxqd6pWZ6NDJRmKvnVcP8=
 matrix:
   include:
-    if: type = push
-    env: PROFILES="-Pjacoco"
-    if: type = cron
-    env: PROFILES="-Pjacoco,mutation-testing"
+    - if: type = push
+      env: PROFILES="-Pjacoco"
+    - if: type = cron
+      env: PROFILES="-Pjacoco,mutation-testing"
 script:
 - mvn -f com.riccardomalavolti.apps.todolist/pom.xml clean test verify $PROFILES jacoco:report coveralls:report sonar:sonar
