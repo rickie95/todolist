@@ -14,5 +14,7 @@ matrix:
   include:
     if: type = push
     env: PROFILES="-Pjacoco"
+    if: type = cron
+    env: PROFILES="-Pjacoco,mutation-testing"
 script:
 - mvn -f com.riccardomalavolti.apps.todolist/pom.xml clean test verify $PROFILES jacoco:report coveralls:report sonar:sonar
