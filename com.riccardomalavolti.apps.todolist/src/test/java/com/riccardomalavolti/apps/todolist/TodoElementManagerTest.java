@@ -2,6 +2,8 @@ package com.riccardomalavolti.apps.todolist;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+
 import org.junit.Test;
 
 public class TodoElementManagerTest {
@@ -21,6 +23,39 @@ public class TodoElementManagerTest {
 		int actual_size = todoManager.size();
 		
 		assertEquals(prev_size + 1, actual_size);
+	}
+	
+	@Test 
+	public void testGetTodoElementByText() {
+		todoManager = new TodoElementManager();
+		TodoElement tElem1 = new TodoElement("foo");
+		TodoElement tElem2 = new TodoElement("bar");
+		TodoElement tElem3 = new TodoElement("cox");
+		todoManager.addTodoElement(tElem1);
+		todoManager.addTodoElement(tElem2);
+		todoManager.addTodoElement(tElem3);
+		
+		TodoElement recovered_te = todoManager.getTodoByText("bar");
+		
+		assertNotNull(recovered_te);
+		assertEquals(tElem2, recovered_te);
+	}
+	
+	@Test
+	public void testGetTodoElementList() {
+		todoManager = new TodoElementManager();
+		TodoElement tElem1 = new TodoElement("foo");
+		TodoElement tElem2 = new TodoElement("bar");
+		TodoElement tElem3 = new TodoElement("cox");
+		todoManager.addTodoElement(tElem1);
+		todoManager.addTodoElement(tElem2);
+		todoManager.addTodoElement(tElem3);
+		
+		ArrayList<TodoElement> collection = todoManager.getTodoList();
+		assertTrue(collection.contains(tElem1));
+		assertTrue(collection.contains(tElem2));
+		assertTrue(collection.contains(tElem3));
+		
 	}
 	
 	@Test

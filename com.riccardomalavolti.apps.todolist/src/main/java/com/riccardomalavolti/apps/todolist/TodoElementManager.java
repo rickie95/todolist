@@ -10,7 +10,6 @@ public class TodoElementManager {
 		todoCollection = new ArrayList<>();
 	}
 	
-	
 	public int size() {
 		return todoCollection.size();
 	}
@@ -21,6 +20,20 @@ public class TodoElementManager {
 
 	public TodoElement getElemByIndex(int index) {
 		return todoCollection.get(index);
+	}
+
+	public TodoElement getTodoByText(String text) {
+		TodoElement te = null;
+		
+		for (TodoElement t : todoCollection)
+			if (t.getBody().equals(text))
+				te = t;
+		
+		return te;
+	}
+
+	public ArrayList<TodoElement> getTodoList() {
+		return todoCollection;
 	}
 
 }
