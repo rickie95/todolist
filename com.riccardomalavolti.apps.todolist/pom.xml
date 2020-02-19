@@ -123,7 +123,8 @@
 	    	    <configuration>
 	    	    <excludes>
 	    	    	<exclude>**/Main.*</exclude>
-	    	    	<exclude>**/Tag.</exclude>
+	    	    	<exclude>**/Tag.*</exclude>
+	    	    	<exclude>**/TodoElement.*</exclude>
 	    	    </excludes>
 	    	    	<rules>
 						<rule>
@@ -166,14 +167,17 @@
 					<param>com.riccardomalavolti.apps.todolist.*</param>
 				</targetClasses>
 				<excludedClasses>
-					<param>com.riccardomalavolti.apps.todolist.*Test</param>
+				<!-- 
+					<param>com.riccardomalavolti.apps.todolist.Tag</param>
+					<param>com.riccardomalavolti.apps.todolist.TodoElement</param>
+					 -->
 				</excludedClasses>
 				<targetTests>
 					<param>com.riccardomalavolti.apps.todolist.*Test</param>
 				</targetTests>
 				<excludedMethods>*hashCode*,*equals*</excludedMethods>
 				<mutators>
-					<mutator>ALL</mutator>
+					<mutator>STRONGER</mutator>
 				</mutators>
 				<mutationThreshold>100</mutationThreshold>
 			</configuration>

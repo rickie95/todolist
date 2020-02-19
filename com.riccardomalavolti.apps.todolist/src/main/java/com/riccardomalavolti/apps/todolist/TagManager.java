@@ -11,10 +11,10 @@ public class TagManager {
 		tagPool = new HashSet<>();
 	}
 	
-	public Tag getTagByName(String string) {
+	public Tag getTagByName(String text) {
 		if(!tagPool.isEmpty())
 			for(Tag t : tagPool)
-				if(t.getText().equals(string))
+				if(t.bodyIsEqualTo(text))
 					return t;
 		
 		return null;
@@ -35,6 +35,10 @@ public class TagManager {
 		}
 		
 		return newTag;
+	}
+
+	public Set<Tag> getTagList() {
+		return this.tagPool;
 	}
 
 }

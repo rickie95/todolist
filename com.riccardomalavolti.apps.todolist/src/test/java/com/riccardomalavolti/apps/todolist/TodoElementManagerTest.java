@@ -14,15 +14,15 @@ public class TodoElementManagerTest {
 	public void testAddTodoElement() {
 		todoManager = new TodoElementManager();
 		TodoElement tElem = new TodoElement("foo");
-		int prev_size = todoManager.size();
+		int prevSize = todoManager.size();
 		
 		assertTrue(todoManager.addTodoElement(tElem));
 		
-		assertEquals(tElem, todoManager.getElemByIndex(prev_size));
+		assertEquals(tElem, todoManager.getElemByIndex(prevSize));
 		
-		int actual_size = todoManager.size();
+		int actualSize = todoManager.size();
 		
-		assertEquals(prev_size + 1, actual_size);
+		assertEquals(prevSize + 1, actualSize);
 	}
 	
 	@Test 
@@ -35,10 +35,10 @@ public class TodoElementManagerTest {
 		todoManager.addTodoElement(tElem2);
 		todoManager.addTodoElement(tElem3);
 		
-		TodoElement recovered_te = todoManager.getTodoByText("bar");
+		TodoElement recoveredTe = todoManager.getTodoByText("bar");
 		
-		assertNotNull(recovered_te);
-		assertEquals(tElem2, recovered_te);
+		assertNotNull(recoveredTe);
+		assertEquals(tElem2, recoveredTe);
 	}
 	
 	@Test
