@@ -161,12 +161,17 @@
 			<artifactId>pitest-maven</artifactId>
 			<version>1.4.3</version>
 			<configuration>
+				<threads>12</threads>
 				<targetClasses>
-					<param>com.riccardomalavolti.apps.todolist.Todo*</param>
-				</targetClasses>
-				<targetTests>
 					<param>com.riccardomalavolti.apps.todolist.*</param>
+				</targetClasses>
+				<excludedClasses>
+					<param>com.riccardomalavolti.apps.todolist.*Test</param>
+				</excludedClasses>
+				<targetTests>
+					<param>com.riccardomalavolti.apps.todolist.*Test</param>
 				</targetTests>
+				<excludedMethods>*hashCode*,*equals*</excludedMethods>
 				<mutators>
 					<mutator>ALL</mutator>
 				</mutators>
