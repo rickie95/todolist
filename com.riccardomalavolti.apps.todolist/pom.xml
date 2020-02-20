@@ -15,20 +15,38 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <log4j.version>2.11.1</log4j.version>
+    
     <!-- SonarCloud configuration mvn verify sonar:sonar -->
+    <aggregate.report.dir>${project.build.directory}/site/jacoco/jacoco.xml</aggregate.report.dir>
     <sonar.projectKey>rickie95_todolist</sonar.projectKey>
   	<sonar.organization>rickie95</sonar.organization>
   	<sonar.host.url>https://sonarcloud.io</sonar.host.url>
   	<sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
   	<!-- https://stackoverflow.com/questions/13031219/how-to-configure-multi-module-maven-sonar-jacoco-to-give-merged-coverage-rep -->
   	<!-- Additional conf for jacoco integration -->
-  	<sonar.junit.reportPaths>
-  		${project.build.directory}/surefire-reports
-  	</sonar.junit.reportPaths>
+  	<sonar.junit.reportPaths>${project.build.directory}/surefire-reports</sonar.junit.reportPaths>
   	<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
   	<sonar.dynamicAnalysis>reuseReport</sonar.dynamicAnalysis>
   	<sonar.language>java</sonar.language>
+  	<sonar.exclusions>
+  		**/Tag.java,
+  		**/TodoElement.java,
+  		**/main/*.java
+  	</sonar.exclusions>
   </properties>
+  
+  <dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-bom</artifactId>
+				<version>${log4j.version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
   <profiles>
 	<profile>
@@ -53,25 +71,37 @@
 					<artifactId>pitest-maven</artifactId>
 					<executions>
 						<execution>
-							<goals>
-								<goal>mutationCoverage</goal>
-							</goals>
-							<phase>verify</phase>
-						</execution>
-					</executions>
-				</plugin>
-			</plugins>
-		</build>
-	</profile>
-</profiles>
+								<goals>
+									<goal>mutationCoverage</goal>
+								</goals>
+								<phase>verify</phase>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
   <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
+  
+	   <dependency>
+		     <groupId>junit</groupId>
+		     <artifactId>junit</artifactId>
+		     <version>4.11</version>
+		     <scope>test</scope>
+	   </dependency>
+
+	   <dependency>
+	   		<groupId>org.apache.logging.log4j</groupId>
+	   		<artifactId>log4j-core</artifactId>
+	   </dependency>
+	   
+	   <dependency>
+	   		<groupId>org.apache.logging.log4j</groupId>
+	   		<artifactId>log4j-api</artifactId>
+	   </dependency>
+	   
   </dependencies>
 
   <build>
