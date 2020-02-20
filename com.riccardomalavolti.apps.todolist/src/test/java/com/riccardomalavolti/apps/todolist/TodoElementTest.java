@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -93,11 +94,11 @@ public class TodoElementTest {
 		todoelem.addTag(tFoo);
 		todoelem.addTag(tBar);
 		
-		List<Tag> tagList = todoelem.getTagList();
+		Set<Tag> tagList = todoelem.getTagList();
 		
 		assertEquals(2, tagList.size());
-		assertEquals(tFoo, tagList.get(0));
-		assertEquals(tBar, tagList.get(1));
+		assertTrue(tagList.contains(tFoo));
+		assertTrue(tagList.contains(tBar));
 	}
 	
 	@Test

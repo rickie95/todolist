@@ -1,7 +1,7 @@
 package com.riccardomalavolti.apps.todolist;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TodoElement {
 	
@@ -10,7 +10,7 @@ public class TodoElement {
 	private String body;
 	private boolean completed;
 	private int id;
-	private List<Tag> tags;
+	private Set<Tag> tags;
 	
 	public static int computeId() {
 		return counter++;
@@ -19,13 +19,13 @@ public class TodoElement {
 	public TodoElement() {
 		this.body = "";
 		this.id = computeId();
-		this.tags = new ArrayList<>();
+		this.tags = new HashSet<>();
 	}
 	
 	public TodoElement(String body) {
 		this.body = body;
 		this.id = computeId();
-		this.tags = new ArrayList<>();
+		this.tags = new HashSet<>();
 	}
 	
 	public TodoElement(TodoElement te) {
@@ -73,7 +73,7 @@ public class TodoElement {
 		tags.add(tag);	
 	}
 	
-	public List<Tag> getTagList() {
+	public Set<Tag> getTagList() {
 		return tags;
 	}
 

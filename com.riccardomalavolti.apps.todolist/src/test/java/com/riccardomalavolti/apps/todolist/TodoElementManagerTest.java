@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -70,8 +71,20 @@ public class TodoElementManagerTest {
 		
 		assertEquals(1, tElem.getTagSize());
 		assertNotNull(tag);
-		Tag lastInsertedTag = tElem.getTagList().get(tElem.getTagSize() - 1);
-		assertEquals(tag, lastInsertedTag);
+		assertTrue(tElem.getTagList().contains(tag));
+	}
+	
+	@Test
+	public void testAddTheSameTagTwice() {
+		todoManager = new TodoElementManager();
+		TodoElement tElem = new TodoElement("foo");
+		TagManager tManager = new TagManager();
+		
+		Tag tag = tManager.newTag("bar tag");
+		tElem.addTag(tag);
+		tElem.addTag(tag);
+		
+		assertEquals(1, tElem.getTagSize());
 	}
 	
 	@Test
