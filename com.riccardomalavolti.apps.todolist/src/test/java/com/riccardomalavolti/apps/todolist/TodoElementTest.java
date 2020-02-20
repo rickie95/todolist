@@ -3,6 +3,7 @@ package com.riccardomalavolti.apps.todolist;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -92,7 +93,7 @@ public class TodoElementTest {
 		todoelem.addTag(tFoo);
 		todoelem.addTag(tBar);
 		
-		ArrayList<Tag> tagList = todoelem.getTagList();
+		List<Tag> tagList = todoelem.getTagList();
 		
 		assertEquals(2, tagList.size());
 		assertEquals(tFoo, tagList.get(0));

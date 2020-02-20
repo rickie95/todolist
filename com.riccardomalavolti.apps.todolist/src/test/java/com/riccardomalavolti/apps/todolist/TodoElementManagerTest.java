@@ -3,6 +3,7 @@ package com.riccardomalavolti.apps.todolist;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -51,7 +52,7 @@ public class TodoElementManagerTest {
 		todoManager.addTodoElement(tElem2);
 		todoManager.addTodoElement(tElem3);
 		
-		ArrayList<TodoElement> collection = todoManager.getTodoList();
+		List<TodoElement> collection = todoManager.getTodoList();
 		assertTrue(collection.contains(tElem1));
 		assertTrue(collection.contains(tElem2));
 		assertTrue(collection.contains(tElem3));

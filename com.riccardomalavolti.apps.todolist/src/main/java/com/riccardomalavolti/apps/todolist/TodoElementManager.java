@@ -1,10 +1,11 @@
 package com.riccardomalavolti.apps.todolist;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TodoElementManager {
 
-	private ArrayList<TodoElement> todoCollection;
+	private List<TodoElement> todoCollection;
 	
 	public TodoElementManager() {
 		todoCollection = new ArrayList<>();
@@ -32,7 +33,7 @@ public class TodoElementManager {
 		return te;
 	}
 
-	public ArrayList<TodoElement> getTodoList() {
+	public List<TodoElement> getTodoList() {
 		return todoCollection;
 	}
 
