@@ -29,18 +29,16 @@ public class TagTest {
 	
 	@Test
 	public void testBodyIsEqualTo() {
-		TagManager tm = new TagManager();
 		String text = "foo";
-		Tag tt = tm.newTag(text);
+		Tag tt = new Tag(text);
 		
 		assertTrue(tt.bodyIsEqualTo(text));
 	}
 	
 	@Test
 	public void testBodyIsNotEqualToNullText() {
-		TagManager tm = new TagManager();
 		String text = null;
-		Tag tt = tm.newTag(text);
+		Tag tt = new Tag(text);
 		
 		assertFalse(tt.bodyIsEqualTo(text));
 	}

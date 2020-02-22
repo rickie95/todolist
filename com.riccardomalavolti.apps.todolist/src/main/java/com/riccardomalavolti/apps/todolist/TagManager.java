@@ -5,10 +5,20 @@ import java.util.Set;
 
 public class TagManager {
 
+	private static TagManager singletonInstance = null;
+	
 	private Set<Tag> tagPool;
 	
-	public TagManager() {
+	
+	private TagManager() {
 		tagPool = new HashSet<>();
+	}
+	
+	public static TagManager getInstance() {
+		if(singletonInstance == null)
+			singletonInstance = new TagManager();
+		
+		return singletonInstance;
 	}
 	
 	public Tag getTagByName(String text) {
@@ -39,6 +49,10 @@ public class TagManager {
 
 	public Set<Tag> getTagList() {
 		return this.tagPool;
+	}
+
+	public void clear() {
+		tagPool.clear();	
 	}
 
 }

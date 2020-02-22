@@ -2,8 +2,6 @@ package com.riccardomalavolti.apps.todolist;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
@@ -78,7 +76,7 @@ public class TodoElementTest {
 	@Test
 	public void testGetTagSize() {
 		todoelem = new TodoElement();
-		TagManager tm = new TagManager();
+		TagManager tm = TagManager.getInstance();
 		todoelem.addTag(tm.newTag("foo"));
 		todoelem.addTag(tm.newTag("bar"));
 		
@@ -88,7 +86,7 @@ public class TodoElementTest {
 	@Test
 	public void testGetTagList() {
 		todoelem = new TodoElement();
-		TagManager tm = new TagManager();
+		TagManager tm = TagManager.getInstance();
 		Tag tFoo = tm.newTag("foo");
 		Tag tBar = tm.newTag("bar");
 		todoelem.addTag(tFoo);

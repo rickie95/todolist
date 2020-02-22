@@ -8,84 +8,84 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class TagManagerTest {
 	
+	private TagManager tagManager;
+	
+	@Before
+	public void setup() {
+		tagManager = TagManager.getInstance();
+	}
+	
+	@After
+	public void cleanUp() {
+		tagManager.clear();
+	}
+	
 	@Test
-	public void testNewTag() {
-		TagManager tm = new TagManager();
-		
-		int oldTagListSize = tm.tagListSize();
-		tm.newTag("bar");
-		int newTagListSize = tm.tagListSize();
-		
+	public void testNewTag() {		
+		int oldTagListSize = tagManager.tagListSize();
+		tagManager.newTag("bar");
+		int newTagListSize = tagManager.tagListSize();
 		
 		assertEquals(oldTagListSize + 1, newTagListSize);
 	}
 
 	@Test
 	public void testGetTagList() {
-		TagManager tm = new TagManager();
-		Tag t1 = tm.newTag("foo");
-		Tag t2 = tm.newTag("bar");
+		Tag t1 = tagManager.newTag("foo");
+		Tag t2 = tagManager.newTag("bar");
 		
-		Set<Tag> tagList = tm.getTagList();
+		Set<Tag> tagList = tagManager.getTagList();
 		
 		assertNotNull(tagList);
 		assertTrue(tagList.size() == 2);
 		assertTrue(tagList.contains(t1));
 		assertTrue(tagList.contains(t2));
-		
 	}
 	
 	@Test
 	public void testGetTagByName() {
-		TagManager tm = new TagManager();
 		String tagText = "foo";
-		Tag tag = tm.newTag(tagText);
+		Tag tag = tagManager.newTag(tagText);
 		
-		assertEquals(tag, tm.getTagByName(tagText));
+		assertEquals(tag, tagManager.getTagByName(tagText));
 	}
 	
 	@Test
 	public void testGetTagByNameWhenTheresNoTags() {
-		TagManager tm = new TagManager();
-		
-		assertNull(tm.getTagByName("foo"));
+		assertNull(tagManager.getTagByName("foo"));
 	}
 	
 	@Test
 	public void testGetTagByNameWithANonExistentTagText() {
-		TagManager tm = new TagManager();
-		tm.newTag("foo");
+		tagManager.newTag("foo");
 		
-		assertNull(tm.getTagByName("bar"));
+		assertNull(tagManager.getTagByName("bar"));
 	}
 	
 	@Test
 	public void testGetTagByNameIfAlreadyExist() {
-		TagManager tm = new TagManager();
 		String tagText = "foo";
-		Tag tag1 = tm.newTag(tagText);
-		Tag tag2 = tm.newTag(tagText);
+		Tag tag1 = tagManager.newTag(tagText);
+		Tag tag2 = tagManager.newTag(tagText);
 		
-		assertTrue(tm.tagListSize() == 1);
-		assertEquals(tag1.getId(), tm.getTagByName(tagText).getId());
-		assertNotEquals(tag2.getId(), tm.getTagByName(tagText));
+		assertTrue(tagManager.tagListSize() == 1);
+		assertEquals(tag1.getId(), tagManager.getTagByName(tagText).getId());
+		assertNotEquals(tag2.getId(), tagManager.getTagByName(tagText));
 	}
 	
 	@Test
 	public void testGetTagByNameIfTagListIsEmpty() {
-		TagManager tm = new TagManager();
-		
-		assertNull(tm.getTagByName("foo"));
+		assertNull(tagManager.getTagByName("foo"));
 	}
 	
 	@Test
 	public void testGetTagByNameWithASimilarName() {
-		TagManager tm = new TagManager();
-		
-		assertNull(tm.getTagByName("fo"));
+		assertNull(tagManager.getTagByName("fo"));
 	}
 }

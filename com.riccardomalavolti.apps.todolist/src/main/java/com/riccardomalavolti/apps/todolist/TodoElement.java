@@ -38,6 +38,10 @@ public class TodoElement {
 		this.completed = te.getStatus();
 		
 	}
+	
+	public boolean isTaggedAs(Tag tag) {
+		return tags.contains(tag);
+	}
 
 	public String getBody() {
 		return this.body;

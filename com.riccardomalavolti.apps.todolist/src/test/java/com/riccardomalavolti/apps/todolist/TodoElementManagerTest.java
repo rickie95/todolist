@@ -1,100 +1,90 @@
 package com.riccardomalavolti.apps.todolist;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
+
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 
 public class TodoElementManagerTest {
 
-	private TodoElementManager todoManager;
+	private TodoManager todoManager;
+	private TodoRepository todoRepository;
+	private TagManager tagManager;
 	
-	@Test
-	public void testAddTodoElement() {
-		todoManager = new TodoElementManager();
-		TodoElement tElem = new TodoElement("foo");
-		int prevSize = todoManager.size();
-		
-		assertTrue(todoManager.addTodoElement(tElem));
-		
-		assertEquals(tElem, todoManager.getElemByIndex(prevSize));
-		
-		int actualSize = todoManager.size();
-		
-		assertEquals(prevSize + 1, actualSize);
+	@Before
+	public void setup() {
+		todoRepository = mock(TodoRepository.class);
+		todoManager = new TodoManager(todoRepository);
+		tagManager = TagManager.getInstance();
 	}
 	
-	@Test 
-	public void testGetTodoElementByText() {
-		todoManager = new TodoElementManager();
-		TodoElement tElem1 = new TodoElement("foo");
-		TodoElement tElem2 = new TodoElement("bar");
-		TodoElement tElem3 = new TodoElement("cox");
-		todoManager.addTodoElement(tElem1);
-		todoManager.addTodoElement(tElem2);
-		todoManager.addTodoElement(tElem3);
-		
-		TodoElement recoveredTe = todoManager.getTodoByText("bar");
-		
-		assertNotNull(recoveredTe);
-		assertEquals(tElem2, recoveredTe);
+	@After
+	public void cleanUpTagManager() {
+		tagManager.clear();
 	}
 	
 	@Test
-	public void testGetTodoElementList() {
-		todoManager = new TodoElementManager();
-		TodoElement tElem1 = new TodoElement("foo");
-		TodoElement tElem2 = new TodoElement("bar");
-		TodoElement tElem3 = new TodoElement("cox");
-		todoManager.addTodoElement(tElem1);
-		todoManager.addTodoElement(tElem2);
-		todoManager.addTodoElement(tElem3);
+	public void testGetTodoList() {
+		List<TodoElement> todos = new ArrayList<>();
+		when(todoRepository.findAll()).thenReturn(todos);
 		
-		List<TodoElement> collection = todoManager.getTodoList();
-		assertTrue(collection.contains(tElem1));
-		assertTrue(collection.contains(tElem2));
-		assertTrue(collection.contains(tElem3));
+		List<TodoElement> todoList = todoManager.getTodoList();
+		
+		assertEquals(todos, todoList);
+	}
+	
+	@Test
+	public void testAddTodo() {
+		TodoElement te = new TodoElement("Foo");
+		
+		todoManager.addTodo(te);
+		ArgumentCaptor<TodoElement> todoCaptor = ArgumentCaptor.forClass(TodoElement.class);
+		verify(todoRepository).addTodoElement(todoCaptor.capture());
+		
+		assertEquals(te, todoCaptor.getValue());
+	}
+	
+	@Test
+	public void testRemoveTodo() {
+		TodoElement te = new TodoElement("Foo");
+		
+		todoManager.removeTodo(te);
+		ArgumentCaptor<TodoElement> todoCaptor = ArgumentCaptor.forClass(TodoElement.class);
+		verify(todoRepository).removeTodoElement(todoCaptor.capture());
+		
+		assertEquals(te, todoCaptor.getValue());
 		
 	}
 	
 	@Test
-	public void testAddTagToATodoElement() {
-		todoManager = new TodoElementManager();
-		TodoElement tElem = new TodoElement("foo");
-		TagManager tManager = new TagManager();
+	public void testUpdateTodo() {
+		TodoElement te = new TodoElement("Foo");
 		
-		Tag tag = tManager.newTag("bar tag");
-		tElem.addTag(tag);
+		todoManager.updateTodo(te);
+		ArgumentCaptor<TodoElement> todoCaptor = ArgumentCaptor.forClass(TodoElement.class);
 		
-		assertEquals(1, tElem.getTagSize());
-		assertNotNull(tag);
-		assertTrue(tElem.getTagList().contains(tag));
+		verify(todoRepository).updateTodoElement(todoCaptor.capture());
+		assertEquals(te, todoCaptor.getValue());
 	}
 	
 	@Test
-	public void testAddTheSameTagTwice() {
-		todoManager = new TodoElementManager();
-		TodoElement tElem = new TodoElement("foo");
-		TagManager tManager = new TagManager();
+	public void testAddTagAtTodo() {
+		TodoElement todo = mock(TodoElement.class);
+		Tag tag = tagManager.newTag("Bar");
 		
-		Tag tag = tManager.newTag("bar tag");
-		tElem.addTag(tag);
-		tElem.addTag(tag);
+		todoManager.tagTodo(todo, tag);
+		//ArgumentCaptor<TodoElement> todoCaptor = ArgumentCaptor.forClass(TodoElement.class);
+		ArgumentCaptor<Tag> tagCaptor = ArgumentCaptor.forClass(Tag.class);
 		
-		assertEquals(1, tElem.getTagSize());
+		verify(todo).addTag(tagCaptor.capture());
+		assertEquals(tag, tagCaptor.getValue());
 	}
 	
-	@Test
-	public void testSize() {
-		todoManager = new TodoElementManager();
-		assertTrue(todoManager.addTodoElement(new TodoElement("foo")));
-		assertTrue(todoManager.addTodoElement(new TodoElement("bar")));
-		assertTrue(todoManager.addTodoElement(new TodoElement("spez")));
-		
-		assertEquals(3, todoManager.size());
-		
-	}
 }
