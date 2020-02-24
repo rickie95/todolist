@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,6 +18,11 @@ public class TodoRepositoryMemoryTest {
 	@Before
 	public void setup() {
 		todoRepository = new TodoRepositoryMemory();
+	}
+	
+	@After
+	public void cleanUp() {
+		todoRepository.clear();
 	}
 	
 	@Test
@@ -61,13 +67,7 @@ public class TodoRepositoryMemoryTest {
 	}
 	
 	
-	@Test
-	public void testFindByIDWith() {
-		TodoElement te = new TodoElement("This is not in repository");
-		
-		assertNull(todoRepository.findById(te));
-	}
-	
+
 	@Test
 	public void testFindByPartialBody() {
 		String body = "testFindMyBody";
@@ -96,6 +96,26 @@ public class TodoRepositoryMemoryTest {
 		assertEquals(2, results.size());
 		assertTrue(results.get(0).getBody().contains(bodyToSearch));
 		assertTrue(results.get(1).getBody().contains(bodyToSearch));
+	}
+	
+	@Test 
+	public void testFindByNullBody() {
+		String body1 = "testFindMyBody";
+		String bodyToSearch = null;
+		
+		List<TodoElement> results = todoRepository.findByBody(bodyToSearch);
+		
+		assertEquals(0, results.size());
+	}
+	
+	@Test
+	public void testFindByBodyNoResults() {
+		todoRepository.addTodoElement(new TodoElement("Foo"));
+		todoRepository.addTodoElement(new TodoElement("Bar"));
+		
+		List<TodoElement> results = todoRepository.findByBody("Baz");
+		
+		assertEquals(0, results.size());
 	}
 	
 	@Test
@@ -145,4 +165,44 @@ public class TodoRepositoryMemoryTest {
 		assertEquals(0, results.size());
 	}
 	
+	@Test
+	public void testFindByNullTag() {
+		Tag tag = null;
+		todoRepository.addTodoElement(new TodoElement("Foo"));
+		
+		List<TodoElement> results = todoRepository.findByTag(tag);
+		
+		assertEquals(0, results.size());
+	}
+	
+	@Test
+	public void testFindByIDWith() {
+		TodoElement te = new TodoElement("This is not in repository");
+		
+		assertNull(todoRepository.findById(te));
+	}
+	
+	@Test
+	public void testFindByIdNUll() {
+		TodoElement te = null;
+		
+		assertNull(todoRepository.findById(te));
+	}
+	
+	@Test
+	public void testFindByIdIfTodoCollectionIsEmpty() {
+		TodoElement te = new TodoElement("Foo");
+		
+		assertNull(todoRepository.findById(te));
+	}
+	
+	@Test
+	public void testClear() {
+		todoRepository.addTodoElement(new TodoElement("Foo"));
+		todoRepository.addTodoElement(new TodoElement("Bar"));
+		
+		todoRepository.clear();
+		
+		assertEquals(0, todoRepository.findAll().size());
+	}
 }

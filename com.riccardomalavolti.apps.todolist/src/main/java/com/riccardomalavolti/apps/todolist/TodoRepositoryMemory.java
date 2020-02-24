@@ -30,9 +30,11 @@ public class TodoRepositoryMemory implements TodoRepository {
 	@Override
 	public List<TodoElement> findByTag(Tag tag) {
 		List<TodoElement> results = new ArrayList<>();
-		for(TodoElement te : todoCollection)
-			if(te.isTaggedAs(tag))
-				results.add(te);
+		
+		if (tag != null)
+			for(TodoElement te : todoCollection)
+				if(te.isTaggedAs(tag))
+					results.add(te);
 		
 		return results;
 	}
@@ -40,9 +42,11 @@ public class TodoRepositoryMemory implements TodoRepository {
 	@Override
 	public List<TodoElement> findByBody(String text) {
 		List<TodoElement> results = new ArrayList<>();
-		for(TodoElement te : todoCollection)
-			if(te.getBody().toLowerCase().contains(text.toLowerCase()))
-				results.add(te);
+		
+		if(text != null)
+			for(TodoElement te : todoCollection)
+				if(te.getBody().toLowerCase().contains(text.toLowerCase()))
+					results.add(te);
 		
 		return results;
 	}
@@ -55,10 +59,22 @@ public class TodoRepositoryMemory implements TodoRepository {
 	@Override
 	public TodoElement findById(TodoElement te) {
 		for(TodoElement t : todoCollection)
-			if(t.getId() == te.getId())
+			if(
+					t
+					.getId() 
+					== 
+				te
+				.getId()
+				)
 				return t;
 		
 		return null;
+	}
+
+	@Override
+	public void clear() {
+		todoCollection.clear();
+		
 	}
 
 }

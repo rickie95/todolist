@@ -5,7 +5,6 @@ import java.util.List;
 public class TodoManager {
 
 	private TodoRepository todoRepository;
-	private TagManager tagManager;
 	
 	public TodoManager(TodoRepository todoRepository) {
 		this.todoRepository = todoRepository;

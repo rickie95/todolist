@@ -13,4 +13,6 @@ public interface TodoRepository {
 	void addTodoElement(TodoElement te);
 	void updateTodoElement(TodoElement te);
 	void removeTodoElement(TodoElement te);
+	
+	void clear();
 }
