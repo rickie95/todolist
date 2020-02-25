@@ -9,4 +9,5 @@ public interface TagRepository {
 	void addTag(Tag tag);
 	void updateTag(Tag tag);
 	void removeTag(Tag tag);
+	void clear();
 }
