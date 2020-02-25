@@ -100,7 +100,6 @@ public class TodoRepositoryMemoryTest {
 	
 	@Test 
 	public void testFindByNullBody() {
-		String body1 = "testFindMyBody";
 		String bodyToSearch = null;
 		
 		List<TodoElement> results = todoRepository.findByBody(bodyToSearch);
