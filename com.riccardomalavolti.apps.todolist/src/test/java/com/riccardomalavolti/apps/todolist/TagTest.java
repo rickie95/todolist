@@ -59,10 +59,6 @@ public class TagTest {
 		String text = "foo";
 		tag = new Tag(text);
 		
-		assertEquals(31 + (text.hashCode()), tag.hashCode());
-	
-		text = null;
-		tag = new Tag(text);
-		assertEquals(31, tag.hashCode());
+		assertEquals(31 + tag.getId(), tag.hashCode());
 	}
 }

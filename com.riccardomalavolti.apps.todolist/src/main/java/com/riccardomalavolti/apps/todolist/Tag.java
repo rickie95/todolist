@@ -25,6 +25,10 @@ public class Tag {
 		return this.text;
 	}
 	
+	public void setBody(String string) {
+		this.text = string;
+	}
+	
 	public boolean bodyIsEqualTo(String text) {
 		if(text != null)
 			return this.text.equals(text);
@@ -36,13 +40,12 @@ public class Tag {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((text == null) ? 0 : text.hashCode());
+		result = prime * result + id;
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		// Are equals if ID is the same
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -50,13 +53,8 @@ public class Tag {
 		if (getClass() != obj.getClass())
 			return false;
 		Tag other = (Tag) obj;
-		if (text == null) {
-			if (other.text != null)
-				return false;
-		} else if (!text.equals(other.text)) {
+		if (id != other.id)
 			return false;
-		}
-		
 		return true;
 	}
 	
