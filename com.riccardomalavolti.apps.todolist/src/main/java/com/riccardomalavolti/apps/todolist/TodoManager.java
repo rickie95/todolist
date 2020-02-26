@@ -2,6 +2,8 @@ package com.riccardomalavolti.apps.todolist;
 
 import java.util.List;
 
+import com.riccardomalavolti.apps.todolist.repositories.TodoRepository;
+
 public class TodoManager {
 
 	private TodoRepository todoRepository;

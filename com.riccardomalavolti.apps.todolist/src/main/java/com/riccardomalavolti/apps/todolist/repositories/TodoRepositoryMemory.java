@@ -1,7 +1,10 @@
-package com.riccardomalavolti.apps.todolist;
+package com.riccardomalavolti.apps.todolist.repositories;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.riccardomalavolti.apps.todolist.Tag;
+import com.riccardomalavolti.apps.todolist.TodoElement;
 
 public class TodoRepositoryMemory implements TodoRepository {
 

@@ -10,6 +10,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.riccardomalavolti.apps.todolist.repositories.TagRepository;
+import com.riccardomalavolti.apps.todolist.repositories.TagRepositoryInMemory;
+
 public class TagRepositoryInMemoryTest {
 	
 	TagRepository tagRepository;

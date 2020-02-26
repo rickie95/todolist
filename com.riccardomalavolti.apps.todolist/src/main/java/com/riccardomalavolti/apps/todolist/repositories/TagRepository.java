@@ -1,6 +1,8 @@
-package com.riccardomalavolti.apps.todolist;
+package com.riccardomalavolti.apps.todolist.repositories;
 
 import java.util.Set;
+
+import com.riccardomalavolti.apps.todolist.Tag;
 
 public interface TagRepository {
 	Set<Tag> findAll();

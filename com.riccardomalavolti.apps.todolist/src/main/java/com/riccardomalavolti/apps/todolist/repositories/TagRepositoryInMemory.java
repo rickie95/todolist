@@ -1,7 +1,9 @@
-package com.riccardomalavolti.apps.todolist;
+package com.riccardomalavolti.apps.todolist.repositories;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import com.riccardomalavolti.apps.todolist.Tag;
 
 public class TagRepositoryInMemory implements TagRepository{
 	

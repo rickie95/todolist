@@ -12,6 +12,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import com.riccardomalavolti.apps.todolist.repositories.TodoRepository;
+
 public class TodoElementManagerTest {
 
 	private TodoManager todoManager;

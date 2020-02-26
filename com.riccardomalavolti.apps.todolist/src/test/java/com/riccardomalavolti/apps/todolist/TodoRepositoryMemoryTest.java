@@ -11,6 +11,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.riccardomalavolti.apps.todolist.repositories.TodoRepository;
+import com.riccardomalavolti.apps.todolist.repositories.TodoRepositoryMemory;
+
 public class TodoRepositoryMemoryTest {
 
 	private TodoRepository todoRepository;
