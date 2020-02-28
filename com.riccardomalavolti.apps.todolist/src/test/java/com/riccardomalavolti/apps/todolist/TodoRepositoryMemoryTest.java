@@ -134,7 +134,7 @@ public class TodoRepositoryMemoryTest {
 	
 	@Test
 	public void testFindByTag() {
-		Tag tag = new Tag("bar");
+		Tag tag = new Tag("0", "bar");
 		TodoElement te1 = new TodoElement("todo one");
 		TodoElement te2 = new TodoElement("todo two");
 		te1.addTag(tag);
@@ -153,7 +153,7 @@ public class TodoRepositoryMemoryTest {
 	
 	@Test
 	public void testFindByTagNoResults() {
-		Tag tag = new Tag("bar");
+		Tag tag = new Tag("0", "bar");
 		TodoElement te1 = new TodoElement("tagged: bar");
 		TodoElement te2 = new TodoElement("not tagged");
 		te1.addTag(tag);
@@ -161,7 +161,7 @@ public class TodoRepositoryMemoryTest {
 		todoRepository.addTodoElement(te1);
 		todoRepository.addTodoElement(te2);
 		
-		List<TodoElement> results = todoRepository.findByTag(new Tag("Foo"));
+		List<TodoElement> results = todoRepository.findByTag(new Tag("1", "Foo"));
 	
 		assertNotNull(results);
 		assertEquals(0, results.size());

@@ -29,6 +29,16 @@ public class TagRepositoryInMemory implements TagRepository{
 		
 		return results;
 	}
+	
+	@Override
+	public Tag findById(String id) {		
+		if(id != null)
+			for(Tag t : tagCollection)
+				if(t.getId().equals(id))
+					return t;
+		
+		return null;
+	}
 
 	@Override
 	public void addTag(Tag tag) {
@@ -53,5 +63,7 @@ public class TagRepositoryInMemory implements TagRepository{
 		tagCollection.clear();
 		
 	}
+
+	
 
 }

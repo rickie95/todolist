@@ -2,6 +2,7 @@ package com.riccardomalavolti.apps.todolist;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
@@ -29,8 +30,8 @@ public class TagRepositoryInMemoryTest {
 	
 	@Test
 	public void testFindAll() {
-		Tag tagOne = new Tag("Foo");
-		Tag tagTwo = new Tag("Bar");
+		Tag tagOne = new Tag("0", "Foo");
+		Tag tagTwo = new Tag("1", "Bar");
 		tagRepository.addTag(tagOne);
 		tagRepository.addTag(tagTwo);
 		
@@ -52,9 +53,9 @@ public class TagRepositoryInMemoryTest {
 	
 	@Test
 	public void testFindByText() {
-		Tag tagOne = new Tag("Foo");
-		Tag tagTwo = new Tag("Bar");
-		Tag tagThree = new Tag("Cooc-coo");
+		Tag tagOne = new Tag("0", "Foo");
+		Tag tagTwo = new Tag("1", "Bar");
+		Tag tagThree = new Tag("2", "Cooc-coo");
 		tagRepository.addTag(tagOne);
 		tagRepository.addTag(tagTwo);
 		tagRepository.addTag(tagThree);
@@ -70,9 +71,9 @@ public class TagRepositoryInMemoryTest {
 	
 	@Test
 	public void testFindByTextNoResults() {
-		Tag tagOne = new Tag("Foo");
-		Tag tagTwo = new Tag("Bar");
-		Tag tagThree = new Tag("Cooc-coo");
+		Tag tagOne = new Tag("0", "Foo");
+		Tag tagTwo = new Tag("1", "Bar");
+		Tag tagThree = new Tag("2", "Cooc-coo");
 		tagRepository.addTag(tagOne);
 		tagRepository.addTag(tagTwo);
 		tagRepository.addTag(tagThree);
@@ -86,9 +87,9 @@ public class TagRepositoryInMemoryTest {
 	
 	@Test
 	public void testFindByNullText() {
-		Tag tagOne = new Tag("Foo");
-		Tag tagTwo = new Tag("Bar");
-		Tag tagThree = new Tag("Cooc-coo");
+		Tag tagOne = new Tag("0", "Foo");
+		Tag tagTwo = new Tag("1", "Bar");
+		Tag tagThree = new Tag("2", "Cooc-coo");
 		tagRepository.addTag(tagOne);
 		tagRepository.addTag(tagTwo);
 		tagRepository.addTag(tagThree);
@@ -101,8 +102,44 @@ public class TagRepositoryInMemoryTest {
 	}
 	
 	@Test
+	public void testFindById() {
+		Tag tagOne = new Tag("0", "Foo");
+		Tag tagTwo = new Tag("1", "Bar");
+
+		tagRepository.addTag(tagOne);
+		tagRepository.addTag(tagTwo);
+		
+		Tag tag = tagRepository.findById("1");
+		
+		assertNotNull(tag);
+		assertEquals(tag, tagTwo);
+	}
+	
+	@Test
+	public void testFindByIdWhenItDoesntExists() {
+		Tag tagOne = new Tag("0", "Foo");
+
+		tagRepository.addTag(tagOne);
+		
+		Tag tag = tagRepository.findById("1");
+		
+		assertNull(tag);
+	}
+	
+	@Test
+	public void testFindByIdWhenIDIsNull() {
+		Tag tagOne = new Tag("0", "Foo");
+
+		tagRepository.addTag(tagOne);
+		
+		Tag tag = tagRepository.findById(null);
+		
+		assertNull(tag);
+	}
+	
+	@Test
 	public void testUpdateTag() {
-		Tag tag = new Tag("Foo");
+		Tag tag = new Tag("0","Foo");
 		tagRepository.addTag(tag);
 		tag.setBody("Bar");
 		
@@ -113,7 +150,7 @@ public class TagRepositoryInMemoryTest {
 	
 	@Test 
 	public void testUpdateTagIfNotPresent() {
-		Tag tag = new Tag("Foo");
+		Tag tag = new Tag("0", "Foo");
 		
 		tagRepository.updateTag(tag);
 		
@@ -123,7 +160,7 @@ public class TagRepositoryInMemoryTest {
 	
 	@Test
 	public void testRemoveTag() {
-		Tag tag = new Tag("Foo");
+		Tag tag = new Tag("0", "Foo");
 		tagRepository.addTag(tag);
 		
 		tagRepository.removeTag(tag);
@@ -132,7 +169,7 @@ public class TagRepositoryInMemoryTest {
 	
 	@Test
 	public void testClear() {
-		tagRepository.addTag(new Tag("Foo"));
+		tagRepository.addTag(new Tag("0","Foo"));
 		
 		assertEquals(1, tagRepository.findAll().size());
 		tagRepository.clear();

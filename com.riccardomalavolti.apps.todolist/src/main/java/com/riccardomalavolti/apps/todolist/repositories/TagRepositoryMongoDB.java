@@ -1,69 +1,102 @@
 package com.riccardomalavolti.apps.todolist.repositories;
 
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import org.bson.Document;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.TextSearchOptions;
 import com.riccardomalavolti.apps.todolist.Tag;
 
 public class TagRepositoryMongoDB implements TagRepository {
 	
-	private static TagRepositoryMongoDB instance = null;
+	public static String SERVER_ADDRESS = "localhost";
+	public static String DB_NAME = "TodoListDB";
+	public static String COLLECTION_NAME = "TagCollection";
+	public static TextSearchOptions NO_CASE_SEARCH = new TextSearchOptions().caseSensitive(false);
 	
-	private MongoClient dbClient;
 	private MongoDatabase todolistDatabase;
-	private MongoCollection tagCollection;
+	private MongoCollection<Document> tagCollection;
 	
-	
-	private TagRepositoryMongoDB() {
-		dbClient = new MongoClient("localhost");
-		todolistDatabase = dbClient.getDatabase("TodoListDB");
-		tagCollection = todolistDatabase.getCollection("TagCollection");
+	public TagRepositoryMongoDB(MongoClient mongoClient) {
+		todolistDatabase = mongoClient.getDatabase(DB_NAME);
+		tagCollection = todolistDatabase.getCollection(COLLECTION_NAME);
 	}
 	
-	public static TagRepositoryMongoDB getInstance() {
-		if(instance == null)
-			instance = new TagRepositoryMongoDB();
-		
-		return instance;
-	}
-
 	@Override
 	public Set<Tag> findAll() {
-		// TODO Auto-generated method stub
-		return null;
+		return StreamSupport.stream(tagCollection.find().spliterator(), false)
+				.map(this::fromDocumentToTag).collect(Collectors.toSet());
 	}
-
+	
+	private Tag fromDocumentToTag(Object d) {
+		Document doc = (Document) d;
+		return new Tag(doc.get("id").toString(), doc.get("text").toString());
+	}
+	
 	@Override
 	public Set<Tag> findByText(String text) {
-		// TODO Auto-generated method stub
+		Set<Tag> results = new HashSet<Tag>();
+		
+		// MongoServer doesn't support the $search operator
+		//tagCollection.createIndex(Indexes.text("text"));
+		// long count  = tagCollection.countDocuments(Filters.text("oo")); => Broken
+		/*
+		tagCollection.find(Filters.eq("text", text))
+				.map(doc -> results.add(fromDocumentToTag(doc)));
+		*/
+		
+		Set<Tag> collection = StreamSupport.stream(tagCollection.find().spliterator(), false)
+		.map(this::fromDocumentToTag).collect(Collectors.toSet());
+		
+		for(Tag t : collection) {
+			if(t.getText().toLowerCase().contains(text.toLowerCase()))
+				results.add(t);
+		}
+		
+		return results;
+	}
+	
+	@Override
+	public Tag findById(String id) {
+		Document doc = tagCollection.find(Filters.eq("id", id)).first();
+		
+		if (doc != null)
+			return fromDocumentToTag(doc);
+		
 		return null;
 	}
 
 	@Override
 	public void addTag(Tag tag) {
-		// TODO Auto-generated method stub
+		if(tagCollection.find(Filters.eq("id", tag.getId())).first() == null)
+			tagCollection.insertOne(fromTagToDocument(tag));
+	}
 
+	private Document fromTagToDocument(Tag tag) {
+		return new Document().append("id", tag.getId()).append("text", tag.getText());
 	}
 
 	@Override
 	public void updateTag(Tag tag) {
-		// TODO Auto-generated method stub
-
+			removeTag(tag);
+			addTag(tag);
 	}
 
 	@Override
 	public void removeTag(Tag tag) {
-		// TODO Auto-generated method stub
-
+		tagCollection.deleteOne(Filters.eq("id", tag.getId()));
 	}
 
 	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
-
+		tagCollection.drop();
+		
 	}
-
 }

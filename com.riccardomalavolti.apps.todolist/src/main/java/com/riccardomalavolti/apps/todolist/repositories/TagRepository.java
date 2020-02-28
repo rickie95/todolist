@@ -7,6 +7,7 @@ import com.riccardomalavolti.apps.todolist.Tag;
 public interface TagRepository {
 	Set<Tag> findAll();
 	Set<Tag> findByText(String text);
+	Tag findById(String id);
 	
 	void addTag(Tag tag);
 	void updateTag(Tag tag);

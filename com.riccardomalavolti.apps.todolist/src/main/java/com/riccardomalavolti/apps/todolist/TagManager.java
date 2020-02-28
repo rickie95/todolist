@@ -40,7 +40,7 @@ public class TagManager {
 		Tag newTag = getTagByName(text);
 			
 		if (newTag == null) {
-			newTag = new Tag(text);
+			newTag = new Tag("0", text);
 			tagPool.add(newTag);
 		}
 		
