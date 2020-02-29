@@ -42,15 +42,9 @@ public class TagRepositoryMongoDB implements TagRepository {
 	
 	@Override
 	public Set<Tag> findByText(String text) {
-		Set<Tag> results = new HashSet<Tag>();
+		Set<Tag> results = new HashSet<>();
 		
-		// MongoServer doesn't support the $search operator
-		//tagCollection.createIndex(Indexes.text("text"));
-		// long count  = tagCollection.countDocuments(Filters.text("oo")); => Broken
-		/*
-		tagCollection.find(Filters.eq("text", text))
-				.map(doc -> results.add(fromDocumentToTag(doc)));
-		*/
+		// MongoServer implementation doesn't support the $search operator
 		
 		Set<Tag> collection = StreamSupport.stream(tagCollection.find().spliterator(), false)
 		.map(this::fromDocumentToTag).collect(Collectors.toSet());
