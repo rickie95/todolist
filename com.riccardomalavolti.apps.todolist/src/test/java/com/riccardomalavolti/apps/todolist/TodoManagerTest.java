@@ -7,39 +7,35 @@ import static org.mockito.Mockito.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import com.riccardomalavolti.apps.todolist.repositories.TodoRepository;
 
-public class TodoElementManagerTest {
+public class TodoManagerTest {
 
 	private TodoManager todoManager;
 	private TodoRepository todoRepository;
-	private TagManager tagManager;
 	
 	@Before
 	public void setup() {
 		todoRepository = mock(TodoRepository.class);
 		todoManager = new TodoManager(todoRepository);
-		tagManager = TagManager.getInstance();
 	}
-	
-	@After
-	public void cleanUpTagManager() {
-		tagManager.clear();
-	}
-	
+		
 	@Test
 	public void testGetTodoList() {
 		List<TodoElement> todos = new ArrayList<>();
+		todos.add(new TodoElement());
 		when(todoRepository.findAll()).thenReturn(todos);
 		
 		List<TodoElement> todoList = todoManager.getTodoList();
 		
 		assertEquals(todos, todoList);
+		assertEquals(1, todos.size());
+		assertEquals(1, todoList.size());
+		
 	}
 	
 	@Test
@@ -79,7 +75,7 @@ public class TodoElementManagerTest {
 	@Test
 	public void testAddTagAtTodo() {
 		TodoElement todo = mock(TodoElement.class);
-		Tag tag = tagManager.newTag("Bar");
+		Tag tag = new Tag("0", "Bar");
 		
 		todoManager.tagTodo(todo, tag);
 		//ArgumentCaptor<TodoElement> todoCaptor = ArgumentCaptor.forClass(TodoElement.class);

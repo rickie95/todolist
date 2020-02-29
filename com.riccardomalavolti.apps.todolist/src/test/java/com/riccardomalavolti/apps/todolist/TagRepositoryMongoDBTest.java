@@ -124,4 +124,16 @@ public class TagRepositoryMongoDBTest {
 		assertEquals("Bar", t.getText());
 	}
 	
+	@Test
+	public void testClear() {
+		tagRepository.addTag(new Tag("0", "Foo"));
+		tagRepository.addTag(new Tag("1", "Bar"));
+		
+		tagRepository.clear();
+		Set<Tag> collection = tagRepository.findAll();
+		
+		assertEquals(0, collection.size());	
+		
+	}
+	
 }

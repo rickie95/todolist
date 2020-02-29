@@ -36,6 +36,14 @@ public class TagTest {
 	}
 	
 	@Test
+	public void testBodyIsNotEqual() {
+		String text = "Bar";
+		Tag tt = new Tag("0", "Foo");
+		
+		assertFalse(tt.bodyIsEqualTo(text));
+	}
+	
+	@Test
 	public void testBodyIsNotEqualToNullText() {
 		String text = null;
 		Tag tt = new Tag("0", text);
@@ -43,12 +51,4 @@ public class TagTest {
 		assertFalse(tt.bodyIsEqualTo(text));
 	}
 	
-	
-	@Test
-	public void testHashCode() {
-		String text = "foo";
-		tag = new Tag("0", text);
-		
-		assertEquals(31 + tag.getId(), tag.hashCode());
-	}
 }

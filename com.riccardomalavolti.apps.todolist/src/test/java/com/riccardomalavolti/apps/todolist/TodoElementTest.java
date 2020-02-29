@@ -76,9 +76,8 @@ public class TodoElementTest {
 	@Test
 	public void testGetTagSize() {
 		todoelem = new TodoElement();
-		TagManager tm = TagManager.getInstance();
-		todoelem.addTag(tm.newTag("foo"));
-		todoelem.addTag(tm.newTag("bar"));
+		todoelem.addTag(new Tag("0", "foo"));
+		todoelem.addTag(new Tag("1","bar"));
 		
 		assertEquals(2, todoelem.getTagSize());
 	}
@@ -86,9 +85,8 @@ public class TodoElementTest {
 	@Test
 	public void testGetTagList() {
 		todoelem = new TodoElement();
-		TagManager tm = TagManager.getInstance();
-		Tag tFoo = tm.newTag("foo");
-		Tag tBar = tm.newTag("bar");
+		Tag tFoo = new Tag("0", "foo");
+		Tag tBar = new Tag("1", "bar");
 		todoelem.addTag(tFoo);
 		todoelem.addTag(tBar);
 		
