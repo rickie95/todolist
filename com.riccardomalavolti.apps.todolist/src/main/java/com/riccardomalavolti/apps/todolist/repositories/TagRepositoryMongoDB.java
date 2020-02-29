@@ -29,15 +29,20 @@ public class TagRepositoryMongoDB implements TagRepository {
 		tagCollection = todolistDatabase.getCollection(COLLECTION_NAME);
 	}
 	
+	private Document fromTagToDocument(Tag tag) {
+		return new Document().append("id", tag.getId()).append("text", tag.getText());
+	}
+	
+	private Tag fromDocumentToTag(Document doc) {
+		if(doc != null)
+			return new Tag(doc.get("id").toString(), doc.get("text").toString());
+		return null;
+	}
+	
 	@Override
 	public Set<Tag> findAll() {
 		return StreamSupport.stream(tagCollection.find().spliterator(), false)
 				.map(this::fromDocumentToTag).collect(Collectors.toSet());
-	}
-	
-	private Tag fromDocumentToTag(Object d) {
-		Document doc = (Document) d;
-		return new Tag(doc.get("id").toString(), doc.get("text").toString());
 	}
 	
 	@Override
@@ -59,22 +64,13 @@ public class TagRepositoryMongoDB implements TagRepository {
 	
 	@Override
 	public Tag findById(String id) {
-		Document doc = tagCollection.find(Filters.eq("id", id)).first();
-		
-		if (doc != null)
-			return fromDocumentToTag(doc);
-		
-		return null;
+		return fromDocumentToTag(tagCollection.find(Filters.eq("id", id)).first());
 	}
 
 	@Override
 	public void addTag(Tag tag) {
 		if(tagCollection.find(Filters.eq("id", tag.getId())).first() == null)
 			tagCollection.insertOne(fromTagToDocument(tag));
-	}
-
-	private Document fromTagToDocument(Tag tag) {
-		return new Document().append("id", tag.getId()).append("text", tag.getText());
 	}
 
 	@Override
