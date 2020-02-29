@@ -16,10 +16,10 @@ import com.riccardomalavolti.apps.todolist.Tag;
 
 public class TagRepositoryMongoDB implements TagRepository {
 	
-	public static String SERVER_ADDRESS = "localhost";
-	public static String DB_NAME = "TodoListDB";
-	public static String COLLECTION_NAME = "TagCollection";
-	public static TextSearchOptions NO_CASE_SEARCH = new TextSearchOptions().caseSensitive(false);
+	public static final String SERVER_ADDRESS = "localhost";
+	public static final String DB_NAME = "TodoListDB";
+	public static final String COLLECTION_NAME = "TagCollection";
+	public static final TextSearchOptions NO_CASE_SEARCH = new TextSearchOptions().caseSensitive(false);
 	
 	private MongoDatabase todolistDatabase;
 	private MongoCollection<Document> tagCollection;
