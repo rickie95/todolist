@@ -103,6 +103,16 @@ public class TagRepositoryMongoDBTest {
 	}
 	
 	@Test
+	public void testAddTag() {
+		tagRepository.addTag(new Tag("0", "Foo"));
+		tagRepository.addTag(new Tag("1", "Bar"));
+		
+		Set<Tag> results = tagRepository.findAll();
+		
+		assertEquals(2, results.size());
+	}
+	
+	@Test
 	public void testFindByText() {
 		tagRepository.addTag(new Tag("0", "Foo"));
 		tagRepository.addTag(new Tag("1", "Bar"));
