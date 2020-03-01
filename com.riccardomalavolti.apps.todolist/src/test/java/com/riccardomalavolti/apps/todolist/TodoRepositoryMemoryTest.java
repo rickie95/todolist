@@ -1,9 +1,6 @@
 package com.riccardomalavolti.apps.todolist;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
@@ -34,7 +31,7 @@ public class TodoRepositoryMemoryTest {
 		todoRepository.addTodoElement(new TodoElement("Foo to bar"));
 		int postSize = todoRepository.findAll().size();
 		
-		assertEquals(prevSize + 1, postSize);
+		assertThat(postSize).isEqualTo(prevSize + 1);
 	}
 	
 	@Test
@@ -46,7 +43,7 @@ public class TodoRepositoryMemoryTest {
 		
 		todoRepository.updateTodoElement(te);
 		
-		assertEquals(modifiedBody, todoRepository.findById(te).getBody());
+		assertThat(todoRepository.findById(te).getBody()).isEqualTo(modifiedBody);
 	}
 	
 	@Test
@@ -57,7 +54,7 @@ public class TodoRepositoryMemoryTest {
 		
 		todoRepository.updateTodoElement(te);
 		
-		assertNull(todoRepository.findById(te));
+		assertThat(todoRepository.findById(te)).isNull();
 	}
 	
 	@Test
@@ -66,7 +63,7 @@ public class TodoRepositoryMemoryTest {
 		
 		todoRepository.updateTodoElement(te);
 		
-		assertNull(todoRepository.findById(te));
+		assertThat(todoRepository.findById(te)).isNull();
 	}
 	
 	
@@ -79,9 +76,9 @@ public class TodoRepositoryMemoryTest {
 		
 		List<TodoElement> results = todoRepository.findByBody(bodyToSearch);
 		
-		assertTrue(body.contains(bodyToSearch));
-		assertEquals(1, results.size());
-		assertTrue(results.get(0).getBody().contains(bodyToSearch));		
+		assertThat(body).contains(bodyToSearch);
+		assertThat(results).hasSize(1);
+		assertThat(results.get(0).getBody()).contains(bodyToSearch);		
 	}
 	
 	@Test
@@ -94,11 +91,11 @@ public class TodoRepositoryMemoryTest {
 		
 		List<TodoElement> results = todoRepository.findByBody(bodyToSearch);
 		
-		assertTrue(body1.contains(bodyToSearch));
-		assertTrue(body2.contains(bodyToSearch));
-		assertEquals(2, results.size());
-		assertTrue(results.get(0).getBody().contains(bodyToSearch));
-		assertTrue(results.get(1).getBody().contains(bodyToSearch));
+		assertThat(body1).contains(bodyToSearch);
+		assertThat(body2).contains(bodyToSearch);
+		assertThat(results).hasSize(2);
+		assertThat(results.get(0).getBody()).contains(bodyToSearch);
+		assertThat(results.get(1).getBody()).contains(bodyToSearch);
 	}
 	
 	@Test 
@@ -107,7 +104,7 @@ public class TodoRepositoryMemoryTest {
 		
 		List<TodoElement> results = todoRepository.findByBody(bodyToSearch);
 		
-		assertEquals(0, results.size());
+		assertThat(results).hasSize(0);
 	}
 	
 	@Test
@@ -117,7 +114,7 @@ public class TodoRepositoryMemoryTest {
 		
 		List<TodoElement> results = todoRepository.findByBody("Baz");
 		
-		assertEquals(0, results.size());
+		assertThat(results).hasSize(0);
 	}
 	
 	@Test
@@ -129,7 +126,7 @@ public class TodoRepositoryMemoryTest {
 		todoRepository.removeTodoElement(te);
 		int postSize = todoRepository.findAll().size();
 		
-		assertEquals(prevSize - 1, postSize);
+		assertThat(postSize).isEqualTo(prevSize - 1);
 	}
 	
 	@Test
@@ -144,10 +141,10 @@ public class TodoRepositoryMemoryTest {
 		
 		List<TodoElement> results = todoRepository.findByTag(tag);
 		
-		assertNotNull(results);
-		assertEquals(2, results.size());
-		assertTrue(results.contains(te1));
-		assertTrue(results.contains(te2));
+		assertThat(results).isNotNull();
+		assertThat(results).hasSize(2);
+		assertThat(results).contains(te1);
+		assertThat(results).contains(te2);
 		
 	}
 	
@@ -163,8 +160,8 @@ public class TodoRepositoryMemoryTest {
 		
 		List<TodoElement> results = todoRepository.findByTag(new Tag("1", "Foo"));
 	
-		assertNotNull(results);
-		assertEquals(0, results.size());
+		assertThat(results).isNotNull();
+		assertThat(results).hasSize(0);
 	}
 	
 	@Test
@@ -174,28 +171,28 @@ public class TodoRepositoryMemoryTest {
 		
 		List<TodoElement> results = todoRepository.findByTag(tag);
 		
-		assertEquals(0, results.size());
+		assertThat(results).hasSize(0);
 	}
 	
 	@Test
 	public void testFindByIDWith() {
 		TodoElement te = new TodoElement("This is not in repository");
-		
-		assertNull(todoRepository.findById(te));
+		TodoElement recoveredTodo = todoRepository.findById(te);
+		assertThat(recoveredTodo).isNull();
 	}
 	
 	@Test
 	public void testFindByIdNUll() {
 		TodoElement te = null;
-		
-		assertNull(todoRepository.findById(te));
+		TodoElement recoveredTodo = todoRepository.findById(te);
+		assertThat(recoveredTodo).isNull();
 	}
 	
 	@Test
 	public void testFindByIdIfTodoCollectionIsEmpty() {
 		TodoElement te = new TodoElement("Foo");
-		
-		assertNull(todoRepository.findById(te));
+		TodoElement recoveredTodo = todoRepository.findById(te);
+		assertThat(recoveredTodo).isNull();
 	}
 	
 	@Test
@@ -205,6 +202,6 @@ public class TodoRepositoryMemoryTest {
 		
 		todoRepository.clear();
 		
-		assertEquals(0, todoRepository.findAll().size());
+		assertThat(todoRepository.findAll()).hasSize(0);
 	}
 }

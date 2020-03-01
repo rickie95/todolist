@@ -1,9 +1,6 @@
 package com.riccardomalavolti.apps.todolist;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Set;
 
@@ -37,18 +34,18 @@ public class TagRepositoryInMemoryTest {
 		
 		Set<Tag> results = tagRepository.findAll();
 		
-		assertNotNull(results);
-		assertEquals(2, results.size());
-		assertTrue(results.contains(tagOne));
-		assertTrue(results.contains(tagTwo));
+		assertThat(results).isNotNull();
+		assertThat(results.size()).isEqualTo(2);
+		assertThat(results).contains(tagOne);
+		assertThat(results).contains(tagTwo);
 	}
 	
 	@Test
 	public void testFindAllIfEmpty() {
 		Set<Tag> results = tagRepository.findAll();
 		
-		assertNotNull(results);
-		assertEquals(0, results.size());
+		assertThat(results).isNotNull();
+		assertThat(results.size()).isEqualTo(0);
 	}
 	
 	@Test
@@ -63,10 +60,10 @@ public class TagRepositoryInMemoryTest {
 		
 		Set<Tag> results = tagRepository.findByText(textToSearch);
 		
-		assertNotNull(results);
-		assertEquals(2, results.size());
-		assertTrue(results.contains(tagOne));
-		assertTrue(results.contains(tagThree));
+		assertThat(results).isNotNull();
+		assertThat(results.size()).isEqualTo(2);
+		assertThat(results).contains(tagOne);
+		assertThat(results).contains(tagThree);
 	}
 	
 	@Test
@@ -81,8 +78,8 @@ public class TagRepositoryInMemoryTest {
 		
 		Set<Tag> results = tagRepository.findByText(textToSearch);
 		
-		assertNotNull(results);
-		assertEquals(0, results.size());
+		assertThat(results).isNotNull();
+		assertThat(results.size()).isEqualTo(0);
 	}
 	
 	@Test
@@ -97,8 +94,8 @@ public class TagRepositoryInMemoryTest {
 		
 		Set<Tag> results = tagRepository.findByText(textToSearch);
 		
-		assertNotNull(results);
-		assertEquals(0, results.size());
+		assertThat(results).isNotNull();
+		assertThat(results.size()).isEqualTo(0);
 	}
 	
 	@Test
@@ -111,8 +108,8 @@ public class TagRepositoryInMemoryTest {
 		
 		Tag tag = tagRepository.findById("1");
 		
-		assertNotNull(tag);
-		assertEquals(tag, tagTwo);
+		assertThat(tag).isNotNull();
+		assertThat(tagTwo).isEqualTo(tag);
 	}
 	
 	@Test
@@ -123,7 +120,7 @@ public class TagRepositoryInMemoryTest {
 		
 		Tag tag = tagRepository.findById("1");
 		
-		assertNull(tag);
+		assertThat(tag).isNull();
 	}
 	
 	@Test
@@ -134,7 +131,7 @@ public class TagRepositoryInMemoryTest {
 		
 		Tag tag = tagRepository.findById(null);
 		
-		assertNull(tag);
+		assertThat(tag).isNull();
 	}
 	
 	@Test
@@ -145,7 +142,8 @@ public class TagRepositoryInMemoryTest {
 		
 		tagRepository.updateTag(tag);
 		Tag res = (Tag) (tagRepository.findAll().toArray())[0];
-		assertEquals("Bar", res.getText());
+		
+		assertThat(res.getText()).isEqualTo("Bar");
 	}
 	
 	@Test 
@@ -155,25 +153,30 @@ public class TagRepositoryInMemoryTest {
 		tagRepository.updateTag(tag);
 		
 		Set<Tag> results = tagRepository.findAll();
-		assertEquals(0, results.size());
+		assertThat(results.size()).isEqualTo(0);
 	}
 	
 	@Test
 	public void testRemoveTag() {
-		Tag tag = new Tag("0", "Foo");
-		tagRepository.addTag(tag);
+		Tag tag_to_be_removed = new Tag("0", "Foo");
+		Tag another_tag = new Tag("1", "Bar");
+		tagRepository.addTag(tag_to_be_removed);
+		tagRepository.addTag(another_tag);
+		assertThat(tagRepository.findAll().size()).isEqualTo(2);
 		
-		tagRepository.removeTag(tag);
-		assertEquals(0, tagRepository.findAll().size());
+		tagRepository.removeTag(tag_to_be_removed);
+		assertThat(tagRepository.findAll().size()).isEqualTo(1);
+		Tag recoveredTag = tagRepository.findById("1");
+		assertThat(recoveredTag).isEqualTo(another_tag);
 	}
 	
 	@Test
 	public void testClear() {
 		tagRepository.addTag(new Tag("0","Foo"));
 		
-		assertEquals(1, tagRepository.findAll().size());
+		assertThat(tagRepository.findAll().size()).isEqualTo(1);
 		tagRepository.clear();
-		assertEquals(0, tagRepository.findAll().size());
+		assertThat(tagRepository.findAll().size()).isEqualTo(0);
 		
 	}
 

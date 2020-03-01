@@ -1,8 +1,6 @@
 package com.riccardomalavolti.apps.todolist;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.assertj.core.api.Assertions.*;
 
 import java.net.InetSocketAddress;
 import java.util.Set;
@@ -61,14 +59,14 @@ public class TagRepositoryMongoDBTest {
 		
 		Set<Tag> results = tagRepository.findAll();
 		
-		assertEquals(2, results.size());
+		assertThat(results).hasSize(2);
 	}
 	
 	@Test
 	public void testFindAllWhenIsEmpty() {
 		Set<Tag> results = tagRepository.findAll();
 		
-		assertEquals(0, results.size());
+		assertThat(results).hasSize(0);
 	}
 	
 	@Test
@@ -76,10 +74,10 @@ public class TagRepositoryMongoDBTest {
 		tagRepository.addTag(new Tag("0", "Foo"));
 		tagRepository.addTag(new Tag("1", "Bar"));
 		
-		Tag results = tagRepository.findById("1");
+		Tag result = tagRepository.findById("1");
 		
-		assertNotNull(results);
-		assertEquals("1", results.getId());
+		assertThat(result).isNotNull();
+		assertThat(result.getId()).isEqualTo("1");
 	}
 	
 	@Test
@@ -89,7 +87,7 @@ public class TagRepositoryMongoDBTest {
 		
 		Tag t = tagRepository.findById("3");
 		
-		assertNull(t);
+		assertThat(t).isNull();;
 	}
 	
 	@Test
@@ -99,7 +97,7 @@ public class TagRepositoryMongoDBTest {
 		
 		Set<Tag> results = tagRepository.findAll();
 		
-		assertEquals(1, results.size());
+		assertThat(results).hasSize(1);
 	}
 	
 	@Test
@@ -109,7 +107,7 @@ public class TagRepositoryMongoDBTest {
 		
 		Set<Tag> results = tagRepository.findAll();
 		
-		assertEquals(2, results.size());
+		assertThat(results).hasSize(2);
 	}
 	
 	@Test
@@ -119,7 +117,7 @@ public class TagRepositoryMongoDBTest {
 		tagRepository.addTag(new Tag("2", "Baz Foo"));
 		
 		Set<Tag> results = tagRepository.findByText("Foo");
-		assertEquals(2, results.size());
+		assertThat(results).hasSize(2);
 	}
 	
 	@Test
@@ -130,8 +128,8 @@ public class TagRepositoryMongoDBTest {
 		
 		Tag t = tagRepository.findById("0");
 		
-		assertNotNull(t);
-		assertEquals("Bar", t.getText());
+		assertThat(t).isNotNull();
+		assertThat(t.getText()).isEqualTo("Bar");
 	}
 	
 	@Test
@@ -142,8 +140,7 @@ public class TagRepositoryMongoDBTest {
 		tagRepository.clear();
 		Set<Tag> collection = tagRepository.findAll();
 		
-		assertEquals(0, collection.size());	
-		
+		assertThat(collection).hasSize(0);	
 	}
 	
 }
