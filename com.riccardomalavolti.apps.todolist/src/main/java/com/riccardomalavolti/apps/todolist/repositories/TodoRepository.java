@@ -3,19 +3,19 @@ package com.riccardomalavolti.apps.todolist.repositories;
 import java.util.List;
 
 import com.riccardomalavolti.apps.todolist.Tag;
-import com.riccardomalavolti.apps.todolist.TodoElement;
+import com.riccardomalavolti.apps.todolist.Todo;
 
 public interface TodoRepository {
 	
-	List<TodoElement> findAll();
-	List<TodoElement> findByTag(Tag t);
-	List<TodoElement> findByBody(String text);
+	List<Todo> findAll();
+	List<Todo> findByTag(Tag t);
+	List<Todo> findByBody(String text);
 	
-	TodoElement findById(TodoElement te);
+	Todo findById(Todo te);
 	
-	void addTodoElement(TodoElement te);
-	void updateTodoElement(TodoElement te);
-	void removeTodoElement(TodoElement te);
+	void addTodoElement(Todo te);
+	void updateTodoElement(Todo te);
+	void removeTodoElement(Todo te);
 	
 	void clear();
 }

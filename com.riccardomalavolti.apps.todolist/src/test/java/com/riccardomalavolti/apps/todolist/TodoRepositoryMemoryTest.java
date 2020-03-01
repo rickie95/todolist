@@ -28,7 +28,7 @@ public class TodoRepositoryMemoryTest {
 	@Test
 	public void testAddTodoElement() {
 		int prevSize = todoRepository.findAll().size();
-		todoRepository.addTodoElement(new TodoElement("Foo to bar"));
+		todoRepository.addTodoElement(new Todo("Foo to bar"));
 		int postSize = todoRepository.findAll().size();
 		
 		assertThat(postSize).isEqualTo(prevSize + 1);
@@ -36,7 +36,7 @@ public class TodoRepositoryMemoryTest {
 	
 	@Test
 	public void testUpdateTodoElement() {
-		TodoElement te = new TodoElement("Foo");
+		Todo te = new Todo("Foo");
 		todoRepository.addTodoElement(te);
 		String modifiedBody = "Bar";
 		te.setBody(modifiedBody);
@@ -48,7 +48,7 @@ public class TodoRepositoryMemoryTest {
 	
 	@Test
 	public void testUpdateIfTodoDoesntExist() {
-		TodoElement te = new TodoElement("I will not be added");
+		Todo te = new Todo("I will not be added");
 		String modifiedBody = "Bar";
 		te.setBody(modifiedBody);
 		
@@ -59,7 +59,7 @@ public class TodoRepositoryMemoryTest {
 	
 	@Test
 	public void testUpdateIfRefIsNull() {
-		TodoElement te = null;
+		Todo te = null;
 		
 		todoRepository.updateTodoElement(te);
 		
@@ -72,9 +72,9 @@ public class TodoRepositoryMemoryTest {
 	public void testFindByPartialBody() {
 		String body = "testFindMyBody";
 		String bodyToSearch = "test";
-		todoRepository.addTodoElement(new TodoElement(body));
+		todoRepository.addTodoElement(new Todo(body));
 		
-		List<TodoElement> results = todoRepository.findByBody(bodyToSearch);
+		List<Todo> results = todoRepository.findByBody(bodyToSearch);
 		
 		assertThat(body).contains(bodyToSearch);
 		assertThat(results).hasSize(1);
@@ -86,10 +86,10 @@ public class TodoRepositoryMemoryTest {
 		String body1 = "testFindMyBody";
 		String body2 = "testFindMyBody, an other one";
 		String bodyToSearch = "test";
-		todoRepository.addTodoElement(new TodoElement(body1));
-		todoRepository.addTodoElement(new TodoElement(body2));
+		todoRepository.addTodoElement(new Todo(body1));
+		todoRepository.addTodoElement(new Todo(body2));
 		
-		List<TodoElement> results = todoRepository.findByBody(bodyToSearch);
+		List<Todo> results = todoRepository.findByBody(bodyToSearch);
 		
 		assertThat(body1).contains(bodyToSearch);
 		assertThat(body2).contains(bodyToSearch);
@@ -102,24 +102,24 @@ public class TodoRepositoryMemoryTest {
 	public void testFindByNullBody() {
 		String bodyToSearch = null;
 		
-		List<TodoElement> results = todoRepository.findByBody(bodyToSearch);
+		List<Todo> results = todoRepository.findByBody(bodyToSearch);
 		
 		assertThat(results).hasSize(0);
 	}
 	
 	@Test
 	public void testFindByBodyNoResults() {
-		todoRepository.addTodoElement(new TodoElement("Foo"));
-		todoRepository.addTodoElement(new TodoElement("Bar"));
+		todoRepository.addTodoElement(new Todo("Foo"));
+		todoRepository.addTodoElement(new Todo("Bar"));
 		
-		List<TodoElement> results = todoRepository.findByBody("Baz");
+		List<Todo> results = todoRepository.findByBody("Baz");
 		
 		assertThat(results).hasSize(0);
 	}
 	
 	@Test
 	public void testRemoveTodoElement() {
-		TodoElement te = new TodoElement("To be removed");
+		Todo te = new Todo("To be removed");
 		todoRepository.addTodoElement(te);
 		int prevSize = todoRepository.findAll().size();
 		
@@ -132,14 +132,14 @@ public class TodoRepositoryMemoryTest {
 	@Test
 	public void testFindByTag() {
 		Tag tag = new Tag("0", "bar");
-		TodoElement te1 = new TodoElement("todo one");
-		TodoElement te2 = new TodoElement("todo two");
+		Todo te1 = new Todo("todo one");
+		Todo te2 = new Todo("todo two");
 		te1.addTag(tag);
 		te2.addTag(tag);
 		todoRepository.addTodoElement(te1);
 		todoRepository.addTodoElement(te2);
 		
-		List<TodoElement> results = todoRepository.findByTag(tag);
+		List<Todo> results = todoRepository.findByTag(tag);
 		
 		assertThat(results).isNotNull();
 		assertThat(results).hasSize(2);
@@ -151,14 +151,14 @@ public class TodoRepositoryMemoryTest {
 	@Test
 	public void testFindByTagNoResults() {
 		Tag tag = new Tag("0", "bar");
-		TodoElement te1 = new TodoElement("tagged: bar");
-		TodoElement te2 = new TodoElement("not tagged");
+		Todo te1 = new Todo("tagged: bar");
+		Todo te2 = new Todo("not tagged");
 		te1.addTag(tag);
 		
 		todoRepository.addTodoElement(te1);
 		todoRepository.addTodoElement(te2);
 		
-		List<TodoElement> results = todoRepository.findByTag(new Tag("1", "Foo"));
+		List<Todo> results = todoRepository.findByTag(new Tag("1", "Foo"));
 	
 		assertThat(results).isNotNull();
 		assertThat(results).hasSize(0);
@@ -167,38 +167,38 @@ public class TodoRepositoryMemoryTest {
 	@Test
 	public void testFindByNullTag() {
 		Tag tag = null;
-		todoRepository.addTodoElement(new TodoElement("Foo"));
+		todoRepository.addTodoElement(new Todo("Foo"));
 		
-		List<TodoElement> results = todoRepository.findByTag(tag);
+		List<Todo> results = todoRepository.findByTag(tag);
 		
 		assertThat(results).hasSize(0);
 	}
 	
 	@Test
 	public void testFindByIDWith() {
-		TodoElement te = new TodoElement("This is not in repository");
-		TodoElement recoveredTodo = todoRepository.findById(te);
+		Todo te = new Todo("This is not in repository");
+		Todo recoveredTodo = todoRepository.findById(te);
 		assertThat(recoveredTodo).isNull();
 	}
 	
 	@Test
 	public void testFindByIdNUll() {
-		TodoElement te = null;
-		TodoElement recoveredTodo = todoRepository.findById(te);
+		Todo te = null;
+		Todo recoveredTodo = todoRepository.findById(te);
 		assertThat(recoveredTodo).isNull();
 	}
 	
 	@Test
 	public void testFindByIdIfTodoCollectionIsEmpty() {
-		TodoElement te = new TodoElement("Foo");
-		TodoElement recoveredTodo = todoRepository.findById(te);
+		Todo te = new Todo("Foo");
+		Todo recoveredTodo = todoRepository.findById(te);
 		assertThat(recoveredTodo).isNull();
 	}
 	
 	@Test
 	public void testClear() {
-		todoRepository.addTodoElement(new TodoElement("Foo"));
-		todoRepository.addTodoElement(new TodoElement("Bar"));
+		todoRepository.addTodoElement(new Todo("Foo"));
+		todoRepository.addTodoElement(new Todo("Bar"));
 		
 		todoRepository.clear();
 		

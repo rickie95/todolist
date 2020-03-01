@@ -3,7 +3,7 @@ package com.riccardomalavolti.apps.todolist;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TodoElement {
+public class Todo {
 	
 	private static int counter = 1;
 
@@ -16,21 +16,21 @@ public class TodoElement {
 		return counter++;
 	}
 	
-	public TodoElement() {
+	public Todo() {
 		this.body = "";
 		this.id = computeId();
 		this.tags = new HashSet<>();
 	}
 	
-	public TodoElement(String body) {
+	public Todo(String body) {
 		this.body = body;
 		this.id = computeId();
 		this.tags = new HashSet<>();
 	}
 	
-	public TodoElement(TodoElement te) {
+	public Todo(Todo te) {
 		if(te == null)
-			te = new TodoElement("");
+			te = new Todo("");
 		
 		this.id = computeId();
 		this.body = te.getBody();

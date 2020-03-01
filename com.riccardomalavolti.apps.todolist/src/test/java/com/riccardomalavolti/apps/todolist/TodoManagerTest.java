@@ -26,11 +26,11 @@ public class TodoManagerTest {
 		
 	@Test
 	public void testGetTodoList() {
-		List<TodoElement> todos = new ArrayList<>();
-		todos.add(new TodoElement());
+		List<Todo> todos = new ArrayList<>();
+		todos.add(new Todo());
 		when(todoRepository.findAll()).thenReturn(todos);
 		
-		List<TodoElement> todoList = todoManager.getTodoList();
+		List<Todo> todoList = todoManager.getTodoList();
 		
 		assertEquals(todos, todoList);
 		assertEquals(1, todos.size());
@@ -40,10 +40,10 @@ public class TodoManagerTest {
 	
 	@Test
 	public void testAddTodo() {
-		TodoElement te = new TodoElement("Foo");
+		Todo te = new Todo("Foo");
 		
 		todoManager.addTodo(te);
-		ArgumentCaptor<TodoElement> todoCaptor = ArgumentCaptor.forClass(TodoElement.class);
+		ArgumentCaptor<Todo> todoCaptor = ArgumentCaptor.forClass(Todo.class);
 		verify(todoRepository).addTodoElement(todoCaptor.capture());
 		
 		assertEquals(te, todoCaptor.getValue());
@@ -51,10 +51,10 @@ public class TodoManagerTest {
 	
 	@Test
 	public void testRemoveTodo() {
-		TodoElement te = new TodoElement("Foo");
+		Todo te = new Todo("Foo");
 		
 		todoManager.removeTodo(te);
-		ArgumentCaptor<TodoElement> todoCaptor = ArgumentCaptor.forClass(TodoElement.class);
+		ArgumentCaptor<Todo> todoCaptor = ArgumentCaptor.forClass(Todo.class);
 		verify(todoRepository).removeTodoElement(todoCaptor.capture());
 		
 		assertEquals(te, todoCaptor.getValue());
@@ -63,10 +63,10 @@ public class TodoManagerTest {
 	
 	@Test
 	public void testUpdateTodo() {
-		TodoElement te = new TodoElement("Foo");
+		Todo te = new Todo("Foo");
 		
 		todoManager.updateTodo(te);
-		ArgumentCaptor<TodoElement> todoCaptor = ArgumentCaptor.forClass(TodoElement.class);
+		ArgumentCaptor<Todo> todoCaptor = ArgumentCaptor.forClass(Todo.class);
 		
 		verify(todoRepository).updateTodoElement(todoCaptor.capture());
 		assertEquals(te, todoCaptor.getValue());
@@ -74,7 +74,7 @@ public class TodoManagerTest {
 	
 	@Test
 	public void testAddTagAtTodo() {
-		TodoElement todo = mock(TodoElement.class);
+		Todo todo = mock(Todo.class);
 		Tag tag = new Tag("0", "Bar");
 		
 		todoManager.tagTodo(todo, tag);

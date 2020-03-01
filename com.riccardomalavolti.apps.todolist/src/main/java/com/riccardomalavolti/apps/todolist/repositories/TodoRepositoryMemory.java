@@ -4,38 +4,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.riccardomalavolti.apps.todolist.Tag;
-import com.riccardomalavolti.apps.todolist.TodoElement;
+import com.riccardomalavolti.apps.todolist.Todo;
 
 public class TodoRepositoryMemory implements TodoRepository {
 
-	private List<TodoElement> todoCollection;
+	private List<Todo> todoCollection;
 	
 	public TodoRepositoryMemory() {
 		todoCollection = new ArrayList<>();
 	}
 	
 	@Override
-	public List<TodoElement> findAll() {
+	public List<Todo> findAll() {
 		return todoCollection;
 	}
 
 	@Override
-	public void addTodoElement(TodoElement te) {
+	public void addTodoElement(Todo te) {
 		todoCollection.add(te);
 	}
 
 	@Override
-	public void updateTodoElement(TodoElement te) {
+	public void updateTodoElement(Todo te) {
 		if(todoCollection.remove(te))
 				todoCollection.add(te);
 	}
 
 	@Override
-	public List<TodoElement> findByTag(Tag tag) {
-		List<TodoElement> results = new ArrayList<>();
+	public List<Todo> findByTag(Tag tag) {
+		List<Todo> results = new ArrayList<>();
 		
 		if (tag != null)
-			for(TodoElement te : todoCollection)
+			for(Todo te : todoCollection)
 				if(te.isTaggedAs(tag))
 					results.add(te);
 		
@@ -43,11 +43,11 @@ public class TodoRepositoryMemory implements TodoRepository {
 	}
 
 	@Override
-	public List<TodoElement> findByBody(String text) {
-		List<TodoElement> results = new ArrayList<>();
+	public List<Todo> findByBody(String text) {
+		List<Todo> results = new ArrayList<>();
 		
 		if(text != null)
-			for(TodoElement te : todoCollection)
+			for(Todo te : todoCollection)
 				if(te.getBody().toLowerCase().contains(text.toLowerCase()))
 					results.add(te);
 		
@@ -55,13 +55,13 @@ public class TodoRepositoryMemory implements TodoRepository {
 	}
 
 	@Override
-	public void removeTodoElement(TodoElement te) {
+	public void removeTodoElement(Todo te) {
 		todoCollection.remove(te);		
 	}
 
 	@Override
-	public TodoElement findById(TodoElement te) {
-		for(TodoElement t : todoCollection)
+	public Todo findById(Todo te) {
+		for(Todo t : todoCollection)
 			if(
 					t
 					.getId() 

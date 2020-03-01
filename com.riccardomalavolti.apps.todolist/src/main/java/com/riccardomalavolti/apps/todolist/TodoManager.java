@@ -12,23 +12,23 @@ public class TodoManager {
 		this.todoRepository = todoRepository;
 	}
 
-	public List<TodoElement> getTodoList() {
+	public List<Todo> getTodoList() {
 		return todoRepository.findAll();
 	}
 
-	public void addTodo(TodoElement todoElement) {
+	public void addTodo(Todo todoElement) {
 		this.todoRepository.addTodoElement(todoElement);		
 	}
 
-	public void removeTodo(TodoElement todoElement) {
+	public void removeTodo(Todo todoElement) {
 		this.todoRepository.removeTodoElement(todoElement);	
 	}
 	
-	public void updateTodo(TodoElement todoElement) {
+	public void updateTodo(Todo todoElement) {
 		this.todoRepository.updateTodoElement(todoElement);
 	}
 
-	public void tagTodo(TodoElement todo, Tag tag) {
+	public void tagTodo(Todo todo, Tag tag) {
 		todo.addTag(tag);
 	}
 

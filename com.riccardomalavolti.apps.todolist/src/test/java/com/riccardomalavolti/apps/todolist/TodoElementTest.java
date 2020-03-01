@@ -8,28 +8,28 @@ import org.junit.Test;
 
 public class TodoElementTest {
 
-	private TodoElement todoelem;
+	private Todo todoelem;
 
 	@Test
 	public void testTodoElement() {
-		todoelem = new TodoElement();
+		todoelem = new Todo();
 		assertEquals("", todoelem.getBody());
 	}
 	
 	@Test
 	public void testTodoElementWithEmptyText() {
-		todoelem = new TodoElement("");
+		todoelem = new Todo("");
 		assertEquals("", todoelem.getBody());
 	}
 	
 	@Test
 	public void testTodoElementCopyConstructor() {
-		todoelem = new TodoElement("foo");
-		TodoElement copy = new TodoElement(todoelem);
+		todoelem = new Todo("foo");
+		Todo copy = new Todo(todoelem);
 		
 		assertEquals(todoelem.getBody(), copy.getBody());
 		
-		TodoElement copyWithNull = new TodoElement((TodoElement)null);
+		Todo copyWithNull = new Todo((Todo)null);
 		
 		assertEquals("", copyWithNull.getBody());
 	}
@@ -37,13 +37,13 @@ public class TodoElementTest {
 	@Test
 	public void testTodoElementWithStringText() {
 		String ss = "fooo, bar. @ ì";
-		todoelem = new TodoElement(ss);
+		todoelem = new Todo(ss);
 		assertEquals(ss, todoelem.getBody());
 	}
 	
 	@Test
 	public void testSetBody() {
-		todoelem = new TodoElement();
+		todoelem = new Todo();
 		String text = "foo";
 		todoelem.setBody(text);
 		
@@ -57,7 +57,7 @@ public class TodoElementTest {
 	
 	@Test
 	public void testTodoElementCompletedFlag() {
-		todoelem = new TodoElement("foo");
+		todoelem = new Todo("foo");
 		
 		// True Version
 		todoelem.setAsCompleted();
@@ -70,12 +70,12 @@ public class TodoElementTest {
 	
 	@Test
 	public void testIdIsIncremental() {
-		assertTrue(new TodoElement().getId() < new TodoElement().getId());
+		assertTrue(new Todo().getId() < new Todo().getId());
 	}
 	
 	@Test
 	public void testGetTagSize() {
-		todoelem = new TodoElement();
+		todoelem = new Todo();
 		todoelem.addTag(new Tag("0", "foo"));
 		todoelem.addTag(new Tag("1","bar"));
 		
@@ -84,7 +84,7 @@ public class TodoElementTest {
 	
 	@Test
 	public void testGetTagList() {
-		todoelem = new TodoElement();
+		todoelem = new Todo();
 		Tag tFoo = new Tag("0", "foo");
 		Tag tBar = new Tag("1", "bar");
 		todoelem.addTag(tFoo);
@@ -99,18 +99,18 @@ public class TodoElementTest {
 	
 	@Test
 	public void testHashCode() {
-		todoelem = new TodoElement();
+		todoelem = new Todo();
 		assertEquals(31 * 1 + todoelem.getId(), todoelem.hashCode());
 	}
 	
 	@Test
 	public void testTodoAreEqualsOnlyIfIDsAreEqual() {
-		todoelem = new TodoElement("foo");
-		TodoElement todo2 = new TodoElement("foo");
+		todoelem = new Todo("foo");
+		Todo todo2 = new Todo("foo");
 		
 		assertEquals(todoelem, todoelem);
 		assertNotEquals(todoelem, todo2);
-		assertNotEquals(todoelem, (TodoElement)null);
+		assertNotEquals(todoelem, (Todo)null);
 		assertNotEquals(todoelem, new String("foo"));
 	}
 }
