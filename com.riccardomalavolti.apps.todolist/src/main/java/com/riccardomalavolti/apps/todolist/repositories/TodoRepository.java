@@ -13,9 +13,9 @@ public interface TodoRepository {
 	
 	Todo findById(Todo te);
 	
-	void addTodoElement(Todo te);
-	void updateTodoElement(Todo te);
-	void removeTodoElement(Todo te);
+	void addTodoElement(Todo todo);
+	void updateTodoElement(Todo todo);
+	void removeTodoElement(Todo todo);
 	
 	void clear();
 }

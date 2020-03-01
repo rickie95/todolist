@@ -28,6 +28,12 @@ public class Todo {
 		this.tags = new HashSet<>();
 	}
 	
+	public Todo(String id, String body) {
+		this.body = body;
+		this.id = Integer.valueOf(id);
+		this.tags = new HashSet<>();
+	}
+	
 	public Todo(Todo te) {
 		if(te == null)
 			te = new Todo("");
@@ -80,7 +86,18 @@ public class Todo {
 	public Set<Tag> getTagList() {
 		return tags;
 	}
+	
+	public void setTagSet(Set<Tag> tagSet) {
+		this.tags = tagSet;
+	}
 
+	public String toString() {
+		String toString = body;
+		for(Tag t : tags)
+			toString += "("+t.getText()+")";
+		return toString;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -97,9 +114,9 @@ public class Todo {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		return false;
+		Todo other = (Todo) obj;
+		if (id != other.id)
+			return false;
+		return true;
 	}
-
-	
-
 }

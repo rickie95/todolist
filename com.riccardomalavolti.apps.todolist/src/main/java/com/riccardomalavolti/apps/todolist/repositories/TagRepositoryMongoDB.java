@@ -87,6 +87,5 @@ public class TagRepositoryMongoDB implements TagRepository {
 	@Override
 	public void clear() {
 		tagCollection.drop();
-		
 	}
 }
