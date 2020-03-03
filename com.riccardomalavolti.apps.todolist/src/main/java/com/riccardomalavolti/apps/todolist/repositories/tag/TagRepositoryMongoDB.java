@@ -1,18 +1,23 @@
-package com.riccardomalavolti.apps.todolist.repositories;
+package com.riccardomalavolti.apps.todolist.repositories.tag;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.bson.Document;
 
+import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.TextSearchOptions;
-import com.riccardomalavolti.apps.todolist.Tag;
+import com.riccardomalavolti.apps.todolist.model.Tag;
 
 public class TagRepositoryMongoDB implements TagRepository {
 	
@@ -20,6 +25,7 @@ public class TagRepositoryMongoDB implements TagRepository {
 	public static final String DB_NAME = "TodoListDB";
 	public static final String COLLECTION_NAME = "TagCollection";
 	public static final TextSearchOptions NO_CASE_SEARCH = new TextSearchOptions().caseSensitive(false);
+	public static final Document ID_FOR_DESCENTING_ORDER = new Document().append("id", "-1");
 	
 	private MongoDatabase todolistDatabase;
 	private MongoCollection<Document> tagCollection;
@@ -88,4 +94,19 @@ public class TagRepositoryMongoDB implements TagRepository {
 	public void clear() {
 		tagCollection.drop();
 	}
+
+	@Override
+	public String computeNewId() {
+		List<String> ids = StreamSupport.stream(tagCollection.find().spliterator(), false)
+				.map(doc -> (String) doc.get("id")).collect(Collectors.toCollection(ArrayList::new));
+		
+		Collections.sort(ids);
+		int maxId = 0;
+		
+		if(!ids.isEmpty())
+			maxId = Integer.parseInt(ids.get(ids.size() - 1)) + 1;
+		
+		return Integer.toString(maxId);
+	}
+
 }

@@ -6,7 +6,10 @@ import java.util.Set;
 
 import org.junit.Test;
 
-public class TodoElementTest {
+import com.riccardomalavolti.apps.todolist.model.Tag;
+import com.riccardomalavolti.apps.todolist.model.Todo;
+
+public class TodoTest {
 
 	private Todo todoelem;
 
@@ -69,11 +72,6 @@ public class TodoElementTest {
 	}
 	
 	@Test
-	public void testIdIsIncremental() {
-		assertTrue(new Todo().getId() < new Todo().getId());
-	}
-	
-	@Test
 	public void testGetTagSize() {
 		todoelem = new Todo();
 		todoelem.addTag(new Tag("0", "foo"));
@@ -97,20 +95,4 @@ public class TodoElementTest {
 		assertTrue(tagList.contains(tBar));
 	}
 	
-	@Test
-	public void testHashCode() {
-		todoelem = new Todo();
-		assertEquals(31 * 1 + todoelem.getId(), todoelem.hashCode());
-	}
-	
-	@Test
-	public void testTodoAreEqualsOnlyIfIDsAreEqual() {
-		todoelem = new Todo("foo");
-		Todo todo2 = new Todo("foo");
-		
-		assertEquals(todoelem, todoelem);
-		assertNotEquals(todoelem, todo2);
-		assertNotEquals(todoelem, (Todo)null);
-		assertNotEquals(todoelem, new String("foo"));
-	}
 }

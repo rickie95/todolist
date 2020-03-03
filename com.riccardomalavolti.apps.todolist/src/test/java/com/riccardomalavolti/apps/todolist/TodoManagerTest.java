@@ -1,27 +1,45 @@
 package com.riccardomalavolti.apps.todolist;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
-
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
-import com.riccardomalavolti.apps.todolist.repositories.TodoRepository;
+import com.riccardomalavolti.apps.todolist.model.Tag;
+import com.riccardomalavolti.apps.todolist.model.Todo;
+import com.riccardomalavolti.apps.todolist.repositories.tag.TagRepository;
+import com.riccardomalavolti.apps.todolist.repositories.todo.TodoRepository;
 
 public class TodoManagerTest {
 
 	private TodoManager todoManager;
 	private TodoRepository todoRepository;
+	private TagRepository tagRepository;
 	
 	@Before
 	public void setup() {
 		todoRepository = mock(TodoRepository.class);
-		todoManager = new TodoManager(todoRepository);
+		tagRepository = mock(TagRepository.class);
+		todoManager = new TodoManager(todoRepository, tagRepository);
+	}
+	
+	@Test
+	public void testAddTagAtTodo() {
+		Todo todo = mock(Todo.class);
+		Tag tag = new Tag("0", "Bar");
+		
+		todoManager.tagTodo(todo, tag);
+		ArgumentCaptor<Tag> tagCaptor = ArgumentCaptor.forClass(Tag.class);
+		
+		verify(todo).addTag(tagCaptor.capture());
+		assertThat(tagCaptor.getValue()).isEqualTo(tag);
 	}
 		
 	@Test
@@ -32,10 +50,9 @@ public class TodoManagerTest {
 		
 		List<Todo> todoList = todoManager.getTodoList();
 		
-		assertEquals(todos, todoList);
-		assertEquals(1, todos.size());
-		assertEquals(1, todoList.size());
-		
+		assertThat(todos).isEqualTo(todoList);
+		assertThat(todos).hasSize(1);
+		assertThat(todoList).hasSize(1);
 	}
 	
 	@Test
@@ -46,18 +63,18 @@ public class TodoManagerTest {
 		ArgumentCaptor<Todo> todoCaptor = ArgumentCaptor.forClass(Todo.class);
 		verify(todoRepository).addTodoElement(todoCaptor.capture());
 		
-		assertEquals(te, todoCaptor.getValue());
+		assertThat(todoCaptor.getValue()).isEqualTo(te);
 	}
 	
 	@Test
 	public void testRemoveTodo() {
-		Todo te = new Todo("Foo");
+		Todo todoToBeRemoved = new Todo("Foo");
 		
-		todoManager.removeTodo(te);
+		todoManager.removeTodo(todoToBeRemoved);
 		ArgumentCaptor<Todo> todoCaptor = ArgumentCaptor.forClass(Todo.class);
 		verify(todoRepository).removeTodoElement(todoCaptor.capture());
 		
-		assertEquals(te, todoCaptor.getValue());
+		assertThat(todoCaptor.getValue()).isEqualTo(todoToBeRemoved);
 		
 	}
 	
@@ -69,20 +86,63 @@ public class TodoManagerTest {
 		ArgumentCaptor<Todo> todoCaptor = ArgumentCaptor.forClass(Todo.class);
 		
 		verify(todoRepository).updateTodoElement(todoCaptor.capture());
-		assertEquals(te, todoCaptor.getValue());
+		assertThat(todoCaptor.getValue()).isEqualTo(te);
 	}
 	
 	@Test
-	public void testAddTagAtTodo() {
-		Todo todo = mock(Todo.class);
-		Tag tag = new Tag("0", "Bar");
+	public void testGetEmptyTagList() {
+		when(tagRepository.findAll()).thenReturn(new HashSet<Tag>());
 		
-		todoManager.tagTodo(todo, tag);
-		//ArgumentCaptor<TodoElement> todoCaptor = ArgumentCaptor.forClass(TodoElement.class);
+		List<Tag> tagList = todoManager.getTagList();
+		
+		assertThat(tagList).isNotNull();
+		assertThat(tagList).isEmpty();
+	}
+	
+	@Test
+	public void testGetTagList() {
+		Set<Tag> tagRep = new HashSet<>();
+		tagRep.add(new Tag("Foo"));
+		when(tagRepository.findAll())
+			.thenReturn(tagRep);
+		
+		List<Tag> tagList = todoManager.getTagList();
+		
+		assertThat(tagList).isNotNull();
+		assertThat(tagList).hasSize(1);
+	}
+	
+	@Test
+	public void testAddTag() {
+		Tag tag = new Tag("Foo");
+		
+		todoManager.addTag(tag);
 		ArgumentCaptor<Tag> tagCaptor = ArgumentCaptor.forClass(Tag.class);
 		
-		verify(todo).addTag(tagCaptor.capture());
-		assertEquals(tag, tagCaptor.getValue());
+		verify(tagRepository).addTag(tagCaptor.capture());
+		assertThat(tagCaptor.getValue()).isEqualTo(tag);
+	}
+	
+	@Test
+	public void testRemoveTag() {
+		Tag tag = new Tag("Foo");
+		
+		todoManager.removeTag(tag);
+		ArgumentCaptor<Tag> tagCaptor = ArgumentCaptor.forClass(Tag.class);
+		
+		verify(tagRepository).removeTag(tagCaptor.capture());
+		assertThat(tagCaptor.getValue()).isEqualTo(tag);
+	}
+	
+	@Test
+	public void testUpdateTag() {
+		Tag tag = new Tag("Foo");
+		
+		todoManager.updateTag(tag);
+		ArgumentCaptor<Tag> tagCaptor = ArgumentCaptor.forClass(Tag.class);
+		
+		verify(tagRepository).updateTag(tagCaptor.capture());
+		assertThat(tagCaptor.getValue()).isEqualTo(tag);
 	}
 	
 }

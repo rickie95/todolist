@@ -1,9 +1,12 @@
-package com.riccardomalavolti.apps.todolist.repositories;
+package com.riccardomalavolti.apps.todolist.repositories.tag;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
 
-import com.riccardomalavolti.apps.todolist.Tag;
+import com.riccardomalavolti.apps.todolist.model.Tag;
 
 public class TagRepositoryInMemory implements TagRepository{
 	
@@ -62,6 +65,20 @@ public class TagRepositoryInMemory implements TagRepository{
 	public void clear() {
 		tagCollection.clear();
 		
+	}
+
+	@Override
+	public String computeNewId() {
+		Tag maxIdTag;
+		try {
+			maxIdTag = Collections.max(tagCollection, 
+					Comparator.comparing(Tag::getId));
+		}catch(NoSuchElementException ex) {
+			return "0";
+		}
+		
+		int nextId = Integer.parseInt(maxIdTag.getId()) + 1;
+		return Integer.toString(nextId);
 	}
 
 	

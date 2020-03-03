@@ -1,4 +1,4 @@
-package com.riccardomalavolti.apps.todolist;
+package com.riccardomalavolti.apps.todolist.model;
 
 public class Tag {
 	
@@ -6,6 +6,14 @@ public class Tag {
 	
 	private String text;
 	private String id;
+	
+	public Tag(String text) {
+		if (text == null)
+			text = "";
+		
+		this.text = text;
+		this.id = null;
+	}
 	
 	public Tag(String id, String text) {
 		if (text == null)
@@ -17,6 +25,10 @@ public class Tag {
 
 	public String getId() {
 		return this.id;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 	public String getText() {
@@ -34,8 +46,6 @@ public class Tag {
 		return false;
 	}
 	
-	
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -61,5 +71,4 @@ public class Tag {
 		return true;
 	}
 	
-
 }

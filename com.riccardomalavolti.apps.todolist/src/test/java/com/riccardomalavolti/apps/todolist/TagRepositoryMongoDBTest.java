@@ -17,7 +17,11 @@ import com.mongodb.client.MongoDatabase;
 import de.bwaldvogel.mongo.MongoServer;
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend;
 
+import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.repositories.*;
+import com.riccardomalavolti.apps.todolist.repositories.tag.TagRepository;
+import com.riccardomalavolti.apps.todolist.repositories.tag.TagRepositoryMongoDB;
+import com.riccardomalavolti.apps.todolist.repositories.todo.TodoRepositoryMongoDB;
 
 public class TagRepositoryMongoDBTest {
 	
@@ -141,6 +145,34 @@ public class TagRepositoryMongoDBTest {
 		Set<Tag> collection = tagRepository.findAll();
 		
 		assertThat(collection).hasSize(0);	
+	}
+	
+	@Test
+	public void testComputeNewId() {
+		
+		Tag tagOne = new Tag("Foo body");
+		tagOne.setId(tagRepository.computeNewId());
+		tagRepository.addTag(tagOne);
+		
+		Tag tagTwo = new Tag("Bar body");
+		tagTwo.setId(tagRepository.computeNewId());
+		tagRepository.addTag(tagTwo);
+		
+		assertThat(Integer.valueOf(tagOne.getId())).isGreaterThan(-1);
+		assertThat(Integer.valueOf(tagOne.getId()))
+			.isLessThan(Integer.valueOf(tagTwo.getId()));
+	}
+	
+	@Test
+	public void testComputeNewIdWithUnorderedInsertions() {
+		tagRepository.addTag(new Tag("1", "Baz1"));
+		tagRepository.addTag(new Tag("0", "Baz2"));
+		
+		Tag tagOne = new Tag("Foo body");
+		tagOne.setId(tagRepository.computeNewId());
+		tagRepository.addTag(tagOne);
+		
+		assertThat(Integer.valueOf(tagOne.getId())).isGreaterThan(1);
 	}
 	
 }

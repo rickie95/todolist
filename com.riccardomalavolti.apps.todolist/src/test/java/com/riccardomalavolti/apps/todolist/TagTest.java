@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.riccardomalavolti.apps.todolist.model.Tag;
+
 public class TagTest {
 	
 	private Tag tag;

@@ -1,4 +1,4 @@
-package com.riccardomalavolti.apps.todolist.repositories;
+package com.riccardomalavolti.apps.todolist.repositories.todo;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,8 +13,9 @@ import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import com.riccardomalavolti.apps.todolist.Tag;
-import com.riccardomalavolti.apps.todolist.Todo;
+import com.riccardomalavolti.apps.todolist.model.Tag;
+import com.riccardomalavolti.apps.todolist.model.Todo;
+import com.riccardomalavolti.apps.todolist.repositories.tag.TagRepository;
 
 public class TodoRepositoryMongoDB implements TodoRepository{
 	
@@ -43,7 +44,7 @@ public class TodoRepositoryMongoDB implements TodoRepository{
 	
 	private Document fromTodoToDocument(Todo todo) {
 		Document d = new Document();
-		d.append("id", Integer.toString(todo.getId()));
+		d.append("id", todo.getId());
 		d.append("body", todo.getBody());
 		d.append("tags", fromTagSetToStringList(todo.getTagList()));
 		return d;
@@ -92,30 +93,27 @@ public class TodoRepositoryMongoDB implements TodoRepository{
 
 	@Override
 	public Todo findById(Todo todo) {
-		Document doc = todoCollection.find(Filters.eq("id", 
-				Integer.toString(todo.getId()))).first();
+		Document doc = todoCollection.find(Filters.eq("id", todo.getId())).first();
 		return fromDocumentToTodo(doc);
 	}
 
 	@Override
 	public void addTodoElement(Todo todo) {
-		if(todoCollection.find(Filters.eq("id", 
-				Integer.toString(todo.getId()))).first() == null)
+		if(todoCollection.find(Filters.eq("id", todo.getId())).first() == null)
 			todoCollection.insertOne(fromTodoToDocument(todo));
 	}
 
 	@Override
 	public void updateTodoElement(Todo todo) {
-		if(todoCollection.find(Filters.eq("id", 
-				Integer.toString(todo.getId()))).first() != null) {
+		if(todoCollection.find(Filters.eq("id", todo.getId())).first() != null) {
 			removeTodoElement(todo);
 			addTodoElement(todo);
 		}
 	}
 
 	@Override
-	public void removeTodoElement(Todo te) {
-		todoCollection.deleteOne(Filters.eq("id", Integer.toString(te.getId())));
+	public void removeTodoElement(Todo todo) {
+		todoCollection.deleteOne(Filters.eq("id", todo.getId()));
 	}
 
 	@Override

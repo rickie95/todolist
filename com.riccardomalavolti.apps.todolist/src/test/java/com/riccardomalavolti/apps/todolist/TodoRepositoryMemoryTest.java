@@ -8,8 +8,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.riccardomalavolti.apps.todolist.repositories.TodoRepository;
-import com.riccardomalavolti.apps.todolist.repositories.TodoRepositoryMemory;
+import com.riccardomalavolti.apps.todolist.model.Tag;
+import com.riccardomalavolti.apps.todolist.model.Todo;
+import com.riccardomalavolti.apps.todolist.repositories.todo.TodoRepository;
+import com.riccardomalavolti.apps.todolist.repositories.todo.TodoRepositoryMemory;
 
 public class TodoRepositoryMemoryTest {
 

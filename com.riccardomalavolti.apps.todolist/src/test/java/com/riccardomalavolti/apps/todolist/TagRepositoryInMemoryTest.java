@@ -8,8 +8,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.riccardomalavolti.apps.todolist.repositories.TagRepository;
-import com.riccardomalavolti.apps.todolist.repositories.TagRepositoryInMemory;
+import com.riccardomalavolti.apps.todolist.model.Tag;
+import com.riccardomalavolti.apps.todolist.repositories.tag.TagRepository;
+import com.riccardomalavolti.apps.todolist.repositories.tag.TagRepositoryInMemory;
 
 public class TagRepositoryInMemoryTest {
 	
@@ -179,5 +180,20 @@ public class TagRepositoryInMemoryTest {
 		assertThat(tagRepository.findAll().size()).isEqualTo(0);
 		
 	}
-
+	
+	@Test
+	public void testComputeId() {
+	
+		Tag tagOne = new Tag("Foo body");
+		tagOne.setId(tagRepository.computeNewId());
+		tagRepository.addTag(tagOne);
+		
+		Tag tagTwo = new Tag("Bar body");
+		tagTwo.setId(tagRepository.computeNewId());
+		tagRepository.addTag(tagTwo);
+		
+		assertThat(Integer.valueOf(tagOne.getId())).isGreaterThan(-1);
+		assertThat(Integer.valueOf(tagOne.getId()))
+			.isLessThan(Integer.valueOf(tagTwo.getId()));
+	}
 }

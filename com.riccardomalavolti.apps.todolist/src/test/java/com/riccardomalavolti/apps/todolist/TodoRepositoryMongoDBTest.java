@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -16,10 +15,12 @@ import org.junit.Test;
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
-import com.riccardomalavolti.apps.todolist.repositories.TagRepository;
-import com.riccardomalavolti.apps.todolist.repositories.TagRepositoryMongoDB;
-import com.riccardomalavolti.apps.todolist.repositories.TodoRepository;
-import com.riccardomalavolti.apps.todolist.repositories.TodoRepositoryMongoDB;
+import com.riccardomalavolti.apps.todolist.model.Tag;
+import com.riccardomalavolti.apps.todolist.model.Todo;
+import com.riccardomalavolti.apps.todolist.repositories.tag.TagRepository;
+import com.riccardomalavolti.apps.todolist.repositories.tag.TagRepositoryMongoDB;
+import com.riccardomalavolti.apps.todolist.repositories.todo.TodoRepository;
+import com.riccardomalavolti.apps.todolist.repositories.todo.TodoRepositoryMongoDB;
 
 import de.bwaldvogel.mongo.MongoServer;
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend;

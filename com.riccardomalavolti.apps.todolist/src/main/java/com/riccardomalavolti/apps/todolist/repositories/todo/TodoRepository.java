@@ -1,9 +1,9 @@
-package com.riccardomalavolti.apps.todolist.repositories;
+package com.riccardomalavolti.apps.todolist.repositories.todo;
 
 import java.util.List;
 
-import com.riccardomalavolti.apps.todolist.Tag;
-import com.riccardomalavolti.apps.todolist.Todo;
+import com.riccardomalavolti.apps.todolist.model.Tag;
+import com.riccardomalavolti.apps.todolist.model.Todo;
 
 public interface TodoRepository {
 	
