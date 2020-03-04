@@ -12,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import com.riccardomalavolti.apps.todolist.controller.TodoManager;
 import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.model.Todo;
 import com.riccardomalavolti.apps.todolist.repositories.tag.TagRepository;

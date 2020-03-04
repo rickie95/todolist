@@ -1,4 +1,4 @@
-package com.riccardomalavolti.apps.todolist;
+package com.riccardomalavolti.apps.todolist.controller;
 
 import java.util.ArrayList;
 import java.util.List;
