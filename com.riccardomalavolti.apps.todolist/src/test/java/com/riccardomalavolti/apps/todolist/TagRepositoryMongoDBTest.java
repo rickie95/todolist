@@ -18,10 +18,8 @@ import de.bwaldvogel.mongo.MongoServer;
 import de.bwaldvogel.mongo.backend.memory.MemoryBackend;
 
 import com.riccardomalavolti.apps.todolist.model.Tag;
-import com.riccardomalavolti.apps.todolist.repositories.*;
 import com.riccardomalavolti.apps.todolist.repositories.tag.TagRepository;
 import com.riccardomalavolti.apps.todolist.repositories.tag.TagRepositoryMongoDB;
-import com.riccardomalavolti.apps.todolist.repositories.todo.TodoRepositoryMongoDB;
 
 public class TagRepositoryMongoDBTest {
 	

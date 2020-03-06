@@ -1,10 +1,7 @@
 package com.riccardomalavolti.apps.todolist.repositories.todo;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.model.Todo;
