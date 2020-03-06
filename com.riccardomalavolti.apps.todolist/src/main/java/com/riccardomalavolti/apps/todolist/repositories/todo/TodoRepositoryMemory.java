@@ -66,7 +66,7 @@ public class TodoRepositoryMemory implements TodoRepository {
 	@Override
 	public Todo findById(Todo te) {
 		for(Todo t : todoCollection)
-			if(t.getId() == te.getId())
+			if(t.getId().equals(te.getId()))
 				return t;
 		
 		return null;
