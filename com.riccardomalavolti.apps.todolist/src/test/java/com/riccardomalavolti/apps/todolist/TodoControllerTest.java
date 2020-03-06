@@ -1,7 +1,6 @@
 package com.riccardomalavolti.apps.todolist;
 
 import static org.mockito.Mockito.*;
-import static org.assertj.core.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
