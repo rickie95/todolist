@@ -191,6 +191,16 @@ public class TodoRepositoryMemoryTest {
 	}
 	
 	@Test
+	public void testFindByIdNoResults() {
+		todoRepository.addTodoElement(new Todo("0", "Foo"));
+		todoRepository.addTodoElement(new Todo("1", "Baz"));
+		
+		Todo recoveredTodo = todoRepository.findById(new Todo("2"));
+		
+		assertThat(recoveredTodo).isNull();
+	}
+	
+	@Test
 	public void testFindByIdIfTodoCollectionIsEmpty() {
 		Todo te = new Todo("Foo");
 		Todo recoveredTodo = todoRepository.findById(te);

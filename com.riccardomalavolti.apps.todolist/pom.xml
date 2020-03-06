@@ -32,7 +32,7 @@
   	<sonar.exclusions>
   		**/Tag.java,
   		**/Todo.java,
-  		**/main/*.java
+  		**/Main.java
   	</sonar.exclusions>
   </properties>
   
