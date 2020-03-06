@@ -40,6 +40,7 @@ public class TodoManagerTest {
 		ArgumentCaptor<Tag> tagCaptor = ArgumentCaptor.forClass(Tag.class);
 		
 		verify(todo).addTag(tagCaptor.capture());
+		verify(todoRepository).updateTodoElement(todo);
 		assertThat(tagCaptor.getValue()).isEqualTo(tag);
 	}
 		
@@ -146,4 +147,50 @@ public class TodoManagerTest {
 		assertThat(tagCaptor.getValue()).isEqualTo(tag);
 	}
 	
+	@Test
+	public void testFindTodoByText() {
+		String searchText = "Foo";
+		Todo todo = new Todo("Baz Foo");
+		List<Todo> resList = new ArrayList<>();
+		resList.add(todo);
+		doReturn(resList).when(todoRepository).findByBody(searchText);
+	
+		List<Todo> list = todoManager.findTodoByText(searchText);
+		
+		verify(todoRepository).findByBody(searchText);
+		assertThat(list).hasSize(1);
+		assertThat(list).contains(todo);
+	}
+	
+	@Test
+	public void testFindTagByText() {
+		String searchText = "Foo";
+		Tag tag= new Tag("Baz Foo");
+		Set<Tag> resList = new HashSet<>();
+		resList.add(tag);
+		doReturn(resList).when(tagRepository).findByText(searchText);
+	
+		List<Tag> list = todoManager.findTagByText(searchText);
+		
+		verify(tagRepository).findByText(searchText);
+		assertThat(list).hasSize(1);
+		assertThat(list).contains(tag);
+	}
+	
+	@Test
+	public void testFindTodoByTag() {
+		Tag tag = new Tag("Foo");
+		Todo todo = new Todo("Bar");
+		todo.addTag(tag);
+		List<Todo> resList = new ArrayList<Todo>();
+		resList.add(todo);
+		doReturn(resList).when(todoRepository).findByTag(tag);
+		
+		List<Todo> results = todoManager.findTodoByTag(tag);
+		
+		verify(todoRepository).findByTag(tag);
+		assertThat(results).hasSize(1);
+		assertThat(results).contains(todo);
+		assertThat(results.get(0).getTagList()).contains(tag);
+	}
 }

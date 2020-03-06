@@ -206,4 +206,13 @@ public class TodoRepositoryMemoryTest {
 		
 		assertThat(todoRepository.findAll()).hasSize(0);
 	}
+	
+	@Test
+	public void testComputeNewId() {
+		String IDNo1 = todoRepository.computeNewId();
+		String IDNo2 = todoRepository.computeNewId();
+		
+		assertThat(IDNo1).isEqualTo("1");
+		assertThat(IDNo2).isEqualTo("2");
+	}
 }

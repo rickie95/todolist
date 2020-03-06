@@ -102,6 +102,20 @@ public class TodoRepositoryMongoDBTest {
 	}
 	
 	@Test
+	public void testAddTodoWithNoId() {
+		todoRepository.addTodoElement(new Todo("0", "Foo"));
+		todoRepository.addTodoElement(new Todo("1", "Bar"));
+		
+		Todo todo = new Todo("Baz");
+		todoRepository.addTodoElement(todo);
+		
+		List<Todo> results = todoRepository.findAll();
+		
+		assertThat(results).hasSize(3);
+		assertThat(todo.getId()).isEqualTo("2");
+	}
+	
+	@Test
 	public void testFindByBody() {
 		todoRepository.addTodoElement(new Todo("0", "Foo"));
 		todoRepository.addTodoElement(new Todo("1", "Bar"));
@@ -211,6 +225,32 @@ public class TodoRepositoryMongoDBTest {
 		Todo recoveredTodo = todoRepository.findById(new Todo("0", "null"));
 		
 		assertThat(recoveredTodo.getBody()).isEqualTo("Bar");
+	}
+	
+	@Test
+	public void testUpdateANonExistentTodo() {
+		Todo todo = new Todo("0", "Foo");
 		
+		todoRepository.updateTodoElement(todo);
+		
+		assertThat(todoRepository.findAll()).hasSize(0);	
+		}
+	
+	@Test
+	public void testComputeNewId() {
+		todoRepository.addTodoElement(new Todo("2", "Baz"));
+		todoRepository.addTodoElement(new Todo("1", "Baz"));
+		String idThree = todoRepository.computeNewId();
+		String idFour = todoRepository.computeNewId();
+		
+		assertThat(idThree).isEqualTo("3");
+		assertThat(idFour).isEqualTo("4");
+	}
+	
+	@Test
+	public void testComputeNewIdWithAnEmptyRepository() {
+		String idOne = todoRepository.computeNewId();
+		
+		assertThat(idOne).isEqualTo("1");
 	}
 }

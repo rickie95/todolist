@@ -13,6 +13,8 @@ public interface TodoRepository {
 	
 	Todo findById(Todo te);
 	
+	String computeNewId();
+	
 	void addTodoElement(Todo todo);
 	void updateTodoElement(Todo todo);
 	void removeTodoElement(Todo todo);

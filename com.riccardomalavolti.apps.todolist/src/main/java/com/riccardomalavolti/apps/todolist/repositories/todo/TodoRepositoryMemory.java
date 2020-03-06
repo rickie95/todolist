@@ -1,7 +1,10 @@
 package com.riccardomalavolti.apps.todolist.repositories.todo;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.model.Todo;
@@ -9,6 +12,7 @@ import com.riccardomalavolti.apps.todolist.model.Todo;
 public class TodoRepositoryMemory implements TodoRepository {
 
 	private List<Todo> todoCollection;
+	private int lastId = 0;
 	
 	public TodoRepositoryMemory() {
 		todoCollection = new ArrayList<>();
@@ -62,13 +66,7 @@ public class TodoRepositoryMemory implements TodoRepository {
 	@Override
 	public Todo findById(Todo te) {
 		for(Todo t : todoCollection)
-			if(
-					t
-					.getId() 
-					== 
-				te
-				.getId()
-				)
+			if(t.getId() == te.getId())
 				return t;
 		
 		return null;
@@ -78,6 +76,12 @@ public class TodoRepositoryMemory implements TodoRepository {
 	public void clear() {
 		todoCollection.clear();
 		
+	}
+
+	@Override
+	public String computeNewId() {
+		lastId += 1;
+		return Integer.toString(lastId);
 	}
 
 }

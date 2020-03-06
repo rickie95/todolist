@@ -20,6 +20,7 @@ public class TodoManager {
 	
 	public void tagTodo(Todo todo, Tag tag) {
 		todo.addTag(tag);
+		todoRepository.updateTodoElement(todo);
 	}
 
 	public List<Todo> getTodoList() {
@@ -38,6 +39,10 @@ public class TodoManager {
 		todoRepository.updateTodoElement(todoElement);
 	}
 	
+	public List<Todo> findTodoByText(String searchText) {
+		return todoRepository.findByBody(searchText);
+	}
+	
 	public List<Tag> getTagList() {
 		return new ArrayList<>(tagRepository.findAll());
 	}
@@ -53,5 +58,15 @@ public class TodoManager {
 	public void updateTag(Tag tag) {
 		tagRepository.updateTag(tag);
 	}
+
+	public List<Tag> findTagByText(String searchText) {
+		return new ArrayList<>(tagRepository.findByText(searchText));
+	}
+
+	public List<Todo> findTodoByTag(Tag tag) {
+		return todoRepository.findByTag(tag);
+	}
+
+	
 	
 }
