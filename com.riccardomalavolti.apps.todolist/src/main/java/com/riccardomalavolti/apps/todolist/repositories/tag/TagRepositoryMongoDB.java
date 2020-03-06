@@ -25,7 +25,7 @@ public class TagRepositoryMongoDB implements TagRepository {
 	public static final String DB_NAME = "TodoListDB";
 	public static final String COLLECTION_NAME = "TagCollection";
 	public static final TextSearchOptions NO_CASE_SEARCH = new TextSearchOptions().caseSensitive(false);
-	public static final Document ID_FOR_DESCENTING_ORDER = new Document().append("id", "-1");
+	protected static final Document ID_FOR_DESCENTING_ORDER = new Document().append("id", "-1");
 	
 	private MongoDatabase todolistDatabase;
 	private MongoCollection<Document> tagCollection;
