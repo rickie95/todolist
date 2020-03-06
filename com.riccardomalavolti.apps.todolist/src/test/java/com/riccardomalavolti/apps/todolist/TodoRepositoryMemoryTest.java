@@ -38,7 +38,7 @@ public class TodoRepositoryMemoryTest {
 	
 	@Test
 	public void testUpdateTodoElement() {
-		Todo te = new Todo("Foo");
+		Todo te = new Todo("1","Foo");
 		todoRepository.addTodoElement(te);
 		String modifiedBody = "Bar";
 		te.setBody(modifiedBody);
