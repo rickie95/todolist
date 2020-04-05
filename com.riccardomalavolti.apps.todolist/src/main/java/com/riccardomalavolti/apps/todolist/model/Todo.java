@@ -1,5 +1,6 @@
 package com.riccardomalavolti.apps.todolist.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,12 +54,8 @@ public class Todo {
 		this.body = text;
 	}
 
-	public void setAsCompleted() {
-		this.completed = true;
-	}
-	
-	public void setAsUncompleted() {
-		this.completed = false;
+	public void setAsCompleted(boolean status) {
+		this.completed = status;
 	}
 
 	public boolean getStatus() {
@@ -92,7 +89,7 @@ public class Todo {
 	public String toString() {
 		StringBuilder ssBld = new StringBuilder(body);
 		for(Tag t : tags)
-			ssBld.append("("+t.getText()+")");
+			ssBld.append(" ("+t.getText()+")");
 		return ssBld.toString();
 	}
 
@@ -120,6 +117,14 @@ public class Todo {
 			return false;
 		}
 		return true;
+	}
+
+	public void clearTags() {
+		this.tags.clear();
+	}
+
+	public String getFormattedTags() {
+		return Tag.listToString(new ArrayList<Tag>(this.tags));
 	}
 	
 	

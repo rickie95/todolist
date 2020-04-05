@@ -188,6 +188,8 @@
 	    	    	<exclude>**/Main.*</exclude>
 	    	    	<exclude>**/Tag.*</exclude>
 	    	    	<exclude>**/TodoElement.*</exclude>
+	    	    	<exclude>**/MainView.error</exclude>
+	    	    	<exclude>**/SimpleDocumentListener.*</exclude>
 	    	    </excludes>
 	    	    	<rules>
 						<rule>

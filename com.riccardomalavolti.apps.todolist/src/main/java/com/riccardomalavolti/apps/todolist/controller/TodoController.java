@@ -1,17 +1,31 @@
 package com.riccardomalavolti.apps.todolist.controller;
 
+import java.util.List;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JDialog;
+
 import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.model.Todo;
+import com.riccardomalavolti.apps.todolist.view.NewTagDialog;
+import com.riccardomalavolti.apps.todolist.view.NewTodoDialog;
 import com.riccardomalavolti.apps.todolist.view.TodoView;
 
 public class TodoController {
-	
+		
 	TodoView todoView;
 	TodoManager todoManager;
+	
+	private JDialog newTodoDialog;
+	private JDialog newTagDialog;
+	
 	
 	public TodoController(TodoView todoView, TodoManager todoManager) {
 		this.todoView = todoView;
 		this.todoManager = todoManager;
+		
+		showTodos();
+		showTags();
 	}
 
 	public void showTodos() {
@@ -43,7 +57,8 @@ public class TodoController {
 	}
 
 	public void findTodoByText(String searchText) {
-		todoView.showAllTodo(todoManager.findTodoByText(searchText));
+		List<Todo> results = todoManager.findTodoByText(searchText);
+		todoView.showAllTodo(results);
 	}
 
 	public void findTagByText(String searchText) {
@@ -56,12 +71,10 @@ public class TodoController {
 
 	public void updateTodo(Todo todo) {
 		todoManager.updateTodo(todo);
-		todoView.updateTodo(todo);
 	}
 
 	public void updateTag(Tag tag) {
 		todoManager.updateTag(tag);
-		todoView.updateTag(tag);
 	}
 
 	public void removeTodo(Todo todo) {
@@ -76,7 +89,40 @@ public class TodoController {
 
 	public void tagTodo(Todo todo, Tag tag) {
 		todoManager.tagTodo(todo, tag);
-		todoView.updateTodo(todo);
+	}
+	
+	public void tagTodo(Todo todo, List<Tag> tagList) {
+		tagList.forEach(tag -> todoManager.tagTodo(todo, tag));
+	}
+
+	public void newTodoDialog(DefaultComboBoxModel<Tag> tagListModel) {
+		if(newTodoDialog == null)
+			newTodoDialog = new NewTodoDialog(this, tagListModel);
+		newTodoDialog.setVisible(true);
+	}
+	
+	public void editTodoDialog(DefaultComboBoxModel<Tag> tagListModel, Todo todo) {
+		if(newTodoDialog == null)
+			newTodoDialog = new NewTodoDialog(this, tagListModel, todo);
+		newTodoDialog.setVisible(true);
+	}
+
+	public void newTagDialog() {
+		if(newTagDialog == null)
+			newTagDialog = new NewTagDialog(this);
+		newTagDialog.setVisible(true);
+	}
+
+	public void dispose(JDialog aDialog) {
+		aDialog.dispose();
+	}
+	
+	public JDialog getNewTodoDialog() {
+		return newTodoDialog;
+	}
+
+	public JDialog getNewTagDialog() {
+		return newTagDialog;
 	}
 	
 }

@@ -1,9 +1,13 @@
 package com.riccardomalavolti.apps.todolist.model;
 
+import java.util.List;
+
 public class Tag {
 	
 	// This class is not tested since it's a simply Java Plain Object
 	
+	
+
 	private String text;
 	private String id;
 	
@@ -47,6 +51,11 @@ public class Tag {
 	}
 	
 	@Override
+	public String toString() {
+		return text;
+	}
+	
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -70,6 +79,13 @@ public class Tag {
 			return false;
 		}
 		return true;
+	}
+
+	public static String listToString(List<Tag> tagList) {
+		StringBuilder ssBld = new StringBuilder();
+		for(Tag t : tagList)
+			ssBld.append("("+t.getText()+")");
+		return ssBld.toString();
 	}
 	
 }

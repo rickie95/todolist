@@ -1,13 +1,18 @@
 package com.riccardomalavolti.apps.todolist;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JDialog;
+
+import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 
 import com.riccardomalavolti.apps.todolist.controller.TodoController;
 import com.riccardomalavolti.apps.todolist.controller.TodoManager;
@@ -15,9 +20,10 @@ import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.model.Todo;
 import com.riccardomalavolti.apps.todolist.view.TodoView;
 
+
+
 public class TodoControllerTest {
 	
-	@Mock
 	TodoView todoView;
 	TodoManager todoManager;
 
@@ -29,26 +35,6 @@ public class TodoControllerTest {
 		todoManager = mock(TodoManager.class);
 
 		todoController = new TodoController(todoView, todoManager);
-	}
-
-	@Test
-	public void testShowTodos() {
-		List<Todo> todos = new ArrayList<>();
-		when(todoManager.getTodoList()).thenReturn(todos);
-
-		todoController.showTodos();
-
-		verify(todoView).showAllTodo(todos);
-	}
-
-	@Test
-	public void testShowTags() {
-		List<Tag> tags = new ArrayList<>();
-		when(todoManager.getTagList()).thenReturn(tags);
-
-		todoController.showTags();
-
-		verify(todoView).showAllTags(tags);
 	}
 
 	@Test
@@ -108,7 +94,6 @@ public class TodoControllerTest {
 		todoController.updateTodo(todo);
 		
 		verify(todoManager).updateTodo(todo);
-		verify(todoView).updateTodo(todo);
 	}
 	
 	@Test
@@ -118,7 +103,6 @@ public class TodoControllerTest {
 		todoController.updateTag(tag);
 		
 		verify(todoManager).updateTag(tag);
-		verify(todoView).updateTag(tag);
 	}
 	
 	@Test
@@ -149,8 +133,6 @@ public class TodoControllerTest {
 		todoController.tagTodo(todo, tag);
 		
 		verify(todoManager).tagTodo(todo, tag);
-		verify(todoView).updateTodo(todo);
-		
 	}
 
 	@Test
@@ -162,7 +144,7 @@ public class TodoControllerTest {
 		todoController.findTodoByText(searchText);
 
 		verify(todoManager).findTodoByText(searchText);
-		verify(todoView).showAllTodo(todoList);
+		//verify(todoView).showAllTodo(todoList);
 	}
 
 	@Test
@@ -174,7 +156,6 @@ public class TodoControllerTest {
 		todoController.findTagByText(searchText);
 		
 		verify(todoManager).findTagByText(searchText);
-		verify(todoView).showAllTags(tagList);
 	}
 	
 	@Test
@@ -186,7 +167,58 @@ public class TodoControllerTest {
 		todoController.findTodoByTag(tag);
 		
 		verify(todoManager).findTodoByTag(tag);
-		verify(todoView).showAllTodo(todoList);
+	}
+	
+	@Test
+	public void testTagTodoWithAListOfTags() {
+		Tag t1 = new Tag("0", "tag 1");
+		Tag t2 = new Tag("1", "tag 2");
+		Todo todo = new Todo("0", "Foo");
+		List<Tag> tagList = new ArrayList<Tag>(Arrays.asList(t1, t2));
+		
+		todoController.tagTodo(todo, tagList);
+		
+		verify(todoManager).tagTodo(todo, t1);
+		verify(todoManager).tagTodo(todo, t2);
+	}
+	
+	@Test
+	public void testNewTodoButtonPressedShouldShowANewDialog() {
+		DefaultComboBoxModel<Tag> tagListModel = new DefaultComboBoxModel<Tag>();
+		
+		todoController.newTodoDialog(tagListModel);
+		
+		JDialog todoDialog = todoController.getNewTodoDialog();
+		assertThat(todoDialog).isNotNull();
+		assertThat(todoDialog.isVisible()).isTrue();
+		
+		// Repeat again, the dialog should be the same.
+		todoController.newTodoDialog(tagListModel);
+		assertThat(todoController.getNewTodoDialog()).isEqualTo(todoDialog);
+	}
+	
+	@Test
+	public void testNewTagButtonPressedShouldShowANewAdUniqueDialog() {
+		todoController.newTagDialog();
+		
+		JDialog tagDialog = todoController.getNewTagDialog();
+		assertThat(tagDialog).isNotNull();
+		assertThat(tagDialog.isVisible()).isTrue();
+		
+		todoController.newTagDialog();
+		assertThat(todoController.getNewTagDialog()).isEqualTo(tagDialog);
+	}
+	
+	@Test
+	public void testDisposeNewTodoDialog() {
+		DefaultComboBoxModel<Tag> tagListModel = new DefaultComboBoxModel<Tag>();
+		
+		todoController.newTodoDialog(tagListModel);
+		
+		todoController.dispose(todoController.getNewTodoDialog());
+		
+		// The dialog should be not visible at least 
+		assertThat(todoController.getNewTodoDialog().isVisible()).isFalse();
 	}
 
 }

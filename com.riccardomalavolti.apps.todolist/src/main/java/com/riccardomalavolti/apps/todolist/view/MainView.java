@@ -1,19 +1,19 @@
 package com.riccardomalavolti.apps.todolist.view;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import com.riccardomalavolti.apps.todolist.Main;
+import com.riccardomalavolti.apps.todolist.controller.TodoController;
 import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.model.Todo;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JLabel;
-import javax.swing.DefaultListModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.border.LineBorder;
 
@@ -22,189 +22,216 @@ import org.apache.logging.log4j.Logger;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 import javax.swing.JTable;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+
 
 public class MainView extends JFrame implements TodoView{
 
+	private static final long serialVersionUID = 1L;
 
 	private static final Logger LOGGER = LogManager.getLogger(MainView.class);
 	
-	private JPanel contentPane;
-	private JTable table;
+	private JPanel contentPanel;
+	private JTable todoTable;
+	private TodoTableModel todoTableModel;
+	private DefaultComboBoxModel<Tag> tagListModel;
+	private TodoController todoController;
+	private JButton removeTodoButton;
+	
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainView frame = new MainView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
 	public MainView() {
+		todoTableModel =  new TodoTableModel();
+		
 		setTitle("To Do List");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 500, 400);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
-		setContentPane(contentPane);
+		contentPanel = new JPanel();
+		contentPanel.setName("contentPanel");
+		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPanel.setLayout(new BorderLayout(0, 0));
+		setContentPane(contentPanel);
 		
 		
 		// Todos panel part
 		JPanel todoPanel = new JPanel();
-		contentPane.add(todoPanel, BorderLayout.CENTER);
+		todoPanel.setName("todoPanel");
+		contentPanel.add(todoPanel, BorderLayout.CENTER);
 		todoPanel.setLayout(new BorderLayout(0, 0));
 				
 		JPanel todoControlPanel = new JPanel();
+		todoControlPanel.setName("todoControlPanel");
 		todoPanel.add(todoControlPanel, BorderLayout.SOUTH);
 		
 		JButton newTodoBtn = new JButton("new To Do");
-		newTodoBtn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				LOGGER.info("'new To Do' button pressed.");
-			}
-		});
+		newTodoBtn.setName("newTodoBtn");
+		newTodoBtn.addActionListener(e -> newTodoAction());
 		todoControlPanel.add(newTodoBtn);
 		
+		removeTodoButton = new JButton("remove Todo");
+		removeTodoButton.setName("removeTodoButton");
+		removeTodoButton.setEnabled(false);
+		removeTodoButton.addActionListener(e -> removeTodoAction());
+		
+		todoControlPanel.add(removeTodoButton);
+		
 		JPanel todoLabelPanel = new JPanel();
+		todoLabelPanel.setName("todoLabelPanel");
 		todoPanel.add(todoLabelPanel, BorderLayout.NORTH);
 		
 		JLabel lblTodo = new JLabel("Todo");
 		todoLabelPanel.add(lblTodo);
 		
-		JPanel todoListPanel = new JPanel();
-		todoListPanel.setBorder(new EmptyBorder(30, 20, 10, 20));
-		todoPanel.add(todoListPanel, BorderLayout.WEST);
+		todoTable = new JTable();
+		todoTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		todoTable.setName("todoTable");
+		todoTable.addMouseListener(new MouseAdapter() {
+			@Override
+	        public void mouseClicked (MouseEvent me) {
+	            if (me.getClickCount() == 2) {
+	        		LOGGER.debug("Double on row.");
+	                editTodo(me);
+	            }
+	            else if(me.getClickCount() == 1) {
+	            	LOGGER.debug("Single click on row");
+	            	rowSelected();
+	            }
+	        }
+	    });
+		todoTable.setShowGrid(false);
+		todoTable.setBorder(new EmptyBorder(20, 20, 20, 20));
+		todoTable.setShowVerticalLines(false);
+		todoTable.setShowHorizontalLines(false);
+		todoTable.setModel(todoTableModel);
+		todoTable.setTableHeader(null);
+		todoTable.getColumnModel().getColumn(0).setPreferredWidth(10);
+		todoTable.getColumnModel().getColumn(1).setPreferredWidth(320);		
 		
-		
-		Object[][] todoRows = new Object[][] {
-			{false, "Do the laundry after the game (Home) (Work)"},
-			{true, "Finish commit (Work)"},
-			{false, "Realize todo list view."},
-		};
-		
-		TodoTableModel todoTableModel =  new TodoTableModel(todoRows);
-		
-		table = new JTable();
-		table.setShowVerticalLines(false);
-		table.setShowGrid(false);
-		table.setShowHorizontalLines(false);
-		table.setModel(todoTableModel);
-		table.getColumnModel().getColumn(0).setPreferredWidth(30);
-		table.getColumnModel().getColumn(1).setPreferredWidth(300);
-		todoListPanel.add(table);
-		
+		JScrollPane todoListPanel = new JScrollPane(todoTable);
+		todoListPanel.setViewportBorder(new EmptyBorder(1, 1, 1, 1));
+		todoPanel.add(todoListPanel, BorderLayout.CENTER);
 		
 		// Tags panel part
-		JPanel tagsPanel = new JPanel();
-		tagsPanel.setBorder(new LineBorder(Color.GRAY, 1, true));
-		contentPane.add(tagsPanel, BorderLayout.EAST);
-		tagsPanel.setLayout(new BorderLayout(0, 0));
+		JPanel tagPanel = new JPanel();
+		tagPanel.setName("tagPanel");
+		tagPanel.setBorder(new LineBorder(Color.GRAY, 1, true));
+		contentPanel.add(tagPanel, BorderLayout.EAST);
+		tagPanel.setLayout(new BorderLayout(0, 0));
 		
 		JPanel tagLabelPanel = new JPanel();
-		tagsPanel.add(tagLabelPanel, BorderLayout.NORTH);
+		tagLabelPanel.setName("tagLabelPanel");
+		tagPanel.add(tagLabelPanel, BorderLayout.NORTH);
 		
 		JLabel lblTags = new JLabel("Tags");
 		tagLabelPanel.add(lblTags);
 		
 		JPanel tagListPanel = new JPanel();
-		tagsPanel.add(tagListPanel, BorderLayout.CENTER);
+		tagPanel.add(tagListPanel, BorderLayout.CENTER);
 		
-		JList tagListView = new JList();
+		JList<Tag> tagListView = new JList<>();
+		tagListView.setName("tagListView");
 		tagListView.setFont(new Font("Dialog", Font.PLAIN, 12));
 		tagListPanel.add(tagListView);
 		
 		JPanel tagControlPanel = new JPanel();
-		tagsPanel.add(tagControlPanel, BorderLayout.SOUTH);
+		tagControlPanel.setName("tagControlPanel");
+		tagPanel.add(tagControlPanel, BorderLayout.SOUTH);
 		
 		JButton newTagBtn = new JButton("new Tag");
+		newTagBtn.setName("newTagBtn");
+		newTagBtn.addActionListener(e -> newTagAction());
 		tagControlPanel.add(newTagBtn);
 		
-		DefaultListModel tagListModel = new DefaultListModel();
-		tagListModel.addElement("Casa");
-		tagListModel.addElement("Lavoro");
+		tagListModel = new DefaultComboBoxModel<>();
 		
 		tagListView.setModel(tagListModel);
+	}
+	
+	
+	protected void editTodo(MouseEvent me) {
+		int modelIndex = todoTable.convertRowIndexToModel(todoTable.getSelectedRow());
+		Todo todo = todoTableModel.getTodoAtRow(modelIndex);
+		// open a newTodoDialog
 		
 	}
 
+
+	private void removeTodoAction() {
+		int modelIndex = todoTable.convertRowIndexToModel(todoTable.getSelectedRow());
+		Todo todo = todoTableModel.getTodoAtRow(modelIndex);
+		todoController.removeTodo(todo);
+	}
+
+	public void newTagAction() {
+		LOGGER.debug("'new Tag' button pressed.");
+		todoController.newTagDialog();
+	}
+	
+	public void newTodoAction(){
+		LOGGER.debug("'new To Do' button pressed.");
+		todoController.newTodoDialog(this.tagListModel);
+	}
+	
+	private void rowSelected() {
+		this.removeTodoButton.setEnabled(true);
+	}
+
+	public void setController(TodoController controller) {
+		this.todoController = controller;
+		todoTableModel.setController(controller);
+	}
+	
+	public void setTagListModel(DefaultComboBoxModel<Tag> comboModel) {
+		this.tagListModel = comboModel;
+	}
+	
+	public TodoController getController() {
+		return this.todoController;
+	}
+	
 	@Override
 	public void showAllTodo(List<Todo> list) {
-		// TODO Auto-generated method stub
-		
+		list.forEach(todo -> todoTableModel.addTodo(todo));
 	}
 
 	@Override
 	public void showAllTags(List<Tag> tags) {
-		// TODO Auto-generated method stub
-		
+		tags.forEach(tag -> tagListModel.addElement(tag));
 	}
-
-	@Override
-	public void updateTagView(List<Tag> tagList) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void updateTodoView(List<Todo> todoList) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void updateTodo(Todo todo) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void updateTag(Tag tag) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void removeTodo(Todo todo) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void removeTag(Tag tag) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void error(String message) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 	@Override
 	public void addTodo(Todo todo) {
-		// TODO Auto-generated method stub
-		
+		LOGGER.debug("Adding '{}'.", todo);
+		todoTableModel.addTodo(todo);		
 	}
 
 	@Override
 	public void addTag(Tag tag) {
-		// TODO Auto-generated method stub
-		
+		LOGGER.debug("Adding '{}'.", tag);
+		tagListModel.addElement(tag);
+	}
+
+	@Override
+	public void removeTodo(Todo todo) {
+		LOGGER.debug("Removing '{}'.", todo);
+		int modelIndex = todoTable.convertRowIndexToModel(todoTable.getSelectedRow());
+		todoTableModel.removeRow(modelIndex);
+	}
+
+	@Override
+	public void removeTag(Tag tag) {
+		LOGGER.debug("Removing '{}'.", tag);
+		tagListModel.removeElement(tag);
+	}
+
+	@Override
+	public void error(String message) {
+		LOGGER.error(message);
+		JOptionPane.showMessageDialog(this, message);
 	}
 
 }

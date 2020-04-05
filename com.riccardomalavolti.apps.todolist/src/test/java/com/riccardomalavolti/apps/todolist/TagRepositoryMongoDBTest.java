@@ -1,8 +1,10 @@
 package com.riccardomalavolti.apps.todolist;
 
 import static org.assertj.core.api.Assertions.*;
+import static java.util.Arrays.asList;
 
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
 import java.util.Set;
 
 import org.junit.After;
@@ -110,6 +112,24 @@ public class TagRepositoryMongoDBTest {
 		Set<Tag> results = tagRepository.findAll();
 		
 		assertThat(results).hasSize(2);
+	}
+	
+	@Test
+	public void testAddTagWithNoId() {
+		Tag t1 = new Tag("0", "Foo");
+		Tag t2 = new Tag("Bar");
+		tagRepository.addTag(t1);
+		tagRepository.addTag(t2);
+		
+		Set<Tag> results = tagRepository.findAll();
+		
+		assertThat(results).hasSize(2);
+		assertThat(results).containsExactlyInAnyOrderElementsOf(
+				new ArrayList<Tag>(asList(
+						t1, new Tag("1", "Bar")
+						)
+					)
+				);
 	}
 	
 	@Test
