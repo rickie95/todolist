@@ -21,7 +21,6 @@ import com.riccardomalavolti.apps.todolist.model.Todo;
 import com.riccardomalavolti.apps.todolist.view.TodoView;
 
 
-
 public class TodoControllerTest {
 	
 	TodoView todoView;
@@ -113,6 +112,19 @@ public class TodoControllerTest {
 		
 		verify(todoManager).removeTodo(todo);
 		verify(todoView).removeTodo(todo);
+	}
+	
+	@Test
+	public void testEditTodoShouldOpenTheNewTodoDialog() {
+		Todo todo = new Todo("0", "Foo");
+		DefaultComboBoxModel<Tag> tagListModel = new DefaultComboBoxModel<>();
+		tagListModel.addElement(new Tag("0", "Foo"));
+		
+		todoController.editTodoDialog(tagListModel, todo);
+		
+		assertThat(todoController.getNewTodoDialog()).isNotNull();
+		
+		todoController.editTodoDialog(tagListModel, todo);
 	}
 	
 	@Test

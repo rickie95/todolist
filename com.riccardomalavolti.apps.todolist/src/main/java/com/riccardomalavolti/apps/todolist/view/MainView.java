@@ -57,7 +57,7 @@ public class MainView extends JFrame implements TodoView{
 		setContentPane(contentPanel);
 		
 		
-		// Todos panel part
+		// TodoElement panel part
 		JPanel todoPanel = new JPanel();
 		todoPanel.setName("todoPanel");
 		contentPanel.add(todoPanel, BorderLayout.CENTER);
@@ -92,11 +92,11 @@ public class MainView extends JFrame implements TodoView{
 		todoTable.addMouseListener(new MouseAdapter() {
 			@Override
 	        public void mouseClicked (MouseEvent me) {
-	            if (me.getClickCount() == 2) {
+	            if (me.getClickCount() > 1) {
 	        		LOGGER.debug("Double on row.");
-	                editTodo(me);
+	                editTodo();
 	            }
-	            else if(me.getClickCount() == 1) {
+	            else {
 	            	LOGGER.debug("Single click on row");
 	            	rowSelected();
 	            }
@@ -151,48 +151,6 @@ public class MainView extends JFrame implements TodoView{
 		tagListView.setModel(tagListModel);
 	}
 	
-	
-	protected void editTodo(MouseEvent me) {
-		int modelIndex = todoTable.convertRowIndexToModel(todoTable.getSelectedRow());
-		Todo todo = todoTableModel.getTodoAtRow(modelIndex);
-		// open a newTodoDialog
-		
-	}
-
-
-	private void removeTodoAction() {
-		int modelIndex = todoTable.convertRowIndexToModel(todoTable.getSelectedRow());
-		Todo todo = todoTableModel.getTodoAtRow(modelIndex);
-		todoController.removeTodo(todo);
-	}
-
-	public void newTagAction() {
-		LOGGER.debug("'new Tag' button pressed.");
-		todoController.newTagDialog();
-	}
-	
-	public void newTodoAction(){
-		LOGGER.debug("'new To Do' button pressed.");
-		todoController.newTodoDialog(this.tagListModel);
-	}
-	
-	private void rowSelected() {
-		this.removeTodoButton.setEnabled(true);
-	}
-
-	public void setController(TodoController controller) {
-		this.todoController = controller;
-		todoTableModel.setController(controller);
-	}
-	
-	public void setTagListModel(DefaultComboBoxModel<Tag> comboModel) {
-		this.tagListModel = comboModel;
-	}
-	
-	public TodoController getController() {
-		return this.todoController;
-	}
-	
 	@Override
 	public void showAllTodo(List<Todo> list) {
 		list.forEach(todo -> todoTableModel.addTodo(todo));
@@ -218,8 +176,7 @@ public class MainView extends JFrame implements TodoView{
 	@Override
 	public void removeTodo(Todo todo) {
 		LOGGER.debug("Removing '{}'.", todo);
-		int modelIndex = todoTable.convertRowIndexToModel(todoTable.getSelectedRow());
-		todoTableModel.removeRow(modelIndex);
+		todoTableModel.removeTodo(todo);
 	}
 
 	@Override
@@ -233,5 +190,51 @@ public class MainView extends JFrame implements TodoView{
 		LOGGER.error(message);
 		JOptionPane.showMessageDialog(this, message);
 	}
+	
+	public Todo getSelectedTodo() {
+		int modelIndex = todoTable.convertRowIndexToModel(todoTable.getSelectedRow());
+		return todoTableModel.getTodoAtRow(modelIndex);
+	}
+	
+	private void editTodo() {
+		todoController.editTodoDialog(tagListModel, getSelectedTodo());
+	}
 
+	private void removeTodoAction() {
+		LOGGER.debug("selected todo {}", getSelectedTodo());
+		todoController.removeTodo(getSelectedTodo());
+	}
+
+	private void newTagAction() {
+		LOGGER.debug("'new Tag' button pressed.");
+		todoController.newTagDialog();
+	}
+	
+	private void newTodoAction(){
+		LOGGER.debug("'new To Do' button pressed.");
+		todoController.newTodoDialog(this.tagListModel);
+	}
+	
+	private void rowSelected() {
+		this.removeTodoButton.setEnabled(true);
+	}
+	
+	/* Getters and Setters */
+	
+	public TodoController getController() {
+		return this.todoController;
+	}
+
+	public void setController(TodoController controller) {
+		this.todoController = controller;
+		todoTableModel.setController(controller);
+	}
+	
+	public DefaultComboBoxModel<Tag> getTagListModel() {
+		return this.tagListModel;
+	}
+
+	public void setTagListModel(DefaultComboBoxModel<Tag> comboModel) {
+		this.tagListModel = comboModel;
+	}
 }

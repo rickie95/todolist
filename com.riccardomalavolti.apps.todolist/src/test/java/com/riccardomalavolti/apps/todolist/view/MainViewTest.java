@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.core.matcher.JButtonMatcher;
 import org.assertj.swing.core.matcher.JLabelMatcher;
+import org.assertj.swing.data.TableCell;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.fixture.JButtonFixture;
@@ -24,6 +25,7 @@ import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 
 import com.riccardomalavolti.apps.todolist.controller.TodoController;
 import com.riccardomalavolti.apps.todolist.model.Tag;
@@ -46,7 +48,6 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 		
 		window = new FrameFixture(robot(), view);
 		window.show();
-		
 	}
 	
 	@Override
@@ -130,20 +131,61 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 	}
 	
 	@Test @GUITest
-	public void testRemoveTodo(){
-		JTableFixture todoListPanel = window.panel("contentPanel").table("todoTable");
-		
+	public void testRemoveSelectedTodoShouldCallControllerMethodWithSelectedTodo() {
+		todoController = mock(TodoController.class);
+		view.setController(todoController);
 		Todo t1 = new Todo("2","Foo");
 		Todo t2 = new Todo("4","Bar");
 		
 		GuiActionRunner.execute(() -> view.addTodo(t1));
 		GuiActionRunner.execute(() -> view.addTodo(t2));
 		
-		GuiActionRunner.execute(() -> view.removeTodo(t1));
+		window.table("todoTable").selectCell(TableCell.row(1).column(1));
 		
-		Object[][] tableContent = todoListPanel.contents();
+		assertThat(window.button("removeTodoButton").isEnabled()).isTrue();
+
+		ArgumentCaptor<Todo> capturedTodo = ArgumentCaptor.forClass(Todo.class);
 		
-		assertThat(tableContent).containsExactly(new Object[][] {{"false", t2.getBody()}});
+		window.button("removeTodoButton").click();
+		
+		
+		verify(todoController).removeTodo(capturedTodo.capture());
+		
+		assertThat(capturedTodo.getValue()).isEqualTo(t2);
+		
+	}
+	
+	@Test @GUITest
+	public void testControllerCallsOnRemoveTodoShouldRemoveTodoFromTableModelAndUpdateTheView() {
+		// This test check that, if controller commits the delete, 
+		// then the Todo must be removed from the view.
+		Todo t1 = new Todo("2","Foo");
+		Todo t2 = new Todo("4","Bar");
+		
+		GuiActionRunner.execute(() -> view.addTodo(t1));
+		GuiActionRunner.execute(() -> view.addTodo(t2));
+		
+		GuiActionRunner.execute(() -> view.removeTodo(t2));
+		
+		assertThat(window.table("todoTable").contents()).containsExactly(new String[][] {
+			{ "false", t1.getBody()}
+		});
+		
+	}
+	
+	@Test @GUITest
+	public void testGetSelectedTodoShouldReturnTheSelectedTodoInJTable() {
+		Todo t1 = new Todo("2","Foo");
+		Todo t2 = new Todo("4","Bar");
+		
+		GuiActionRunner.execute(() -> view.addTodo(t1));
+		GuiActionRunner.execute(() -> view.addTodo(t2));
+		
+		window.table("todoTable").selectCell(TableCell.row(1).column(1));
+		
+		Todo selectedTodo = view.getSelectedTodo();
+		
+		assertThat(selectedTodo).isEqualTo(t2);
 	}
 	
 	@Test @GUITest
@@ -199,6 +241,27 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 		assertThat(t2.getBody()).isEqualTo("new Bar");
 		assertThat(tableContent)
 			.contains(new Object[][] {{"false", t2.getBody()}});
+	}
+	
+	@Test @GUITest
+	public void testDoubleClickOnTodoShouldCallControllerForAnEditDialog() {
+		todoController = mock(TodoController.class);
+		view.setController(todoController);
+		
+		Todo t1 = new Todo("2","Foo");
+		Todo t2 = new Todo("4","Bar");
+		
+		GuiActionRunner.execute(() -> view.addTodo(t1));
+		GuiActionRunner.execute(() -> view.addTodo(t2));
+		
+		window.table("todoTable").selectCell(TableCell.row(1).column(1)).doubleClick();
+		
+		ArgumentCaptor<Todo> capturedTodo = ArgumentCaptor.forClass(Todo.class);
+		ArgumentCaptor<DefaultComboBoxModel<Tag>> tagModelCaptor = ArgumentCaptor.forClass(DefaultComboBoxModel.class);
+		
+		verify(todoController).editTodoDialog(tagModelCaptor.capture(), capturedTodo.capture());
+		assertThat(capturedTodo.getValue()).isEqualTo(t2);
+		assertThat(tagModelCaptor.getValue()).isEqualTo(view.getTagListModel());
 	}
 	
 	@Test @GUITest

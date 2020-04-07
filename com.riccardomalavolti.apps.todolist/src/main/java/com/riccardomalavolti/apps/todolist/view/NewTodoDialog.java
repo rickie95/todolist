@@ -49,7 +49,27 @@ public class NewTodoDialog extends JDialog {
 
 	
 	public NewTodoDialog(TodoController controller, DefaultComboBoxModel<Tag> tagModel) {
-		this.todoController = controller;
+		initFrame(controller, tagModel);
+		setVisible(true);
+	}
+	
+	public Todo getTodoElement() {
+		return todoElement;
+	}
+
+	public NewTodoDialog(TodoController todoController, DefaultComboBoxModel<Tag> tagListModel, Todo todo) {
+		// TODO: that should be a different class
+		initFrame(todoController, tagListModel);
+		todoElement = todo;
+		selectedTagList = todo.getTagList();
+		redrawTagLbl();
+		insertButton.setText("Update Todo");
+		insertButton.addActionListener(e -> updateTodo());
+		setVisible(true);
+	}
+
+	private void initFrame(TodoController todoController, DefaultComboBoxModel<Tag> tagModel) {
+		this.todoController = todoController;
 		this.todoElement = new Todo();
 		
 		this.selectedTagList = new HashSet<>();
@@ -108,7 +128,6 @@ public class NewTodoDialog extends JDialog {
 		lblTags.setBounds(22, 114, 60, 17);
 		contentPanel.add(lblTags);
 	
-	
 		JPanel buttonPane = new JPanel();
 		buttonPane.setName("buttonPanel");
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -135,28 +154,13 @@ public class NewTodoDialog extends JDialog {
 		cancelButton.setName("cancelButton");
 		cancelButton.addActionListener(e -> cancelButtonAction());
 		cancelButton.setActionCommand("Cancel");
-		buttonPane.add(cancelButton);
-		
-		this.setVisible(true);
-		
-	}
-	
-	public NewTodoDialog(TodoController todoController, DefaultComboBoxModel<Tag> tagListModel, Todo todo) {
-		// TODO: that should be a different class
-		initFrame(todoController, tagListModel);
-		todoElement = todo;
-		redrawTagLbl();
-		insertButton.setText("Update Todo");
-		insertButton.addActionListener(e -> updateTodo());
-	}
-
-	private void initFrame(TodoController todoController, DefaultComboBoxModel<Tag> tagListModel) {
-		// TODO Auto-generated method stub
-		
+		buttonPane.add(cancelButton);		
 	}
 
 	private void updateTodo() {
-		
+		todoElement.setBody(todoTextField.getText());
+		todoElement.setTagSet(selectedTagList);
+		todoController.updateTodo(todoElement);		
 	}
 
 	public void tagSelected(Object eventItem) {        
@@ -170,7 +174,10 @@ public class NewTodoDialog extends JDialog {
 	}
 
 	public void redrawTagLbl() {
-		tagLabel.setText(Tag.listToString(new ArrayList<Tag>(selectedTagList)));
+		tagLabel.setText(TAG_LBL_NO_TAG_TEXT);
+		
+		if(!selectedTagList.isEmpty())
+			tagLabel.setText(Tag.listToString(new ArrayList<Tag>(selectedTagList)));
 	}
 
 	private void clearTags() {
@@ -181,7 +188,6 @@ public class NewTodoDialog extends JDialog {
 		this.clearButton.setEnabled(false);
 	}
 
-	
 	public void insertToDoFromTextField() {
 		LOGGER.debug("Inserting {}", todoTextField.getText());
 		todoElement.setBody(todoTextField.getText());

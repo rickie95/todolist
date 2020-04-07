@@ -53,5 +53,15 @@ public class TodoTableModel extends DefaultTableModel {
 	public void setController(TodoController controller) {
 		this.controller = controller;
 	}
-	
+
+	public void removeTodo(Todo todo) {
+		Vector<Vector<?>> dataVector = this.getDataVector();
+		int indexOfRow = -1;
+		
+		for(Vector row : dataVector)
+			if(((Todo) row.elementAt(1)).equals(todo))
+				indexOfRow = dataVector.indexOf(row);
+		
+		this.removeRow(indexOfRow);
+	}
 }
