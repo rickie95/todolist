@@ -36,16 +36,17 @@ public abstract class TodoDialog extends JDialog {
 	
 	public static final String TAG_LBL_NO_TAG_TEXT = "No tags.";
 
-	private Todo todoElement;
+	private transient Todo todoElement;
 	private JComponent contentPanel = new JPanel();
 	
-	protected  TodoController todoController;
+
+	protected transient Set<Tag> selectedTagList;
+	protected transient TodoController todoController;
 	protected JFormattedTextField todoTextBox;
 	protected JComboBox<Tag> tagComboBox;
 	protected JButton confirmButton;
 	protected JButton clearButton;
 	protected JButton cancelButton;
-	protected Set<Tag> selectedTagList;
 	protected JLabel tagLabel;
 	protected JLabel headingLabel;
 

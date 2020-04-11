@@ -13,7 +13,8 @@ import com.riccardomalavolti.apps.todolist.view.NewTodoDialog;
 import com.riccardomalavolti.apps.todolist.view.TodoView;
 
 public class TodoController {
-		
+	
+	private static final long serialVersionUID = 762758691L;
 	TodoView todoView;
 	TodoManager todoManager;
 	

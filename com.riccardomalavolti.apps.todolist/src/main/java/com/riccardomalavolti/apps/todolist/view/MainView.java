@@ -36,12 +36,13 @@ public class MainView extends JFrame implements TodoView{
 
 	private static final Logger LOGGER = LogManager.getLogger(MainView.class);
 	
+
+	private transient TodoController todoController;
+	private DefaultComboBoxModel<Tag> tagListModel;
+	private TodoTableModel todoTableModel;
+	private JButton removeTodoButton;
 	private JPanel contentPanel;
 	private JTable todoTable;
-	private TodoTableModel todoTableModel;
-	private DefaultComboBoxModel<Tag> tagListModel;
-	private TodoController todoController;
-	private JButton removeTodoButton;
 	
 
 	public MainView() {

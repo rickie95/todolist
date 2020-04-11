@@ -4,7 +4,6 @@ import java.util.Vector;
 
 import javax.swing.table.DefaultTableModel;
 
-import com.mongodb.diagnostics.logging.Logger;
 import com.riccardomalavolti.apps.todolist.controller.TodoController;
 import com.riccardomalavolti.apps.todolist.model.Todo;
 
@@ -15,7 +14,7 @@ public class TodoTableModel extends DefaultTableModel {
 	private final Class<?>[] columnClass = new Class[] {
 			Boolean.class, Todo.class };
 	
-	private TodoController controller;
+	private transient TodoController controller;
 		
 	
 	public TodoTableModel() {
@@ -56,8 +55,10 @@ public class TodoTableModel extends DefaultTableModel {
 		this.controller = controller;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void removeTodo(Todo todo) {
 		Vector<Vector<?>> dataVector = this.getDataVector();
+		
 		int indexOfRow = -1;
 		
 		for(Vector<?> row : dataVector)
