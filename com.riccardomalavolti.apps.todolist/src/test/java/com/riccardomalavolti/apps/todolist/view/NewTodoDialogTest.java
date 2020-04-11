@@ -77,7 +77,7 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 
 	@Test @GUITest
 	public void testInitialState() {
-		assertNotNull(window.label(JLabelMatcher.withText("Insert a new To Do")));
+		assertNotNull(window.label(JLabelMatcher.withText(NewTodoDialog.HEADING_LABEL_TEXT)));
 		assertNotNull(window.label(JLabelMatcher.withText(NewTodoDialog.TAG_LBL_NO_TAG_TEXT)));
 		// Text box must be empty
 		assertThat(window.textBox("todoTextBox").text()).isEmpty();
@@ -86,7 +86,7 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 		
 		
 		assertThat(window.button("clearButton").isEnabled()).isFalse();
-		assertThat(window.button("insertButton").isEnabled()).isFalse();
+		assertThat(window.button("confirmButton").isEnabled()).isFalse();
 		assertThat(window.button("cancelButton").isEnabled()).isTrue();
 		
 	}
@@ -94,7 +94,7 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 	@Test @GUITest
 	public void testChangingTextInTodoTextFieldShouldEnableInsertButton() {
 		JTextComponentFixture todoTextBox = window.textBox("todoTextBox");
-		JButtonFixture insertButton = window.button("insertButton");
+		JButtonFixture insertButton = window.button("confirmButton");
 		
 		// Starting empty, insertButton must be disabled
 		assertThat(todoTextBox.text()).isEmpty();
@@ -163,7 +163,7 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 		
 		ArgumentCaptor<Todo> todoTaggedArg = ArgumentCaptor.forClass(Todo.class);
 		
-		window.button("insertButton").click();
+		window.button("confirmButton").click();
 		
 		
 		verify(todoController).tagTodo(todoTaggedArg.capture(), this.tagListCaptor.capture());

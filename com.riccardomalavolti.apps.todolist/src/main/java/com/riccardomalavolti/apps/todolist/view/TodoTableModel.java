@@ -3,6 +3,8 @@ package com.riccardomalavolti.apps.todolist.view;
 import java.util.Vector;
 
 import javax.swing.table.DefaultTableModel;
+
+import com.mongodb.diagnostics.logging.Logger;
 import com.riccardomalavolti.apps.todolist.controller.TodoController;
 import com.riccardomalavolti.apps.todolist.model.Todo;
 
@@ -28,18 +30,18 @@ public class TodoTableModel extends DefaultTableModel {
 	@Override
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		// setValue is used only for the tick component
-		if(columnIndex == 0) {
-			super.setValueAt(aValue, rowIndex, columnIndex);
-			Vector<?> row = (Vector<?>) this.dataVector.get(rowIndex);
-			Todo todo = (Todo) row.get(1);
-			todo.setAsCompleted((boolean)aValue);
-			controller.updateTodo(todo);
-		}
+		super.setValueAt(aValue, rowIndex, columnIndex);
+		Vector<?> row = (Vector<?>) this.dataVector.get(rowIndex);
+		Todo todo = (Todo) row.get(1);
+		todo.setAsCompleted((boolean)aValue);
+		controller.updateTodo(todo);
+		
 	}
 	
 	@Override
 	public boolean isCellEditable(int row, int column) {
-		return false;
+		// Which basically decide if call setValueAt or not.
+		return column == 0;
 	}
 	
 	public Todo getTodoAtRow(int rowIndex) {
@@ -58,7 +60,7 @@ public class TodoTableModel extends DefaultTableModel {
 		Vector<Vector<?>> dataVector = this.getDataVector();
 		int indexOfRow = -1;
 		
-		for(Vector row : dataVector)
+		for(Vector<?> row : dataVector)
 			if(((Todo) row.elementAt(1)).equals(todo))
 				indexOfRow = dataVector.indexOf(row);
 		

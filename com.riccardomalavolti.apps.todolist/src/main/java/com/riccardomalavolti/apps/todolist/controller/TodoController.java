@@ -7,6 +7,7 @@ import javax.swing.JDialog;
 
 import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.model.Todo;
+import com.riccardomalavolti.apps.todolist.view.EditTodoDialog;
 import com.riccardomalavolti.apps.todolist.view.NewTagDialog;
 import com.riccardomalavolti.apps.todolist.view.NewTodoDialog;
 import com.riccardomalavolti.apps.todolist.view.TodoView;
@@ -17,6 +18,7 @@ public class TodoController {
 	TodoManager todoManager;
 	
 	private JDialog newTodoDialog;
+	private JDialog editTodoDialog;
 	private JDialog newTagDialog;
 	
 	
@@ -102,9 +104,9 @@ public class TodoController {
 	}
 	
 	public void editTodoDialog(DefaultComboBoxModel<Tag> tagListModel, Todo todo) {
-		if(newTodoDialog == null)
-			newTodoDialog = new NewTodoDialog(this, tagListModel, todo);
-		newTodoDialog.setVisible(true);
+		if(editTodoDialog == null)
+			editTodoDialog = new EditTodoDialog(this, tagListModel, todo);
+		editTodoDialog.setVisible(true);
 	}
 
 	public void newTagDialog() {

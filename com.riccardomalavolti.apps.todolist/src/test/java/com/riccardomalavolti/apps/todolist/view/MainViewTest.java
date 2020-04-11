@@ -26,6 +26,9 @@ import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import com.riccardomalavolti.apps.todolist.controller.TodoController;
 import com.riccardomalavolti.apps.todolist.model.Tag;
@@ -37,10 +40,16 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 	private FrameFixture window;
 	private MainView view;
 	
+	@Mock
 	private TodoController todoController;
+	
+	@Captor
+	private ArgumentCaptor<DefaultComboBoxModel<Tag>> tagModelCaptor;
 	
 	@Override
 	protected void onSetUp() {
+		MockitoAnnotations.initMocks(this);
+		
 		GuiActionRunner.execute(() -> {
 			view = new MainView();
 			return view;
@@ -132,7 +141,6 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 	
 	@Test @GUITest
 	public void testRemoveSelectedTodoShouldCallControllerMethodWithSelectedTodo() {
-		todoController = mock(TodoController.class);
 		view.setController(todoController);
 		Todo t1 = new Todo("2","Foo");
 		Todo t2 = new Todo("4","Bar");
@@ -245,7 +253,6 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 	
 	@Test @GUITest
 	public void testDoubleClickOnTodoShouldCallControllerForAnEditDialog() {
-		todoController = mock(TodoController.class);
 		view.setController(todoController);
 		
 		Todo t1 = new Todo("2","Foo");
@@ -257,7 +264,6 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 		window.table("todoTable").selectCell(TableCell.row(1).column(1)).doubleClick();
 		
 		ArgumentCaptor<Todo> capturedTodo = ArgumentCaptor.forClass(Todo.class);
-		ArgumentCaptor<DefaultComboBoxModel<Tag>> tagModelCaptor = ArgumentCaptor.forClass(DefaultComboBoxModel.class);
 		
 		verify(todoController).editTodoDialog(tagModelCaptor.capture(), capturedTodo.capture());
 		assertThat(capturedTodo.getValue()).isEqualTo(t2);
@@ -266,7 +272,6 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 	
 	@Test @GUITest
 	public void testNewTodoButtonClick() {
-		todoController = mock(TodoController.class);
 		DefaultComboBoxModel<Tag> comboTagModel = new DefaultComboBoxModel<>();
 		JButtonFixture newTodoBtn = window.button("newTodoBtn");
 		view.setController(todoController);
@@ -279,13 +284,27 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 	
 	@Test @GUITest
 	public void testNewTagAction() {
-		todoController = mock(TodoController.class);
 		JButtonFixture newTagBtn = window.button("newTagBtn");
 		view.setController(todoController);
 		
 		newTagBtn.click();
 		
 		verify(todoController).newTagDialog();
+	}
+	
+	@Test @GUITest
+	public void testClickOnTickShouldUpdateTheTodoCompletedTag() {
+		view.setController(todoController);
+		Todo t1 = new Todo("2","Foo");		
+		GuiActionRunner.execute(() -> view.addTodo(t1));
+		
+		ArgumentCaptor<Todo> todoCapture = ArgumentCaptor.forClass(Todo.class);
+		
+		window.table("todoTable").cell(TableCell.row(0).column(0)).click();
+		
+		verify(todoController).updateTodo(todoCapture.capture());
+		assertThat(todoCapture.getValue().getStatus()).isTrue();
+		
 	}
 	
 	@Test
