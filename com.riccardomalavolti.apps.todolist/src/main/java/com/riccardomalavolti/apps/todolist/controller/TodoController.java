@@ -14,7 +14,6 @@ import com.riccardomalavolti.apps.todolist.view.TodoView;
 
 public class TodoController {
 	
-	private static final long serialVersionUID = 762758691L;
 	TodoView todoView;
 	TodoManager todoManager;
 	
@@ -53,15 +52,14 @@ public class TodoController {
 		try {
 			todoManager.addTag(tag);
 			todoView.addTag(tag);
-		}catch(RuntimeException ex) {
+		} catch(RuntimeException ex) {
 			String message = "A problem as occurred while insering a new tag: ";
 			todoView.error(message + ex.toString());
 		}
 	}
 
 	public void findTodoByText(String searchText) {
-		List<Todo> results = todoManager.findTodoByText(searchText);
-		todoView.showAllTodo(results);
+		todoView.showAllTodo(todoManager.findTodoByText(searchText));
 	}
 
 	public void findTagByText(String searchText) {
@@ -101,31 +99,46 @@ public class TodoController {
 	public void newTodoDialog(DefaultComboBoxModel<Tag> tagListModel) {
 		if(newTodoDialog == null)
 			newTodoDialog = new NewTodoDialog(this, tagListModel);
-		newTodoDialog.setVisible(true);
+		newTodoDialog.toFront();
 	}
 	
 	public void editTodoDialog(DefaultComboBoxModel<Tag> tagListModel, Todo todo) {
 		if(editTodoDialog == null)
 			editTodoDialog = new EditTodoDialog(this, tagListModel, todo);
-		editTodoDialog.setVisible(true);
+		editTodoDialog.toFront();
 	}
 
 	public void newTagDialog() {
 		if(newTagDialog == null)
 			newTagDialog = new NewTagDialog(this);
-		newTagDialog.setVisible(true);
+		newTagDialog.toFront();
 	}
 
 	public void dispose(JDialog aDialog) {
 		aDialog.dispose();
 	}
 	
+	public void setNewTodoDialog(JDialog newTodoDialog) {
+		this.newTodoDialog = newTodoDialog;
+	}
+	
 	public JDialog getNewTodoDialog() {
 		return newTodoDialog;
+	}
+
+	public void setEditTodoDialog(JDialog editTodoDialog) {
+		this.editTodoDialog = editTodoDialog;
+	}
+	
+	public JDialog getEditTodoDialog() {
+		return editTodoDialog;
+	}
+
+	public void setNewTagDialog(JDialog newTagDialog) {
+		this.newTagDialog = newTagDialog;
 	}
 
 	public JDialog getNewTagDialog() {
 		return newTagDialog;
 	}
-	
 }

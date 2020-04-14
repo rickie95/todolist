@@ -18,6 +18,9 @@ import com.riccardomalavolti.apps.todolist.controller.TodoController;
 import com.riccardomalavolti.apps.todolist.controller.TodoManager;
 import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.model.Todo;
+import com.riccardomalavolti.apps.todolist.view.EditTodoDialog;
+import com.riccardomalavolti.apps.todolist.view.NewTagDialog;
+import com.riccardomalavolti.apps.todolist.view.NewTodoDialog;
 import com.riccardomalavolti.apps.todolist.view.TodoView;
 
 
@@ -34,6 +37,19 @@ public class TodoControllerTest {
 		todoManager = mock(TodoManager.class);
 
 		todoController = new TodoController(todoView, todoManager);
+	}
+	
+	@Test
+	public void testInitialState() {
+		List<Todo> todoList = new ArrayList<>();
+		when(todoManager.getTodoList()).thenReturn(todoList);
+		List<Tag> tagList = new ArrayList<>();
+		when(todoManager.getTagList()).thenReturn(tagList);
+				
+		verify(todoManager).getTodoList();
+		verify(todoManager).getTagList();
+		verify(todoView).showAllTodo(todoList);
+		verify(todoView).showAllTags(tagList);
 	}
 
 	@Test
@@ -122,7 +138,7 @@ public class TodoControllerTest {
 		
 		todoController.editTodoDialog(tagListModel, todo);
 		
-		assertThat(todoController.getNewTodoDialog()).isNotNull();
+		assertThat(todoController.getEditTodoDialog()).isNotNull();
 		
 		todoController.editTodoDialog(tagListModel, todo);
 	}
@@ -156,7 +172,7 @@ public class TodoControllerTest {
 		todoController.findTodoByText(searchText);
 
 		verify(todoManager).findTodoByText(searchText);
-		//verify(todoView).showAllTodo(todoList);
+		verify(todoView, times(2)).showAllTodo(todoList);
 	}
 
 	@Test
@@ -168,6 +184,7 @@ public class TodoControllerTest {
 		todoController.findTagByText(searchText);
 		
 		verify(todoManager).findTagByText(searchText);
+		verify(todoView, times(2)).showAllTags(tagList);
 	}
 	
 	@Test
@@ -179,6 +196,7 @@ public class TodoControllerTest {
 		todoController.findTodoByTag(tag);
 		
 		verify(todoManager).findTodoByTag(tag);
+		verify(todoView, times(2)).showAllTodo(todoList);
 	}
 	
 	@Test
@@ -207,6 +225,8 @@ public class TodoControllerTest {
 		// Repeat again, the dialog should be the same.
 		todoController.newTodoDialog(tagListModel);
 		assertThat(todoController.getNewTodoDialog()).isEqualTo(todoDialog);
+		assertThat(todoDialog.isVisible()).isTrue();
+		assertThat(todoDialog.isShowing()).isTrue();
 	}
 	
 	@Test
@@ -219,6 +239,54 @@ public class TodoControllerTest {
 		
 		todoController.newTagDialog();
 		assertThat(todoController.getNewTagDialog()).isEqualTo(tagDialog);
+	}
+	
+	@Test
+	public void testTodoDialogShouldHaveFocusIfAlreadyExists() {
+		DefaultComboBoxModel<Tag> tagListModel = new DefaultComboBoxModel<Tag>();
+		NewTodoDialog todoDialog = mock(NewTodoDialog.class);
+		EditTodoDialog editDialog = mock(EditTodoDialog.class);
+		
+		todoController.setNewTodoDialog(todoDialog);
+		
+		todoController.newTodoDialog(tagListModel);
+		
+		verify(todoDialog).toFront();
+		
+		// Same for edit 
+		
+		todoController.setEditTodoDialog(editDialog);
+		
+		todoController.editTodoDialog(tagListModel, new Todo("0", "Foo"));
+		
+		verify(editDialog).toFront();
+	}
+	
+	@Test
+	public void testTagDialogShouldHaveFocusIfAlreadyExists() {
+		NewTagDialog tagDialog = mock(NewTagDialog.class);
+		
+		todoController.setNewTagDialog(tagDialog);
+		
+		todoController.newTagDialog();
+		
+		verify(tagDialog).toFront();
+	}
+	
+	@Test
+	public void testEditTodoButtonPressedShouldShowANewAdUniqueDialog() {
+		DefaultComboBoxModel<Tag> tagListModel = new DefaultComboBoxModel<Tag>();
+		Todo todo = new Todo("0", "foo");
+		todoController.editTodoDialog(tagListModel, todo);
+		
+		JDialog editTodoDialog = todoController.getEditTodoDialog();
+		assertThat(editTodoDialog).isNotNull();
+		assertThat(editTodoDialog.isVisible()).isTrue();
+		
+		todoController.editTodoDialog(tagListModel, todo);
+		assertThat(todoController.getEditTodoDialog()).isEqualTo(editTodoDialog);
+		assertThat(editTodoDialog.isVisible()).isTrue();
+		assertThat(editTodoDialog.isShowing()).isTrue();
 	}
 	
 	@Test

@@ -39,7 +39,6 @@ public abstract class TodoDialog extends JDialog {
 	private transient Todo todoElement;
 	private JComponent contentPanel = new JPanel();
 	
-
 	protected transient Set<Tag> selectedTagList;
 	protected transient TodoController todoController;
 	protected JFormattedTextField todoTextBox;
@@ -77,6 +76,7 @@ public abstract class TodoDialog extends JDialog {
 				textChanged();
 			}
 		});
+		
 		todoTextBox.setToolTipText("Write here");
 		todoTextBox.setBounds(12, 51, 357, 41);
 		contentPanel.add(todoTextBox);
@@ -86,7 +86,6 @@ public abstract class TodoDialog extends JDialog {
 		tagLabel.setFont(new Font("Dialog", Font.PLAIN, 10));
 		tagLabel.setBounds(12, 30, 72, 17);
 		contentPanel.add(tagLabel);
-		
 		
 		class ItemChangeListener implements ItemListener{
 		    @Override
@@ -138,7 +137,6 @@ public abstract class TodoDialog extends JDialog {
 		getRootPane().setDefaultButton(confirmButton);
 		
 	}
-	
 	
 	/* Buttons and components callbacks */
 	
