@@ -185,9 +185,9 @@
 	    	    <version>0.8.3</version>
 	    	    <configuration>
 	    	    <excludes>
-	    	    	<exclude>**/Main.java*</exclude>
+	    	    	<exclude>**/Main.*</exclude>
 	    	    	<exclude>**/Tag.*</exclude>
-	    	    	<exclude>**/TodoElement.*</exclude>
+	    	    	<exclude>**/Todo.*</exclude>
 	    	    	<exclude>**/MainView.error</exclude>
 	    	    	<exclude>**/SimpleDocumentListener.*</exclude>
 	    	    </excludes>
