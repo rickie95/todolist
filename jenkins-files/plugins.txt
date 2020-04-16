@@ -3,7 +3,6 @@ junit:latest
 git:latest
 credentials:latest
 git-client:latest
-github-api:latest
 workflow-api:latest
 workflow-basic-steps:latest
 pipeline-build-step:latest
