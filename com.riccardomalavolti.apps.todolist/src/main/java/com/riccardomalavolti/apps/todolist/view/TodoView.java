@@ -10,14 +10,6 @@ public interface TodoView {
 	public void showAllTodo(List<Todo> list);
 
 	public void showAllTags(List<Tag> tags);
-	
-	public void updateTagView(List<Tag> tagList);
-
-	public void updateTodoView(List<Todo> todoList);
-
-	public void updateTodo(Todo todo);
-
-	public void updateTag(Tag tag);
 
 	public void removeTodo(Todo todo);
 	

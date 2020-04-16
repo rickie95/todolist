@@ -1,23 +1,31 @@
 package com.riccardomalavolti.apps.todolist;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JDialog;
+
+import java.util.Arrays;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 
 import com.riccardomalavolti.apps.todolist.controller.TodoController;
 import com.riccardomalavolti.apps.todolist.controller.TodoManager;
 import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.model.Todo;
+import com.riccardomalavolti.apps.todolist.view.EditTodoDialog;
+import com.riccardomalavolti.apps.todolist.view.NewTagDialog;
+import com.riccardomalavolti.apps.todolist.view.NewTodoDialog;
 import com.riccardomalavolti.apps.todolist.view.TodoView;
+
 
 public class TodoControllerTest {
 	
-	@Mock
 	TodoView todoView;
 	TodoManager todoManager;
 
@@ -30,25 +38,18 @@ public class TodoControllerTest {
 
 		todoController = new TodoController(todoView, todoManager);
 	}
-
+	
 	@Test
-	public void testShowTodos() {
-		List<Todo> todos = new ArrayList<>();
-		when(todoManager.getTodoList()).thenReturn(todos);
-
-		todoController.showTodos();
-
-		verify(todoView).showAllTodo(todos);
-	}
-
-	@Test
-	public void testShowTags() {
-		List<Tag> tags = new ArrayList<>();
-		when(todoManager.getTagList()).thenReturn(tags);
-
-		todoController.showTags();
-
-		verify(todoView).showAllTags(tags);
+	public void testInitialState() {
+		List<Todo> todoList = new ArrayList<>();
+		when(todoManager.getTodoList()).thenReturn(todoList);
+		List<Tag> tagList = new ArrayList<>();
+		when(todoManager.getTagList()).thenReturn(tagList);
+				
+		verify(todoManager).getTodoList();
+		verify(todoManager).getTagList();
+		verify(todoView).showAllTodo(todoList);
+		verify(todoView).showAllTags(tagList);
 	}
 
 	@Test
@@ -108,7 +109,6 @@ public class TodoControllerTest {
 		todoController.updateTodo(todo);
 		
 		verify(todoManager).updateTodo(todo);
-		verify(todoView).updateTodo(todo);
 	}
 	
 	@Test
@@ -118,7 +118,6 @@ public class TodoControllerTest {
 		todoController.updateTag(tag);
 		
 		verify(todoManager).updateTag(tag);
-		verify(todoView).updateTag(tag);
 	}
 	
 	@Test
@@ -129,6 +128,19 @@ public class TodoControllerTest {
 		
 		verify(todoManager).removeTodo(todo);
 		verify(todoView).removeTodo(todo);
+	}
+	
+	@Test
+	public void testEditTodoShouldOpenTheNewTodoDialog() {
+		Todo todo = new Todo("0", "Foo");
+		DefaultComboBoxModel<Tag> tagListModel = new DefaultComboBoxModel<>();
+		tagListModel.addElement(new Tag("0", "Foo"));
+		
+		todoController.editTodoDialog(tagListModel, todo);
+		
+		assertThat(todoController.getEditTodoDialog()).isNotNull();
+		
+		todoController.editTodoDialog(tagListModel, todo);
 	}
 	
 	@Test
@@ -149,8 +161,6 @@ public class TodoControllerTest {
 		todoController.tagTodo(todo, tag);
 		
 		verify(todoManager).tagTodo(todo, tag);
-		verify(todoView).updateTodo(todo);
-		
 	}
 
 	@Test
@@ -162,7 +172,7 @@ public class TodoControllerTest {
 		todoController.findTodoByText(searchText);
 
 		verify(todoManager).findTodoByText(searchText);
-		verify(todoView).showAllTodo(todoList);
+		verify(todoView, times(2)).showAllTodo(todoList);
 	}
 
 	@Test
@@ -174,7 +184,7 @@ public class TodoControllerTest {
 		todoController.findTagByText(searchText);
 		
 		verify(todoManager).findTagByText(searchText);
-		verify(todoView).showAllTags(tagList);
+		verify(todoView, times(2)).showAllTags(tagList);
 	}
 	
 	@Test
@@ -186,7 +196,109 @@ public class TodoControllerTest {
 		todoController.findTodoByTag(tag);
 		
 		verify(todoManager).findTodoByTag(tag);
-		verify(todoView).showAllTodo(todoList);
+		verify(todoView, times(2)).showAllTodo(todoList);
+	}
+	
+	@Test
+	public void testTagTodoWithAListOfTags() {
+		Tag t1 = new Tag("0", "tag 1");
+		Tag t2 = new Tag("1", "tag 2");
+		Todo todo = new Todo("0", "Foo");
+		List<Tag> tagList = new ArrayList<Tag>(Arrays.asList(t1, t2));
+		
+		todoController.tagTodo(todo, tagList);
+		
+		verify(todoManager).tagTodo(todo, t1);
+		verify(todoManager).tagTodo(todo, t2);
+	}
+	
+	@Test
+	public void testNewTodoButtonPressedShouldShowANewDialog() {
+		DefaultComboBoxModel<Tag> tagListModel = new DefaultComboBoxModel<Tag>();
+		
+		todoController.newTodoDialog(tagListModel);
+		
+		JDialog todoDialog = todoController.getNewTodoDialog();
+		assertThat(todoDialog).isNotNull();
+		assertThat(todoDialog.isVisible()).isTrue();
+		
+		// Repeat again, the dialog should be the same.
+		todoController.newTodoDialog(tagListModel);
+		assertThat(todoController.getNewTodoDialog()).isEqualTo(todoDialog);
+		assertThat(todoDialog.isVisible()).isTrue();
+		assertThat(todoDialog.isShowing()).isTrue();
+	}
+	
+	@Test
+	public void testNewTagButtonPressedShouldShowANewAdUniqueDialog() {
+		todoController.newTagDialog();
+		
+		JDialog tagDialog = todoController.getNewTagDialog();
+		assertThat(tagDialog).isNotNull();
+		assertThat(tagDialog.isVisible()).isTrue();
+		
+		todoController.newTagDialog();
+		assertThat(todoController.getNewTagDialog()).isEqualTo(tagDialog);
+	}
+	
+	@Test
+	public void testTodoDialogShouldHaveFocusIfAlreadyExists() {
+		DefaultComboBoxModel<Tag> tagListModel = new DefaultComboBoxModel<Tag>();
+		NewTodoDialog todoDialog = mock(NewTodoDialog.class);
+		EditTodoDialog editDialog = mock(EditTodoDialog.class);
+		
+		todoController.setNewTodoDialog(todoDialog);
+		
+		todoController.newTodoDialog(tagListModel);
+		
+		verify(todoDialog).toFront();
+		
+		// Same for edit 
+		
+		todoController.setEditTodoDialog(editDialog);
+		
+		todoController.editTodoDialog(tagListModel, new Todo("0", "Foo"));
+		
+		verify(editDialog).toFront();
+	}
+	
+	@Test
+	public void testTagDialogShouldHaveFocusIfAlreadyExists() {
+		NewTagDialog tagDialog = mock(NewTagDialog.class);
+		
+		todoController.setNewTagDialog(tagDialog);
+		
+		todoController.newTagDialog();
+		
+		verify(tagDialog).toFront();
+	}
+	
+	@Test
+	public void testEditTodoButtonPressedShouldShowANewAdUniqueDialog() {
+		DefaultComboBoxModel<Tag> tagListModel = new DefaultComboBoxModel<Tag>();
+		Todo todo = new Todo("0", "foo");
+		todoController.editTodoDialog(tagListModel, todo);
+		
+		JDialog editTodoDialog = todoController.getEditTodoDialog();
+		assertThat(editTodoDialog).isNotNull();
+		assertThat(editTodoDialog.isVisible()).isTrue();
+		
+		todoController.editTodoDialog(tagListModel, todo);
+		assertThat(todoController.getEditTodoDialog()).isEqualTo(editTodoDialog);
+		assertThat(editTodoDialog.isVisible()).isTrue();
+		assertThat(editTodoDialog.isShowing()).isTrue();
+	}
+	
+	@Test
+	public void testDisposeNewTodoDialog() {
+		DefaultComboBoxModel<Tag> tagListModel = new DefaultComboBoxModel<Tag>();
+		
+		todoController.newTodoDialog(tagListModel);
+		
+		todoController.dispose(todoController.getNewTodoDialog());
+		
+		// The dialog should be not visible at least 
+		assertThat(todoController.getNewTodoDialog().isVisible()).isFalse();
 	}
 
 }

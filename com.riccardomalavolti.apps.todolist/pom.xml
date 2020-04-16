@@ -114,6 +114,13 @@
 	   	<artifactId>mongo-java-driver</artifactId>
 	   	<version>3.12.1</version>
 	   </dependency>
+
+	   <dependency>
+	   	<groupId>org.assertj</groupId>
+	   	<artifactId>assertj-core</artifactId>
+	   	<version>3.15.0</version>
+	   	<scope>test</scope>
+	   </dependency>
 	   
 	   <dependency>
 	   	<groupId>de.bwaldvogel</groupId>
@@ -124,8 +131,9 @@
 
 	   <dependency>
 	   	<groupId>org.assertj</groupId>
-	   	<artifactId>assertj-core</artifactId>
-	   	<version>3.15.0</version>
+	   	<artifactId>assertj-swing-junit</artifactId>
+	   	<version>3.9.2</version>
+	   	<scope>test</scope>
 	   </dependency>
   </dependencies>
 
@@ -179,7 +187,9 @@
 	    	    <excludes>
 	    	    	<exclude>**/Main.*</exclude>
 	    	    	<exclude>**/Tag.*</exclude>
-	    	    	<exclude>**/TodoElement.*</exclude>
+	    	    	<exclude>**/Todo.*</exclude>
+	    	    	<exclude>**/MainView.error</exclude>
+	    	    	<exclude>**/SimpleDocumentListener.*</exclude>
 	    	    </excludes>
 	    	    	<rules>
 						<rule>
@@ -222,15 +232,25 @@
 					<param>com.riccardomalavolti.apps.todolist.*</param>
 				</targetClasses>
 				<excludedClasses>
-				<!-- 
-					<param>com.riccardomalavolti.apps.todolist.Tag</param>
-					<param>com.riccardomalavolti.apps.todolist.TodoElement</param>
-					 -->
+					<param>com.riccardomalavolti.apps.todolist.Main</param>
+					<param>com.riccardomalavolti.apps.todolist.model.Tag</param>
+					<param>com.riccardomalavolti.apps.todolist.model.Todo</param>
+					<param>com.riccardomalavolti.apps.todolist.view.*</param>
 				</excludedClasses>
+				<excludedMethods>*hashCode*,*equals*,*toString*,*toFront*</excludedMethods>
+				<avoidCallsTo>
+					<avoidCallsTo>java.awt.Window.toFront()</avoidCallsTo>
+					<avoidCallsTo>java.util.logging</avoidCallsTo>
+    				<avoidCallsTo>org.apache.log4j</avoidCallsTo>
+    				<avoidCallsTo>org.slf4j</avoidCallsTo>
+    				<avoidCallsTo>org.apache.commons.logging</avoidCallsTo>
+				</avoidCallsTo>
 				<targetTests>
 					<param>com.riccardomalavolti.apps.todolist.*Test</param>
 				</targetTests>
-				<excludedMethods>*hashCode*,*equals*</excludedMethods>
+				<excludedTestClasses>
+					<param>com.riccardomalavolti.apps.todolist.view.*Test</param>
+				</excludedTestClasses>
 				<mutators>
 					<mutator>STRONGER</mutator>
 				</mutators>

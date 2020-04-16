@@ -1,7 +1,15 @@
 package com.riccardomalavolti.apps.todolist.controller;
 
+import java.util.List;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JDialog;
+
 import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.model.Todo;
+import com.riccardomalavolti.apps.todolist.view.EditTodoDialog;
+import com.riccardomalavolti.apps.todolist.view.NewTagDialog;
+import com.riccardomalavolti.apps.todolist.view.NewTodoDialog;
 import com.riccardomalavolti.apps.todolist.view.TodoView;
 
 public class TodoController {
@@ -9,9 +17,17 @@ public class TodoController {
 	TodoView todoView;
 	TodoManager todoManager;
 	
+	private JDialog newTodoDialog;
+	private JDialog editTodoDialog;
+	private JDialog newTagDialog;
+	
+	
 	public TodoController(TodoView todoView, TodoManager todoManager) {
 		this.todoView = todoView;
 		this.todoManager = todoManager;
+		
+		showTodos();
+		showTags();
 	}
 
 	public void showTodos() {
@@ -36,7 +52,7 @@ public class TodoController {
 		try {
 			todoManager.addTag(tag);
 			todoView.addTag(tag);
-		}catch(RuntimeException ex) {
+		} catch(RuntimeException ex) {
 			String message = "A problem as occurred while insering a new tag: ";
 			todoView.error(message + ex.toString());
 		}
@@ -56,12 +72,10 @@ public class TodoController {
 
 	public void updateTodo(Todo todo) {
 		todoManager.updateTodo(todo);
-		todoView.updateTodo(todo);
 	}
 
 	public void updateTag(Tag tag) {
 		todoManager.updateTag(tag);
-		todoView.updateTag(tag);
 	}
 
 	public void removeTodo(Todo todo) {
@@ -76,7 +90,55 @@ public class TodoController {
 
 	public void tagTodo(Todo todo, Tag tag) {
 		todoManager.tagTodo(todo, tag);
-		todoView.updateTodo(todo);
 	}
 	
+	public void tagTodo(Todo todo, List<Tag> tagList) {
+		tagList.forEach(tag -> todoManager.tagTodo(todo, tag));
+	}
+
+	public void newTodoDialog(DefaultComboBoxModel<Tag> tagListModel) {
+		if(newTodoDialog == null)
+			newTodoDialog = new NewTodoDialog(this, tagListModel);
+		newTodoDialog.toFront();
+	}
+	
+	public void editTodoDialog(DefaultComboBoxModel<Tag> tagListModel, Todo todo) {
+		if(editTodoDialog == null)
+			editTodoDialog = new EditTodoDialog(this, tagListModel, todo);
+		editTodoDialog.toFront();
+	}
+
+	public void newTagDialog() {
+		if(newTagDialog == null)
+			newTagDialog = new NewTagDialog(this);
+		newTagDialog.toFront();
+	}
+
+	public void dispose(JDialog aDialog) {
+		aDialog.dispose();
+	}
+	
+	public void setNewTodoDialog(JDialog newTodoDialog) {
+		this.newTodoDialog = newTodoDialog;
+	}
+	
+	public JDialog getNewTodoDialog() {
+		return newTodoDialog;
+	}
+
+	public void setEditTodoDialog(JDialog editTodoDialog) {
+		this.editTodoDialog = editTodoDialog;
+	}
+	
+	public JDialog getEditTodoDialog() {
+		return editTodoDialog;
+	}
+
+	public void setNewTagDialog(JDialog newTagDialog) {
+		this.newTagDialog = newTagDialog;
+	}
+
+	public JDialog getNewTagDialog() {
+		return newTagDialog;
+	}
 }

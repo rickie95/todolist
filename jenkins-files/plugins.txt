@@ -3,7 +3,6 @@ junit:latest
 git:latest
 credentials:latest
 git-client:latest
-github-api:latest
 workflow-api:latest
 workflow-basic-steps:latest
 pipeline-build-step:latest
@@ -25,4 +24,4 @@ cloudbees-folder:latest
 jackson2-api:latest
 jsch:latest
 antisamy-markup-formatter:latest
-
+xvnc:latest

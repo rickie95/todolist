@@ -63,11 +63,11 @@ public class TodoTest {
 		todoelem = new Todo("foo");
 		
 		// True Version
-		todoelem.setAsCompleted();
+		todoelem.setAsCompleted(true);
 		assertTrue(todoelem.getStatus());
 		
 		//False Version
-		todoelem.setAsUncompleted();
+		todoelem.setAsCompleted(false);
 		assertFalse(todoelem.getStatus());
 	}
 	

@@ -3,7 +3,7 @@ EXPOSE 8080
 USER root
 
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
-RUN apk --update --no-cache add openjdk8-jre sudo curl maven=3.6.3-r0
+RUN apk --update --no-cache add openjdk8-jre sudo curl maven=3.6.3-r0 x11vnc
 RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers
 
 USER jenkins
