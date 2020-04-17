@@ -36,6 +36,7 @@ public class EditTodoDialog extends TodoDialog {
 		confirmButton.addActionListener(e -> updateTodo());	
 		confirmButton.setText("Update Todo");
 		
+		pack();
 		setVisible(true);
 	}
 	

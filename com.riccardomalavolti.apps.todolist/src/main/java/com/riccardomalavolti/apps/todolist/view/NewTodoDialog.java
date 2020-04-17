@@ -33,7 +33,9 @@ public class NewTodoDialog extends TodoDialog {
 		headingLabel.setText(HEADING_LABEL_TEXT);
 		confirmButton.setText("Add new Todo");
 		confirmButton.addActionListener(e ->addNewTodo());
-		setVisible(true);
+		
+		this.pack();
+		this.setVisible(true);
 	}
 	
 	protected void addNewTodo() {

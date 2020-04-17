@@ -76,7 +76,7 @@ public class TagRepositoryMongoDB implements TagRepository {
 		if(tag.getId() == null)
 			tag.setId(computeNewId());
 		
-		if(tagCollection.find(Filters.eq("id", tag.getId())).first() == null)
+		if(tagCollection.countDocuments(Filters.eq("id", tag.getId())) == 0)
 			tagCollection.insertOne(fromTagToDocument(tag));
 	}
 

@@ -150,6 +150,9 @@ public class MainView extends JFrame implements TodoView{
 		tagListModel = new DefaultComboBoxModel<>();
 		
 		tagListView.setModel(tagListModel);
+		
+		this.pack();
+		this.setVisible(true);
 	}
 	
 	@Override

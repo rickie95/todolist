@@ -72,6 +72,7 @@ public class NewTagDialog extends JDialog {
 		cancelButton.setActionCommand("Cancel");
 		buttonPanel.add(cancelButton);		
 		
+		this.pack();
 		this.setVisible(true);
 	}
 	
