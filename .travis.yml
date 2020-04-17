@@ -25,8 +25,8 @@ matrix:
     - if: type = cron
       env: PROFILES="-Pjacoco,mutation-testing"
       
- before_script:
-    - sh -e /etc/init.d/xvfb start
+before_script:
+- sh -e /etc/init.d/xvfb start
 
 script:
 - mvn -f com.riccardomalavolti.apps.todolist/pom.xml clean test verify $PROFILES jacoco:report coveralls:report sonar:sonar
