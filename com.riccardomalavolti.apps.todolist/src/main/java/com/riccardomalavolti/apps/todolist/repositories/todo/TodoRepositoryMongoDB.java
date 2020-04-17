@@ -103,16 +103,13 @@ public class TodoRepositoryMongoDB implements TodoRepository {
 		if(todo.getId() == null)
 			todo.setId(computeNewId());
 		
-		if (todoCollection.find(Filters.eq("id", todo.getId())).first() == null)
+		if (todoCollection.countDocuments(Filters.eq("id", todo.getId())) == 0)
 			todoCollection.insertOne(fromTodoToDocument(todo));
 	}
 
 	@Override
 	public void updateTodoElement(Todo todo) {
-		if (todoCollection.find(Filters.eq("id", todo.getId())).first() != null) {
-			removeTodoElement(todo);
-			addTodoElement(todo);
-		}
+		todoCollection.updateOne(Filters.eq("id", todo.getId()), new Document("$set", fromTodoToDocument(todo)));
 	}
 
 	@Override
