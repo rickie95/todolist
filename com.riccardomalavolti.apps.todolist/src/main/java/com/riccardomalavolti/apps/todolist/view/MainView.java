@@ -11,7 +11,6 @@ import com.riccardomalavolti.apps.todolist.controller.TodoController;
 import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.model.Todo;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JLabel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -39,14 +38,16 @@ public class MainView extends JFrame implements TodoView{
 
 	private transient TodoController todoController;
 	private DefaultComboBoxModel<Tag> tagListModel;
+	private MessageBoxFactory msgBoxFactory;
 	private TodoTableModel todoTableModel;
 	private JButton removeTodoButton;
 	private JPanel contentPanel;
 	private JTable todoTable;
-	
 
+	
 	public MainView() {
 		todoTableModel =  new TodoTableModel();
+		msgBoxFactory = new MessageBoxFactory(this);
 		
 		setTitle("To Do List");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -191,10 +192,9 @@ public class MainView extends JFrame implements TodoView{
 
 	@Override
 	public void error(String message) {
-		LOGGER.error(message);
-		JOptionPane.showMessageDialog(this, message);
+		this.msgBoxFactory.showErrorMessage(message);
 	}
-	
+
 	public Todo getSelectedTodo() {
 		int modelIndex = todoTable.convertRowIndexToModel(todoTable.getSelectedRow());
 		return todoTableModel.getTodoAtRow(modelIndex);
@@ -240,5 +240,9 @@ public class MainView extends JFrame implements TodoView{
 
 	public void setTagListModel(DefaultComboBoxModel<Tag> comboModel) {
 		this.tagListModel = comboModel;
+	}
+
+	public void setMsgBoxFactory(MessageBoxFactory msgBoxFact) {
+		this.msgBoxFactory = msgBoxFact;		
 	}
 }

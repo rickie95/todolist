@@ -111,6 +111,20 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 				new Object[]{ t1.getText(), t2.getText() });
 	}
 	
+	@Test
+	public void testErrorMessage() {
+		String msg = "Error message";
+		
+		MessageBoxFactory msgBoxFact = mock(MessageBoxFactory.class);
+		
+		view.setMsgBoxFactory(msgBoxFact);
+		
+		GuiActionRunner.execute(() -> view.error(msg));
+		
+		verify(msgBoxFact).showErrorMessage(msg);
+		
+	}
+	
 	@Test @GUITest
 	public void testAddTodo() {
 		JTableFixture todoListPanel = window.panel("contentPanel").table("todoTable");

@@ -33,7 +33,9 @@
 		<sonar.exclusions>
 			**/Tag.java,
 			**/Todo.java,
-			**/Main.java
+			**/Main.java,
+			**/SimpleDocumentListener.java,
+			**/MessageBoxFactory.java
 		</sonar.exclusions>
 	</properties>
 
@@ -202,8 +204,8 @@
 							<exclude>**/Main.*</exclude>
 							<exclude>**/Tag.*</exclude>
 							<exclude>**/Todo.*</exclude>
-							<exclude>**/MainView.error</exclude>
 							<exclude>**/SimpleDocumentListener.*</exclude>
+							<exclude>**/MessageBoxFactory.*</exclude>
 						</excludes>
 						<rules>
 							<rule>
