@@ -3,7 +3,7 @@ EXPOSE 8080
 USER root
 
 RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
-RUN apk --update --no-cache add openjdk8-jre sudo curl maven=3.6.3-r0 x11vnc
+RUN apk --update --no-cache add openjdk8-jre sudo curl maven=3.6.3-r0 xvfb
 RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers
 
 USER jenkins
@@ -19,7 +19,7 @@ COPY jenkins-files/todolist-pipeline.xml /usr/share/jenkins/ref/jobs/todolist-pi
 COPY jenkins-files/config/*.xml /usr/share/jenkins/ref/
 ENV JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk
 #ENV MAVEN_VERSION=${MAVEN_VERSION}
-#ENV M2_HOME /usr/bin/maven
+ENV M2_HOME /usr/bin
 #ENV maven.home $M2_HOME
 #ENV M2 $M2_HOME/bin
 #ENV PATH $M2:$PATH

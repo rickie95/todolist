@@ -24,4 +24,4 @@ cloudbees-folder:latest
 jackson2-api:latest
 jsch:latest
 antisamy-markup-formatter:latest
-xvnc:latest
+xvfb:latest

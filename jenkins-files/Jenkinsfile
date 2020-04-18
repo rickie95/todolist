@@ -17,7 +17,8 @@ pipeline{
 	stage('Testing'){
 	   steps{
 		echo 'Testing started'
-                wrap([$class: 'Xvnc', takeScreenshot: false, useXauthority: true]) {
+                sh 'export DISPLAY=33'
+		wrap([$class: 'Xvfb', additionalOptions: '', assignedLabels: '', autoDisplayName: true, debug: true, displayNameOffset: 33, screen: '1366x768x24']){
                     sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml test -Pjacoco,mutation-testing jacoco:report coveralls:report'
 		    junit 'com.riccardomalavolti.apps.todolist/target/*/*.xml'
 		    jacoco()
@@ -29,8 +30,11 @@ pipeline{
 	stage('Verifing'){
 	    steps{
 		echo 'Code quality analysis started'
-		sh 'mvn -f ./com.riccardomalavolti.apps.todolist/pom.xml verify -Pjacoco sonar:sonar'
-		echo 'Code analysis ended.'
+                sh 'export DISPLAY=33'
+		wrap([$class: 'Xvfb', additionalOptions: '', assignedLabels: '', autoDisplayName: true, debug: true, displayNameOffset: 33, screen: '1366x768x24']){
+                    sh 'mvn -f ./com.riccardomalavolti.apps.todolist/pom.xml verify -Pjacoco sonar:sonar'
+		}
+                echo 'Code analysis ended.'
 	   }
 	}
     }
