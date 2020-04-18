@@ -57,6 +57,8 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 		
 		window = new FrameFixture(robot(), view);
 		window.show();
+		
+		robot().waitForIdle();
 	}
 	
 	@Override

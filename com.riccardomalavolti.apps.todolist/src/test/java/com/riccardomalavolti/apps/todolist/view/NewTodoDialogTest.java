@@ -63,6 +63,7 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 		
 		window = new DialogFixture(robot(), view);
 		window.show();
+		
 		robot().waitForIdle();
 	}
 	

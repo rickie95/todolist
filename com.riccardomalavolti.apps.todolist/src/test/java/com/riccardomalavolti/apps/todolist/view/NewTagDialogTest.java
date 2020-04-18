@@ -37,6 +37,8 @@ public class NewTagDialogTest extends AssertJSwingJUnitTestCase{
 		});
 		window = new DialogFixture(robot(), view);
 		window.show();
+		
+		robot().waitForIdle();
 	}
 	
 	@Override
