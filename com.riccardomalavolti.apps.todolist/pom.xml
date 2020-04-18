@@ -1,178 +1,279 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.riccardomalavolti.apps</groupId>
-  <artifactId>todolist</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+	<groupId>com.riccardomalavolti.apps</groupId>
+	<artifactId>todolist</artifactId>
+	<version>1.0.0</version>
 
-  <name>todolist</name>
-  <url>http://www.example.com</url>
+	<name>todolist</name>
+	<url>http://www.example.com</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <!-- SonarCloud configuration mvn verify sonar:sonar -->
-    <sonar.projectKey>rickie95_todolist</sonar.projectKey>
-  	<sonar.organization>rickie95</sonar.organization>
-  	<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-  	<sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
-  	<!-- https://stackoverflow.com/questions/13031219/how-to-configure-multi-module-maven-sonar-jacoco-to-give-merged-coverage-rep -->
-  	<!-- Additional conf for jacoco integration -->
-  	<sonar.junit.reportPaths>
-  		${project.build.directory}/surefire-reports
-  	</sonar.junit.reportPaths>
-  	<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-  	<sonar.dynamicAnalysis>reuseReport</sonar.dynamicAnalysis>
-  	<sonar.language>java</sonar.language>
-  </properties>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<log4j.version>2.11.1</log4j.version>
 
-  <profiles>
-	<profile>
-		<id>jacoco</id>
-		<build>
+		<!-- SonarCloud configuration mvn verify sonar:sonar -->
+		<aggregate.report.dir>${project.build.directory}/site/jacoco/jacoco.xml</aggregate.report.dir>
+		<sonar.projectKey>rickie95_todolist</sonar.projectKey>
+		<sonar.organization>rickie95</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
+		<!-- https://stackoverflow.com/questions/13031219/how-to-configure-multi-module-maven-sonar-jacoco-to-give-merged-coverage-rep -->
+		<!-- Additional conf for jacoco integration -->
+		<sonar.junit.reportPaths>${project.build.directory}/surefire-reports</sonar.junit.reportPaths>
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+		<sonar.dynamicAnalysis>reuseReport</sonar.dynamicAnalysis>
+		<sonar.language>java</sonar.language>
+		<sonar.exclusions>
+			**/Tag.java,
+			**/Todo.java,
+			**/Main.java,
+			**/SimpleDocumentListener.java,
+			**/MessageBoxFactory.java
+		</sonar.exclusions>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.apache.logging.log4j</groupId>
+				<artifactId>log4j-bom</artifactId>
+				<version>${log4j.version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<profiles>
+		<profile>
+			<id>jacoco</id>
+			<build>
+				<plugins>
+					<plugin>
+						<!-- configuration in pluginManagement -->
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>mutation-testing</id>
+			<build>
+				<plugins>
+					<plugin>
+						<!-- additional conf in pluginManagement -->
+						<groupId>org.pitest</groupId>
+						<artifactId>pitest-maven</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>mutationCoverage</goal>
+								</goals>
+								<phase>verify</phase>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.6.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>3.2.4</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+			<version>3.12.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>3.15.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>de.bwaldvogel</groupId>
+			<artifactId>mongo-java-server</artifactId>
+			<version>1.18.2</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-swing-junit</artifactId>
+			<version>3.9.2</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<pluginManagement><!-- lock down plugins versions to avoid using Maven 
+				defaults (may be moved to parent pom) -->
 			<plugins>
+				<!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
 				<plugin>
-					<!--  configuration in pluginManagement -->
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>3.1.0</version>
+				</plugin>
+				<!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
+				<plugin>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>3.0.2</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.8.0</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.22.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.0.2</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>2.5.2</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.8.2</version>
+				</plugin>
+				<!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
+				<plugin>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.7.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-project-info-reports-plugin</artifactId>
+					<version>3.0.0</version>
+				</plugin>
+				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
-				</plugin>
-			</plugins>
-		</build>
-	</profile>
-	<profile>
-		<id>mutation-testing</id>
-		<build>
-			<plugins>
-				<plugin>
-					<!--  additional conf in pluginManagement -->
-					<groupId>org.pitest</groupId>
-					<artifactId>pitest-maven</artifactId>
+					<version>0.8.3</version>
+					<configuration>
+						<excludes>
+							<exclude>**/Main.*</exclude>
+							<exclude>**/Tag.*</exclude>
+							<exclude>**/Todo.*</exclude>
+							<exclude>**/SimpleDocumentListener.*</exclude>
+							<exclude>**/MessageBoxFactory.*</exclude>
+						</excludes>
+						<rules>
+							<rule>
+								<element>PACKAGE</element>
+								<limits>
+									<limit>
+										<counter>LINE</counter>
+										<value>COVEREDRATIO</value>
+										<minimum>1</minimum>
+									</limit>
+								</limits>
+							</rule>
+						</rules>
+					</configuration>
 					<executions>
 						<execution>
 							<goals>
-								<goal>mutationCoverage</goal>
+								<goal>prepare-agent</goal>
+								<goal>report</goal>
 							</goals>
-							<phase>verify</phase>
 						</execution>
 					</executions>
 				</plugin>
+				<plugin>
+					<groupId>org.eluder.coveralls</groupId>
+					<artifactId>coveralls-maven-plugin</artifactId>
+					<version>4.3.0</version>
+					<configuration>
+						<repoToken>${env.COVERALLS_REPO_TOKEN}</repoToken>
+						<jacocoReports>./target/site/jacoco/jacoco.xml</jacocoReports>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.pitest</groupId>
+					<artifactId>pitest-maven</artifactId>
+					<version>1.4.3</version>
+					<configuration>
+						<threads>12</threads>
+						<targetClasses>
+							<param>com.riccardomalavolti.apps.todolist.*</param>
+						</targetClasses>
+						<excludedClasses>
+							<param>com.riccardomalavolti.apps.todolist.Main</param>
+							<param>com.riccardomalavolti.apps.todolist.model.Tag</param>
+							<param>com.riccardomalavolti.apps.todolist.model.Todo</param>
+							<param>com.riccardomalavolti.apps.todolist.view.*</param>
+						</excludedClasses>
+						<excludedMethods>*hashCode*,*equals*,*toString*,*toFront*</excludedMethods>
+						<avoidCallsTo>
+							<avoidCallsTo>java.awt.Window.toFront()</avoidCallsTo>
+							<avoidCallsTo>java.util.logging</avoidCallsTo>
+							<avoidCallsTo>org.apache.log4j</avoidCallsTo>
+							<avoidCallsTo>org.slf4j</avoidCallsTo>
+							<avoidCallsTo>org.apache.commons.logging</avoidCallsTo>
+						</avoidCallsTo>
+						<targetTests>
+							<param>com.riccardomalavolti.apps.todolist.*Test</param>
+						</targetTests>
+						<excludedTestClasses>
+							<param>com.riccardomalavolti.apps.todolist.view.*Test</param>
+						</excludedTestClasses>
+						<mutators>
+							<mutator>STRONGER</mutator>
+						</mutators>
+						<mutationThreshold>100</mutationThreshold>
+					</configuration>
+				</plugin>
 			</plugins>
-		</build>
-	</profile>
-</profiles>
-
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
-  <build>
-    <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
-      <plugins>
-        <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
-        <plugin>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>3.1.0</version>
-        </plugin>
-        <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
-        <plugin>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.0</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.1</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>2.5.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.8.2</version>
-        </plugin>
-        <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
-        <plugin>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>3.7.1</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-project-info-reports-plugin</artifactId>
-          <version>3.0.0</version>
-        </plugin>
-		<plugin>
-	   	    <groupId>org.jacoco</groupId>
-	   	    <artifactId>jacoco-maven-plugin</artifactId>
-	    	    <version>0.8.3</version>
-	    	    <configuration>
-	    	    <excludes>
-	    	    	<exclude>**/Main.*</exclude>
-	    	    </excludes>
-	    	    	<rules>
-						<rule>
-							<element>PACKAGE</element>
-							<limits>
-								<limit>
-									<counter>LINE</counter>
-									<value>COVEREDRATIO</value>
-									<minimum>1</minimum>
-								</limit>
-							</limits>
-						</rule>
-					</rules>
-	    	    </configuration>
-	    	    <executions>
-	                <execution>
-	                    <goals>
-	            	        <goal>prepare-agent</goal>
-				                <goal>report</goal>
-	            	    </goals>
-	       		</execution>
-	    	    </executions>
-		</plugin>
-		<plugin>
-			<groupId>org.eluder.coveralls</groupId>
-			<artifactId>coveralls-maven-plugin</artifactId>
-			<version>4.3.0</version>
-			<configuration>
-				<repoToken>${env.COVERALLS_REPO_TOKEN}</repoToken>
-				<jacocoReports>./target/site/jacoco/jacoco.xml</jacocoReports>
-			</configuration>
-		</plugin>
-		<plugin>
-			<groupId>org.pitest</groupId>
-			<artifactId>pitest-maven</artifactId>
-			<version>1.4.3</version>
-			<configuration>
-				<targetClasses>
-					<param>com.riccardomalavolti.apps.todolist.Todo*</param>
-				</targetClasses>
-				<targetTests>
-					<param>com.riccardomalavolti.apps.todolist.*</param>
-				</targetTests>
-				<mutators>
-					<mutator>ALL</mutator>
-				</mutators>
-				<mutationThreshold>100</mutationThreshold>
-			</configuration>
-		</plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
+		</pluginManagement>
+	</build>
 </project>

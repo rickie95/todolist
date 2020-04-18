@@ -17,9 +17,12 @@ pipeline{
 	stage('Testing'){
 	   steps{
 		echo 'Testing started'
-                sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml test -Pjacoco,mutation-testing jacoco:report coveralls:report'
-		junit 'com.riccardomalavolti.apps.todolist/target/*/*.xml'
-		jacoco()
+                sh 'export DISPLAY=33'
+		wrap([$class: 'Xvfb', additionalOptions: '', assignedLabels: '', autoDisplayName: true, debug: true, displayNameOffset: 33, screen: '1366x768x24']){
+                    sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml test -Pjacoco,mutation-testing jacoco:report coveralls:report'
+		    junit 'com.riccardomalavolti.apps.todolist/target/*/*.xml'
+		    jacoco()
+                }
 		echo 'Ending testing phase'
 	   }
 	}
@@ -27,9 +30,11 @@ pipeline{
 	stage('Verifing'){
 	    steps{
 		echo 'Code quality analysis started'
-		sh 'mvn -f ./com.riccardomalavolti.apps.todolist/pom.xml verify -Pjacoco sonar:sonar'
-		junit 'com.riccardomalavolti.apps.todolist/target/surefire-reports/*.xml'
-		echo 'Code analysis ended.'
+                sh 'export DISPLAY=33'
+		wrap([$class: 'Xvfb', additionalOptions: '', assignedLabels: '', autoDisplayName: true, debug: true, displayNameOffset: 33, screen: '1366x768x24']){
+                    sh 'mvn -f ./com.riccardomalavolti.apps.todolist/pom.xml verify -Pjacoco sonar:sonar'
+		}
+                echo 'Code analysis ended.'
 	   }
 	}
     }
