@@ -7,7 +7,7 @@
 
 	<groupId>com.riccardomalavolti.apps</groupId>
 	<artifactId>todolist</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 
 	<name>todolist</name>
 	<url>http://www.example.com</url>
