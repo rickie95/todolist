@@ -47,7 +47,7 @@ public class NewTagDialogTest extends AssertJSwingJUnitTestCase{
 		// https://github.com/joel-costigliola/assertj-swing/issues/157
 		if (window != null)
             window.cleanUp();
-		view.dispose();        
+		GuiActionRunner.execute(() -> view.dispose());        
 	}
 
 	@Test @GUITest
@@ -55,6 +55,7 @@ public class NewTagDialogTest extends AssertJSwingJUnitTestCase{
 		JPanelFixture contentPanel = window.panel("contentPanel");
 		
 		assertNotNull(contentPanel.label(JLabelMatcher.withText("Insert tag name")));
+		assertThat(contentPanel.label("insertTagNameLabel").text()).isEqualTo("Insert tag name");
 		assertTrue(contentPanel.textBox("tagTextField").isEnabled());
 		assertTrue(contentPanel.textBox("tagTextField").text().isEmpty());
 		

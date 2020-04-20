@@ -71,12 +71,12 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 	public void testInitialState() {
 		JPanelFixture todoPanel = window.panel("contentPanel").panel("todoPanel");
 		
-		todoPanel.panel("todoLabelPanel").label(JLabelMatcher.withText("Todo"));
+		GuiActionRunner.execute(() -> { todoPanel.panel("todoLabelPanel").label(JLabelMatcher.withText("Todo")); });
 		assertTrue(todoPanel.panel("todoControlPanel").button(JButtonMatcher.withText("new To Do")).isEnabled());
 		
 		JPanelFixture tagPanel = window.panel("contentPanel").panel("tagPanel");
 		
-		tagPanel.panel("tagLabelPanel").label(JLabelMatcher.withText("Tags"));
+		GuiActionRunner.execute(() -> { tagPanel.panel("tagLabelPanel").label(JLabelMatcher.withText("Tags")); });
 		assertTrue(tagPanel.panel("tagControlPanel").button(JButtonMatcher.withText("new Tag")).isEnabled());
 	}
 	
@@ -108,7 +108,7 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 		
 		GuiActionRunner.execute(() -> view.showAllTags(tagList));
 		
-		Object[] listContent = todoListPanel.contents();
+		Object[] listContent = GuiActionRunner.execute(() -> todoListPanel.contents());
 		assertThat(listContent).containsExactly(
 				new Object[]{ t1.getText(), t2.getText() });
 	}
@@ -119,7 +119,7 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 		
 		MessageBoxFactory msgBoxFact = mock(MessageBoxFactory.class);
 		
-		view.setMsgBoxFactory(msgBoxFact);
+		GuiActionRunner.execute(() -> view.setMsgBoxFactory(msgBoxFact));
 		
 		GuiActionRunner.execute(() -> view.error(msg));
 		
@@ -135,7 +135,7 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 		
 		GuiActionRunner.execute(() -> view.addTodo(t));
 		
-		Object[][] tableContent = todoListPanel.contents();
+		Object[][] tableContent = GuiActionRunner.execute(() -> todoListPanel.contents());
 		
 		assertThat(tableContent)
 			.containsExactly(new Object[][] {{"false", t.getBody()}});
@@ -150,7 +150,7 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 		GuiActionRunner.execute(() -> view.addTag(t1));
 		GuiActionRunner.execute(() -> view.addTag(t2));
 	
-		Object[] listContent = todoListPanel.contents();
+		Object[] listContent = GuiActionRunner.execute(() -> todoListPanel.contents());
 		assertThat(listContent).containsExactly(
 				new Object[]{ t1.getText(), t2.getText() });
 	}
@@ -186,13 +186,15 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 		Todo t1 = new Todo("2","Foo");
 		Todo t2 = new Todo("4","Bar");
 		
-		GuiActionRunner.execute(() -> view.addTodo(t1));
-		GuiActionRunner.execute(() -> view.addTodo(t2));
-		
-		GuiActionRunner.execute(() -> view.removeTodo(t2));
+		GuiActionRunner.execute(() -> {
+			view.addTodo(t1);
+			view.addTodo(t2);
+			
+			view.removeTodo(t2);
+		});
 		
 		assertThat(window.table("todoTable").contents()).containsExactly(new String[][] {
-			{ "false", t1.getBody()}
+			{ "false", t1.getBody() }
 		});
 		
 	}
@@ -202,8 +204,10 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 		Todo t1 = new Todo("2","Foo");
 		Todo t2 = new Todo("4","Bar");
 		
-		GuiActionRunner.execute(() -> view.addTodo(t1));
-		GuiActionRunner.execute(() -> view.addTodo(t2));
+		GuiActionRunner.execute(() -> {
+			view.addTodo(t1);
+			view.addTodo(t2);
+		});
 		
 		window.table("todoTable").selectCell(TableCell.row(1).column(1));
 		
@@ -218,8 +222,10 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 		Tag t1 = new Tag("Foo");
 		Tag t2 = new Tag("Bar");
 		
-		GuiActionRunner.execute(() -> view.addTag(t1));
-		GuiActionRunner.execute(() -> view.addTag(t2));
+		GuiActionRunner.execute(() -> {
+			view.addTag(t1);
+			view.addTag(t2);
+		});
 	
 		Object[] listContent = todoListPanel.contents();
 		assertThat(listContent).containsExactly(
@@ -238,10 +244,13 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 		Tag t1 = new Tag("2", "Foo");
 		Tag t2 = new Tag("9", "Bar");
 		
-		GuiActionRunner.execute(() -> view.addTag(t1));
-		GuiActionRunner.execute(() -> view.addTag(t2));
+		GuiActionRunner.execute(() -> {
+			view.addTag(t1);
+			view.addTag(t2);
+			
+			view.removeTag(new Tag("3", "baz"));
+		});
 		
-		GuiActionRunner.execute(() -> view.removeTag(new Tag("3", "baz")));
 	
 		Object[] listContent = todoListPanel.contents();
 		assertThat(listContent).containsExactly(
@@ -255,10 +264,13 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 		Todo t1 = new Todo("2","Foo");
 		Todo t2 = new Todo("4","Bar");
 		
-		GuiActionRunner.execute(() -> view.addTodo(t1));
-		GuiActionRunner.execute(() -> view.addTodo(t2));
+		GuiActionRunner.execute(() -> {
+			view.addTodo(t1);
+			view.addTodo(t2);
+			
+			t2.setBody("new Bar");
+		});
 		
-		t2.setBody("new Bar");
 		
 		Object[][] tableContent = todoListPanel.contents();
 		
@@ -274,8 +286,10 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 		Todo t1 = new Todo("2","Foo");
 		Todo t2 = new Todo("4","Bar");
 		
-		GuiActionRunner.execute(() -> view.addTodo(t1));
-		GuiActionRunner.execute(() -> view.addTodo(t2));
+		GuiActionRunner.execute(() -> {
+			view.addTodo(t1);
+			view.addTodo(t2);
+		});
 		
 		window.table("todoTable").selectCell(TableCell.row(1).column(1)).doubleClick();
 		
@@ -290,8 +304,11 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 	public void testNewTodoButtonClick() {
 		DefaultComboBoxModel<Tag> comboTagModel = new DefaultComboBoxModel<>();
 		JButtonFixture newTodoBtn = window.button("newTodoBtn");
-		view.setController(todoController);
-		view.setTagListModel(comboTagModel);
+		
+		GuiActionRunner.execute(() -> {
+			view.setController(todoController);
+			view.setTagListModel(comboTagModel);
+		});
 		
 		newTodoBtn.click();
 		
@@ -301,7 +318,8 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 	@Test @GUITest
 	public void testNewTagAction() {
 		JButtonFixture newTagBtn = window.button("newTagBtn");
-		view.setController(todoController);
+		
+		GuiActionRunner.execute(() -> view.setController(todoController));
 		
 		newTagBtn.click();
 		
@@ -312,6 +330,7 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 	public void testClickOnTickShouldUpdateTheTodoCompletedTag() {
 		view.setController(todoController);
 		Todo t1 = new Todo("2","Foo");		
+		
 		GuiActionRunner.execute(() -> view.addTodo(t1));
 		
 		ArgumentCaptor<Todo> todoCapture = ArgumentCaptor.forClass(Todo.class);
@@ -327,7 +346,7 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 	public void testSetController() {
 		TodoController controller = mock(TodoController.class);
 		
-		view.setController(controller);
+		GuiActionRunner.execute(() -> view.setController(controller));
 		
 		assertThat(view.getController()).isNotNull();
 		assertThat(view.getController()).isEqualTo(controller);

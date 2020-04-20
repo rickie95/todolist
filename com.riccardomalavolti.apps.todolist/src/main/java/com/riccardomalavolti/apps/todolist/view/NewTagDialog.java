@@ -39,6 +39,7 @@ public class NewTagDialog extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		
 		JLabel lblInsertTagName = new JLabel("Insert tag name");
+		lblInsertTagName.setName("insertTagNameLabel");
 		lblInsertTagName.setHorizontalAlignment(SwingConstants.LEFT);
 		contentPanel.add(lblInsertTagName);
 		
