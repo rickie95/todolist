@@ -23,7 +23,7 @@ public class NewTagDialog extends JDialog {
 	
 	private final JPanel contentPanel = new JPanel();
 	
-	private TodoController controller;
+	private transient TodoController controller;
 	private JTextField tagTextField;
 	private JButton insertButton;
 
