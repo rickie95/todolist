@@ -131,13 +131,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.assertj</groupId>
-			<artifactId>assertj-core</artifactId>
-			<version>3.15.0</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>de.bwaldvogel</groupId>
 			<artifactId>mongo-java-server</artifactId>
 			<version>1.18.2</version>
@@ -150,10 +143,19 @@
 			<version>3.9.2</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>3.15.0</version>
+			<scope>test</scope>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>testcontainers</artifactId>
 			<version>1.12.5</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -200,6 +202,25 @@
 					<artifactId>maven-project-info-reports-plugin</artifactId>
 					<version>3.0.0</version>
 				</plugin>
+				<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<id>add-test-source</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+                				<source>src/it/java</source>
+              				</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
@@ -280,12 +301,5 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<version>3.0.0</version>
-			</plugin>
-		</plugins>
 	</build>
 </project>
