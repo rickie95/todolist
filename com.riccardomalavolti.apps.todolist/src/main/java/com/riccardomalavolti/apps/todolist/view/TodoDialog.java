@@ -65,6 +65,7 @@ public abstract class TodoDialog extends JDialog {
 		contentPanel.setLayout(null);
 		
 		headingLabel = new JLabel();
+		headingLabel.setName("headingLabel");
 		headingLabel.setBounds(12, 12, 432, 17);
 		contentPanel.add(headingLabel);
 		

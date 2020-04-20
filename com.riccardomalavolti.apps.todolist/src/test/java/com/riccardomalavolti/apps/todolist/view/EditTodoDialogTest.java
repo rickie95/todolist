@@ -46,6 +46,7 @@ public class EditTodoDialogTest extends AssertJSwingJUnitTestCase {
 	@Override
 	protected void onSetUp() {
 		MockitoAnnotations.initMocks(this);
+		
 		t1 = new Tag("0", "Foo");
 		t2 = new Tag("1", "Bar");
 		todoText = "A foo todo to be edited.";
@@ -73,7 +74,8 @@ public class EditTodoDialogTest extends AssertJSwingJUnitTestCase {
 		super.onTearDown();
 		if(window.button("clearButton").isEnabled())
 			window.button("clearButton").click();
-		view.dispose();
+		
+		GuiActionRunner.execute(() -> view.dispose());
 	}
 	
 	@Test @GUITest
@@ -97,10 +99,14 @@ public class EditTodoDialogTest extends AssertJSwingJUnitTestCase {
 	public void testRemovingAllTagsFromATodoShouldBeAllowed() {
 		// We have a todo with a tag 
 		assertThat(window.button("clearButton").isEnabled()).isTrue();
+		
 		window.button("clearButton").click();
 		
+		
 		assertThat(view.getTodoElement().getTagList()).isEmpty();
-		assertThat(window.label("tagLabel").text()).isEqualTo(EditTodoDialog.TAG_LBL_NO_TAG_TEXT);
+		
+		String tagLabelText = GuiActionRunner.execute(() ->  window.label("tagLabel").text());
+		assertThat(tagLabelText).isEqualTo(EditTodoDialog.TAG_LBL_NO_TAG_TEXT);
 	}
 	
 	@Test @GUITest
