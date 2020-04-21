@@ -1,4 +1,4 @@
-package com.riccardomalavolti.apps.todolist;
+package com.riccardomalavolti.apps.todolist.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,8 +35,6 @@ public class TodoRepositoryMongoIT {
 				new ServerAddress(
 						mongo.getContainerIpAddress(), 
 						mongo.getMappedPort(27017)));
-	
-		
 		
 		MongoDatabase db = client.getDatabase(TodoRepositoryMongoDB.DB_NAME);
 		db.drop();
