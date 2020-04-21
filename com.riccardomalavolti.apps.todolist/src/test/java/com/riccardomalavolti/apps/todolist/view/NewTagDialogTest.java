@@ -86,19 +86,19 @@ public class NewTagDialogTest extends AssertJSwingJUnitTestCase{
 		JButtonFixture insertButton = window.button("insertButton");
 		
 		// As first, we test that tagTextFixture is empty and insertButton is disabled.
-		String tagTextFieldText = GuiActionRunner.execute(() -> window.textBox("tagTextField").text());
+		String tagTextFieldText = GuiActionRunner.execute(() -> tagTextFixture.text());
 		assertThat(tagTextFieldText).isEmpty();
 		assertThat(insertButton.isEnabled()).isFalse();
 		
 		// Then we proceed to put in some text
-		GuiActionRunner.execute(() -> tagTextFixture.setText(TAG_TEXT));
-		tagTextFieldText = GuiActionRunner.execute(() -> window.textBox("tagTextField").text());
+		tagTextFixture.setText(TAG_TEXT);
+		tagTextFieldText = GuiActionRunner.execute(() -> tagTextFixture.text());
 		assertThat(tagTextFieldText).isEqualTo(TAG_TEXT);
 		assertThat(insertButton.isEnabled()).isTrue();
 		
 		// We simulate a total erasing of text, insertButton should be disabled
-		GuiActionRunner.execute(() -> tagTextFixture.deleteText());
-		tagTextFieldText = GuiActionRunner.execute(() -> window.textBox("tagTextField").text());
+		tagTextFixture.deleteText();
+		tagTextFieldText = GuiActionRunner.execute(() -> tagTextFixture.text());
 		assertThat(tagTextFieldText).isEmpty();
 		assertThat(insertButton.isEnabled()).isFalse();
 	}
