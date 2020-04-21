@@ -139,18 +139,20 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 	
 	@Test @GUITest
 	public void testClearTagsShouldRestoreTagLabel() {
-		String tagLabelText;
+		String tagLabelText, selectedTag;
 		JLabelFixture tagLabel = window.label("tagLabel");
 		JComboBoxFixture tagCombo = window.comboBox("tagComboBox");
 		
 		// Initial status, no tag selected
 		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
 		assertThat(tagLabelText).isEqualTo(NewTodoDialog.TAG_LBL_NO_TAG_TEXT);
-		assertThat(tagCombo.selectedItem()).isNull();
+		selectedTag = GuiActionRunner.execute(() -> tagCombo.selectedItem());
+		assertThat(selectedTag).isNull();
 		
 		// Selecting an element
 		tagCombo.selectItem(0);
-		assertThat(tagCombo.selectedItem()).isEqualTo("Bar");
+		selectedTag = GuiActionRunner.execute(() -> tagCombo.selectedItem());
+		assertThat(selectedTag).isEqualTo("Bar");
 		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
 		assertThat(tagLabelText).isEqualTo("(Bar)");
 		
@@ -158,7 +160,8 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 		window.button("clearButton").click();
 		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
 		assertThat(tagLabelText).isEqualTo(NewTodoDialog.TAG_LBL_NO_TAG_TEXT);
-		assertThat(tagCombo.selectedItem()).isNull();
+		selectedTag = GuiActionRunner.execute(() -> tagCombo.selectedItem());
+		assertThat(selectedTag).isNull();
 	}
 	
 	@Test @GUITest

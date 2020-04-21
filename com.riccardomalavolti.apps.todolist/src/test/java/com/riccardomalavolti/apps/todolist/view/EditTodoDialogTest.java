@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.DefaultComboBoxModel;
 
@@ -15,6 +16,7 @@ import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.core.matcher.JLabelMatcher;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.DialogFixture;
+import org.assertj.swing.fixture.JButtonFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.junit.Test;
@@ -96,11 +98,14 @@ public class EditTodoDialogTest extends AssertJSwingJUnitTestCase {
 	@Test @GUITest
 	public void testRemovingAllTagsFromATodoShouldBeAllowed() {
 		// We have a todo with a tag 
-		assertThat(window.button("clearButton").isEnabled()).isTrue();
-		window.button("clearButton").click();
+		JButtonFixture clearButton = window.button("clearButton");
+		assertThat(clearButton.isEnabled()).isTrue();
+		clearButton.click();
 		
-		assertThat(view.getTodoElement().getTagList()).isEmpty();
-		assertThat(window.label("tagLabel").text()).isEqualTo(EditTodoDialog.TAG_LBL_NO_TAG_TEXT);
+		Set<Tag> tagList = GuiActionRunner.execute(() -> view.getTodoElement().getTagList());
+		assertThat(tagList).isEmpty();
+		String tagLabelText = GuiActionRunner.execute(() -> window.label("tagLabel").text());
+		assertThat(tagLabelText).isEqualTo(EditTodoDialog.TAG_LBL_NO_TAG_TEXT);
 	}
 	
 	@Test @GUITest

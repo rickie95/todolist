@@ -1,6 +1,7 @@
 package com.riccardomalavolti.apps.todolist;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 import java.util.Set;
@@ -36,11 +37,13 @@ public class TodoRepositoryMongoIT {
 						mongo.getContainerIpAddress(), 
 						mongo.getMappedPort(27017)));
 	
-		tagRepository = new TagRepositoryMongoDB(client);
-		todoRepository = new TodoRepositoryMongoDB(client, tagRepository);
+		
 		
 		MongoDatabase db = client.getDatabase(TodoRepositoryMongoDB.DB_NAME);
 		db.drop();
+		
+		tagRepository = new TagRepositoryMongoDB(client);
+		todoRepository = new TodoRepositoryMongoDB(client, tagRepository);
 		
 	}
 
@@ -176,5 +179,6 @@ public class TodoRepositoryMongoIT {
 		assertThat(idThree).isEqualTo("3");
 		assertThat(idFour).isEqualTo("4");
 	}
+	
 
 }
