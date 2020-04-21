@@ -19,15 +19,16 @@
 		<log4j.version>2.11.1</log4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<!-- SonarCloud configuration mvn verify sonar:sonar -->
+		<!-- Sonar configuration mvn verify sonar:sonar -->
 		<aggregate.report.dir>${project.build.directory}/site/jacoco/jacoco.xml</aggregate.report.dir>
 		<sonar.projectKey>rickie95_todolist</sonar.projectKey>
 		<sonar.organization>rickie95</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
-		<!-- https://stackoverflow.com/questions/13031219/how-to-configure-multi-module-maven-sonar-jacoco-to-give-merged-coverage-rep -->
-		<!-- Additional conf for jacoco integration -->
+		
+		<!--  Unit and Integration test reports -->
 		<sonar.junit.reportPaths>${project.build.directory}/surefire-reports</sonar.junit.reportPaths>
+		<sonar.junit.reportPaths>${project.build.directory}/failsafe-reports</sonar.junit.reportPaths>
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.dynamicAnalysis>reuseReport</sonar.dynamicAnalysis>
 		<sonar.language>java</sonar.language>
@@ -38,6 +39,11 @@
 			**/SimpleDocumentListener.java,
 			**/MessageBoxFactory.java
 		</sonar.exclusions>
+		<!-- Disabled rules for sonar analysis -->
+		<sonar.issue.ignore.multicriteria>e11</sonar.issue.ignore.multicriteria>
+		<!-- Ignore InheritanceDepth for view classes, since they inherit from Swing framework -->
+		<sonar.issue.ignore.multicriteria.e11.ruleKey>squid:MaximumInheritanceDepth</sonar.issue.ignore.multicriteria.e11.ruleKey>
+		<sonar.issue.ignore.multicriteria.e11.resourceKey>**.view*/*.java</sonar.issue.ignore.multicriteria.e11.resourceKey>
 	</properties>
 
 	<dependencyManagement>
