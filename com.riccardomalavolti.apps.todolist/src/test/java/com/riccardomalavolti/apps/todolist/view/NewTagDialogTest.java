@@ -51,12 +51,11 @@ public class NewTagDialogTest extends AssertJSwingJUnitTestCase{
 	}
 
 	@Test @GUITest
-	public void testInitialState() {
-		JPanelFixture contentPanel = window.panel("contentPanel");
-		
-		assertNotNull(contentPanel.label(JLabelMatcher.withText("Insert tag name")));
-		assertTrue(contentPanel.textBox("tagTextField").isEnabled());
-		assertTrue(contentPanel.textBox("tagTextField").text().isEmpty());
+	public void testInitialState() {		
+		assertNotNull(window.label(JLabelMatcher.withText("Insert tag name")));
+		assertTrue(window.textBox("tagTextField").isEnabled());
+		String tagTextField = GuiActionRunner.execute(() -> window.textBox("tagTextField").text());
+		assertThat(tagTextField).isEmpty();
 		
 		JPanelFixture buttonPanel = window.panel("buttonPanel");
 		
@@ -76,7 +75,8 @@ public class NewTagDialogTest extends AssertJSwingJUnitTestCase{
 		
 		verify(todoController).addTag(tagCaptor.capture());
 		assertThat(tagCaptor.getValue()).isEqualTo(emptyTag);
-		assertThat(window.textBox("tagTextField").text()).isEqualTo("");
+		String tagTextField = GuiActionRunner.execute(() -> window.textBox("tagTextField").text());
+		assertThat(tagTextField).isEqualTo("");
 	}
 	
 	@Test @GUITest
@@ -86,17 +86,20 @@ public class NewTagDialogTest extends AssertJSwingJUnitTestCase{
 		JButtonFixture insertButton = window.button("insertButton");
 		
 		// As first, we test that tagTextFixture is empty and insertButton is disabled.
-		assertThat(tagTextFixture.text()).isEmpty();
+		String tagTextFieldText = GuiActionRunner.execute(() -> window.textBox("tagTextField").text());
+		assertThat(tagTextFieldText).isEmpty();
 		assertThat(insertButton.isEnabled()).isFalse();
 		
 		// Then we proceed to put in some text
-		tagTextFixture.setText(TAG_TEXT);
-		assertThat(tagTextFixture.text()).isEqualTo(TAG_TEXT);
+		GuiActionRunner.execute(() -> tagTextFixture.setText(TAG_TEXT));
+		tagTextFieldText = GuiActionRunner.execute(() -> window.textBox("tagTextField").text());
+		assertThat(tagTextFieldText).isEqualTo(TAG_TEXT);
 		assertThat(insertButton.isEnabled()).isTrue();
 		
 		// We simulate a total erasing of text, insertButton should be disabled
-		tagTextFixture.deleteText();
-		assertThat(tagTextFixture.text()).isEmpty();
+		GuiActionRunner.execute(() -> tagTextFixture.deleteText());
+		tagTextFieldText = GuiActionRunner.execute(() -> window.textBox("tagTextField").text());
+		assertThat(tagTextFieldText).isEmpty();
 		assertThat(insertButton.isEnabled()).isFalse();
 	}
 	
