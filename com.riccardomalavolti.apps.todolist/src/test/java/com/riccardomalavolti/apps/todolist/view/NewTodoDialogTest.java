@@ -78,8 +78,9 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 
 	@Test @GUITest
 	public void testInitialState() {
-		assertNotNull(window.label(JLabelMatcher.withText(NewTodoDialog.HEADING_LABEL_TEXT)));
-		assertNotNull(window.label(JLabelMatcher.withText(NewTodoDialog.TAG_LBL_NO_TAG_TEXT)));
+		assertThat(window.label("headingLabel").text()).isEqualTo(NewTodoDialog.HEADING_LABEL_TEXT);
+		assertThat(window.label("tagLabel").text()).isEqualTo(NewTodoDialog.TAG_LBL_NO_TAG_TEXT);
+		
 		// Text box must be empty
 		String textBoxText = GuiActionRunner.execute(() -> window.textBox("todoTextBox").text());
 		assertThat(textBoxText).isEmpty();

@@ -48,6 +48,7 @@ public class EditTodoDialogTest extends AssertJSwingJUnitTestCase {
 	@Override
 	protected void onSetUp() {
 		MockitoAnnotations.initMocks(this);
+		
 		t1 = new Tag("0", "Foo");
 		t2 = new Tag("1", "Bar");
 		todoText = "A foo todo to be edited.";
@@ -75,7 +76,8 @@ public class EditTodoDialogTest extends AssertJSwingJUnitTestCase {
 		super.onTearDown();
 		if(window.button("clearButton").isEnabled())
 			window.button("clearButton").click();
-		view.dispose();
+		
+		GuiActionRunner.execute(() -> view.dispose());
 	}
 	
 	@Test @GUITest
