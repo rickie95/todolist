@@ -6,9 +6,7 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Test;
-import org.testcontainers.containers.GenericContainer;
 
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
@@ -17,21 +15,14 @@ import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.repositories.tag.TagRepositoryMongoDB;
 
 public class TagRepositoryMongoIT {
-	
-	@SuppressWarnings("rawtypes")
-	@ClassRule
-	public static final GenericContainer mongo = new GenericContainer("mongo:4.0.5").withExposedPorts(27017);
-	
+		
 	private MongoClient client;
 	private TagRepositoryMongoDB tagRepository;
 
 	@Before
 	public void setUp() throws Exception {
 		client = new MongoClient(
-				new ServerAddress(
-						mongo.getContainerIpAddress(), 
-						mongo.getMappedPort(27017)));
-		
+				new ServerAddress("localhost",27017));
 		MongoDatabase db = client.getDatabase(TagRepositoryMongoDB.DB_NAME);
 		db.drop();
 		

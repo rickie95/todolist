@@ -7,9 +7,7 @@ import java.util.Set;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Test;
-import org.testcontainers.containers.GenericContainer;
 
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
@@ -20,11 +18,6 @@ import com.riccardomalavolti.apps.todolist.repositories.tag.TagRepositoryMongoDB
 import com.riccardomalavolti.apps.todolist.repositories.todo.TodoRepositoryMongoDB;
 
 public class TodoRepositoryMongoIT {
-
-	@SuppressWarnings("rawtypes")
-	@ClassRule
-	public static final GenericContainer mongo = new GenericContainer("mongo:4.0.5").withExposedPorts(27017);
-	
 	private MongoClient client;
 	private TodoRepositoryMongoDB todoRepository;
 	private TagRepositoryMongoDB tagRepository;
@@ -32,16 +25,13 @@ public class TodoRepositoryMongoIT {
 	@Before
 	public void setup() {
 		client = new MongoClient(
-				new ServerAddress(
-						mongo.getContainerIpAddress(), 
-						mongo.getMappedPort(27017)));
+				new ServerAddress("localhost",27017));
 		
 		MongoDatabase db = client.getDatabase(TodoRepositoryMongoDB.DB_NAME);
 		db.drop();
 		
 		tagRepository = new TagRepositoryMongoDB(client);
 		todoRepository = new TodoRepositoryMongoDB(client, tagRepository);
-		
 	}
 
 	@After
