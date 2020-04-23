@@ -14,11 +14,15 @@ import javax.swing.DefaultComboBoxModel;
 
 import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.core.matcher.JLabelMatcher;
+import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.fixture.JButtonFixture;
+import org.assertj.swing.fixture.JComboBoxFixture;
+import org.assertj.swing.fixture.JTextComponentFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -44,7 +48,12 @@ public class EditTodoDialogTest extends AssertJSwingJUnitTestCase {
 	@Captor
 	private ArgumentCaptor<ArrayList<Tag>> tagListCaptor;
 	private String todoText;
-
+	
+	@BeforeClass
+	public static void setupOnce() {
+		FailOnThreadViolationRepaintManager.install();
+	}
+	
 	@Override
 	protected void onSetUp() {
 		MockitoAnnotations.initMocks(this);
@@ -67,7 +76,6 @@ public class EditTodoDialogTest extends AssertJSwingJUnitTestCase {
 		window = new DialogFixture(robot(), view);
 		window.show();
 		
-		robot().waitForIdle();
 	}
 	
 	@Override
@@ -80,18 +88,24 @@ public class EditTodoDialogTest extends AssertJSwingJUnitTestCase {
 	
 	@Test @GUITest
 	public void testInitialState() {
+		JTextComponentFixture textBox = window.textBox("todoTextBox");
+		JComboBoxFixture comboBox = window.comboBox("tagComboBox");
+		JButtonFixture clearButton = window.button("clearButton");
+		JButtonFixture confirmButton = window.button("clearButton");
+		JButtonFixture cancelButton = window.button("clearButton");
+		
 		assertNotNull(window.label(JLabelMatcher.withText(EditTodoDialog.HEADING_LABEL_TEXT)));
 		assertNotNull(window.label(JLabelMatcher.withText(
 				Tag.listToString(new ArrayList<Tag>(todo.getTagList())))));
 		// Text box must be empty
-		assertThat(window.textBox("todoTextBox").text()).isEqualTo(todoText);
+		assertThat(textBox.text()).isEqualTo(todoText);
 		// Tag selection must be void
-		assertThat(window.comboBox("tagComboBox").selectedItem()).isNull();
+		assertThat(comboBox.selectedItem()).isNull();
 		
 		
-		assertThat(window.button("clearButton").isEnabled()).isTrue();
-		assertThat(window.button("confirmButton").isEnabled()).isTrue();
-		assertThat(window.button("cancelButton").isEnabled()).isTrue();
+		assertThat(clearButton.isEnabled()).isTrue();
+		assertThat(confirmButton.isEnabled()).isTrue();
+		assertThat(cancelButton.isEnabled()).isTrue();
 		
 	}
 	
@@ -111,14 +125,17 @@ public class EditTodoDialogTest extends AssertJSwingJUnitTestCase {
 	@Test @GUITest
 	public void testEditAndCommitUpdate() {
 		String new_text = "Updated todo";
-		window.textBox("todoTextBox").setText(new_text);
+		JTextComponentFixture textBox = window.textBox("todoTextBox");
+		
+		textBox.setText(new_text);
 		
 		ArgumentCaptor<Todo> todoCaptor = ArgumentCaptor.forClass(Todo.class);
 
 		window.button("confirmButton").click();
 		
 		verify(todoController).updateTodo(todoCaptor.capture());
-		assertThat(todoCaptor.getValue().getTagList()).containsExactlyElementsOf(view.getTodoElement().getTagList());
+		Set<Tag> tagList = GuiActionRunner.execute(() -> view.getTodoElement().getTagList());
+		assertThat(todoCaptor.getValue().getTagList()).containsExactlyElementsOf(tagList);
 		assertThat(todoCaptor.getValue().getBody()).isEqualTo(new_text);
 	}
 

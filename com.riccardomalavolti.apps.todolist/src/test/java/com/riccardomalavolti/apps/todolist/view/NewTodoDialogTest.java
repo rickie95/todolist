@@ -70,8 +70,7 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 	@Override
 	protected void onTearDown() {
 		super.onTearDown();
-		if(window.button("clearButton").isEnabled())
-			window.button("clearButton").click();
+		GuiActionRunner.execute(()-> view.clearTags());
 		view.dispose();
 	}
 	
