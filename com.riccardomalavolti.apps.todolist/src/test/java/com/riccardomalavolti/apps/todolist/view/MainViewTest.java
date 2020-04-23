@@ -19,7 +19,6 @@ import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.FrameFixture;
 import org.assertj.swing.fixture.JButtonFixture;
 import org.assertj.swing.fixture.JListFixture;
-import org.assertj.swing.fixture.JPanelFixture;
 import org.assertj.swing.fixture.JTableFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
@@ -69,20 +68,16 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 	
 	@Test @GUITest
 	public void testInitialState() {
-		JPanelFixture todoPanel = window.panel("contentPanel").panel("todoPanel");
+		window.label(JLabelMatcher.withText("Todo"));
+		assertTrue(window.button(JButtonMatcher.withText("new To Do")).isEnabled());
 		
-		GuiActionRunner.execute(() -> { todoPanel.panel("todoLabelPanel").label(JLabelMatcher.withText("Todo")); });
-		assertTrue(todoPanel.panel("todoControlPanel").button(JButtonMatcher.withText("new To Do")).isEnabled());
-		
-		JPanelFixture tagPanel = window.panel("contentPanel").panel("tagPanel");
-		
-		GuiActionRunner.execute(() -> { tagPanel.panel("tagLabelPanel").label(JLabelMatcher.withText("Tags")); });
-		assertTrue(tagPanel.panel("tagControlPanel").button(JButtonMatcher.withText("new Tag")).isEnabled());
+		window.label(JLabelMatcher.withText("Tags"));
+		assertTrue(window.button(JButtonMatcher.withText("new Tag")).isEnabled());
 	}
 	
 	@Test @GUITest
 	public void testShowAllTodo() {
-		JTableFixture todoListPanel = window.panel("contentPanel").table("todoTable");
+		JTableFixture todoListPanel = window.table("todoTable");
 		
 		Todo t1 = new Todo("2","Foo");
 		Todo t2 = new Todo("4","Bar");
@@ -90,7 +85,7 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 		
 		GuiActionRunner.execute(() -> view.showAllTodo(todoList));
 		
-		Object[][] tableContent = todoListPanel.contents();
+		Object[][] tableContent = GuiActionRunner.execute(() -> todoListPanel.contents());
 		
 		assertThat(tableContent)
 		.containsExactly(new Object[][] {
@@ -101,7 +96,7 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 	
 	@Test @GUITest
 	public void testShowAllTags() {
-		JListFixture todoListPanel = window.panel("contentPanel").list("tagListView");
+		JListFixture todoListPanel = window.list("tagListView");
 		Tag t1 = new Tag("Foo");
 		Tag t2 = new Tag("Bar");
 		List<Tag> tagList = new ArrayList<Tag>(Arrays.asList(t1, t2));
@@ -109,6 +104,7 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 		GuiActionRunner.execute(() -> view.showAllTags(tagList));
 		
 		Object[] listContent = GuiActionRunner.execute(() -> todoListPanel.contents());
+    
 		assertThat(listContent).containsExactly(
 				new Object[]{ t1.getText(), t2.getText() });
 	}
@@ -147,8 +143,10 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 		Tag t1 = new Tag("Foo");
 		Tag t2 = new Tag("Bar");
 		
-		GuiActionRunner.execute(() -> view.addTag(t1));
-		GuiActionRunner.execute(() -> view.addTag(t2));
+		GuiActionRunner.execute(() -> {
+			view.addTag(t1);
+			view.addTag(t2);
+		});
 	
 		Object[] listContent = GuiActionRunner.execute(() -> todoListPanel.contents());
 		assertThat(listContent).containsExactly(
@@ -161,8 +159,10 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 		Todo t1 = new Todo("2","Foo");
 		Todo t2 = new Todo("4","Bar");
 		
-		GuiActionRunner.execute(() -> view.addTodo(t1));
-		GuiActionRunner.execute(() -> view.addTodo(t2));
+		GuiActionRunner.execute(() -> {
+			view.addTodo(t1);
+			view.addTodo(t2);
+		});
 		
 		window.table("todoTable").selectCell(TableCell.row(1).column(1));
 		
@@ -189,9 +189,10 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 		GuiActionRunner.execute(() -> {
 			view.addTodo(t1);
 			view.addTodo(t2);
-			
-			view.removeTodo(t2);
-		});
+    });
+    
+		GuiActionRunner.execute(() -> view.removeTodo(t2));
+
 		
 		assertThat(window.table("todoTable").contents()).containsExactly(new String[][] {
 			{ "false", t1.getBody() }
@@ -211,7 +212,7 @@ public class MainViewTest extends AssertJSwingJUnitTestCase{
 		
 		window.table("todoTable").selectCell(TableCell.row(1).column(1));
 		
-		Todo selectedTodo = view.getSelectedTodo();
+		Todo selectedTodo = GuiActionRunner.execute(() -> view.getSelectedTodo());
 		
 		assertThat(selectedTodo).isEqualTo(t2);
 	}
