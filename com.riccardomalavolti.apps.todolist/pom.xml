@@ -17,7 +17,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<log4j.version>2.11.1</log4j.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Sonar configuration mvn verify sonar:sonar -->
 		<aggregate.report.dir>${project.build.directory}/site/jacoco/jacoco.xml</aggregate.report.dir>
@@ -25,8 +25,8 @@
 		<sonar.organization>rickie95</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
-		
-		<!--  Unit and Integration test reports -->
+
+		<!-- Unit and Integration test reports -->
 		<sonar.junit.reportPaths>${project.build.directory}/surefire-reports</sonar.junit.reportPaths>
 		<sonar.junit.reportPaths>${project.build.directory}/failsafe-reports</sonar.junit.reportPaths>
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
@@ -41,7 +41,8 @@
 		</sonar.exclusions>
 		<!-- Disabled rules for sonar analysis -->
 		<sonar.issue.ignore.multicriteria>e11</sonar.issue.ignore.multicriteria>
-		<!-- Ignore InheritanceDepth for view classes, since they inherit from Swing framework -->
+		<!-- Ignore InheritanceDepth for view classes, since they inherit from 
+			Swing framework -->
 		<sonar.issue.ignore.multicriteria.e11.ruleKey>squid:MaximumInheritanceDepth</sonar.issue.ignore.multicriteria.e11.ruleKey>
 		<sonar.issue.ignore.multicriteria.e11.resourceKey>**.view*/*.java</sonar.issue.ignore.multicriteria.e11.resourceKey>
 	</properties>
@@ -169,7 +170,7 @@
 	</dependencies>
 
 	<build>
-	
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -187,29 +188,61 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>build-helper-maven-plugin</artifactId>
-					<version>3.0.0</version>
-					<executions>
-						<execution>
-							<id>add-test-source</id>
-							<phase>generate-test-sources</phase>
-							<goals>
-								<goal>add-test-source</goal>
-							</goals>
-							<configuration>
-								<sources>
-									<source>src/it/java</source>
-								</sources>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>0.27.2</version>
+				<configuration>
+					<images>
+						<image>
+							<name>mongo:4.0.5</name>
+							<run>
+								<ports>
+									<port>27017:27017</port>
+								</ports>
+							</run>
+						</image>
+					</images>
+				</configuration>
+				<executions>
+					<execution>
+						<id>docker:start</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>docker:stop</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<id>add-test-source</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>src/it/java</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
-		
-		
 
 		<pluginManagement>
 			<plugins>
@@ -259,8 +292,6 @@
 					<version>3.0.0</version>
 				</plugin>
 
-				
-
 				<plugin>
 					<groupId>org.jacoco</groupId>
 					<artifactId>jacoco-maven-plugin</artifactId>
@@ -305,7 +336,7 @@
 						<jacocoReports>./target/site/jacoco/jacoco.xml</jacocoReports>
 					</configuration>
 				</plugin>
-				
+
 				<plugin>
 					<groupId>org.pitest</groupId>
 					<artifactId>pitest-maven</artifactId>
@@ -341,7 +372,7 @@
 						<mutationThreshold>100</mutationThreshold>
 					</configuration>
 				</plugin>
-				
+
 			</plugins>
 		</pluginManagement>
 	</build>
