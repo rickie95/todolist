@@ -140,7 +140,8 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 	@Test @GUITest
 	public void testClearTagsShouldRestoreTagLabel() {
 		String tagLabelText, selectedTag;
-		JLabelFixture tagLabel = window.label("tagLabel");
+		JLabelFixture tagLabel = GuiActionRunner.execute(() -> window.label("tagLabel"));
+		JButtonFixture clearButton = GuiActionRunner.execute(() -> window.button("clearButton"));
 		JComboBoxFixture tagCombo = window.comboBox("tagComboBox");
 		
 		// Initial status, no tag selected
@@ -157,7 +158,7 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 		assertThat(tagLabelText).isEqualTo("(Bar)");
 		
 		// Click on Clear Tag
-		window.button("clearButton").click();
+		clearButton.click();
 		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
 		assertThat(tagLabelText).isEqualTo(NewTodoDialog.TAG_LBL_NO_TAG_TEXT);
 		selectedTag = GuiActionRunner.execute(() -> tagCombo.selectedItem());
