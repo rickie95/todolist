@@ -2,6 +2,7 @@ package com.riccardomalavolti.apps.todolist.model;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Todo {
@@ -29,6 +30,12 @@ public class Todo {
 		this.tags = new HashSet<>();
 	}
 	
+	public Todo(String id, String body, List<Tag> tagList) {
+		this.id = id;
+		this.body = body;
+		this.tags = new HashSet<>(tagList);
+	}
+	
 	public Todo(Todo te) {
 		if(te == null)
 			te = new Todo("");
@@ -36,8 +43,7 @@ public class Todo {
 		this.id = te.getId();
 		this.body = te.getBody();
 		this.tags = te.getTagList();
-		this.completed = te.getStatus();
-		
+		this.completed = te.getStatus();	
 	}
 	
 	public boolean isTaggedAs(Tag tag) {

@@ -82,7 +82,8 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 		assertThat(window.label("tagLabel").text()).isEqualTo(NewTodoDialog.TAG_LBL_NO_TAG_TEXT);
 		
 		// Text box must be empty
-		assertThat(window.textBox("todoTextBox").text()).isEmpty();
+		String textBoxText = GuiActionRunner.execute(() -> window.textBox("todoTextBox").text());
+		assertThat(textBoxText).isEmpty();
 		// Tag selection must be void
 		assertThat(window.comboBox("tagComboBox").selectedItem()).isNull();
 		
@@ -99,59 +100,70 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 		JButtonFixture insertButton = window.button("confirmButton");
 		
 		// Starting empty, insertButton must be disabled
-		assertThat(todoTextBox.text()).isEmpty();
+		assertThat(GuiActionRunner.execute(() -> todoTextBox.text())).isEmpty();
 		assertThat(insertButton.isEnabled()).isFalse();
 		
 		// Write something, insertButton must be enabled
 		todoTextBox.setText("foo");
-		assertThat(todoTextBox.text()).isNotEmpty();
+		assertThat(GuiActionRunner.execute(() -> todoTextBox.text())).isNotEmpty();
 		assertThat(insertButton.isEnabled()).isTrue();
 		
 		// Cancel everything, insertButton must be disabled
 		todoTextBox.setText("");
-		assertThat(todoTextBox.text()).isEmpty();
+		assertThat(GuiActionRunner.execute(() -> todoTextBox.text())).isEmpty();
 		assertThat(insertButton.isEnabled()).isFalse();
 	}
 	
 	@Test @GUITest
 	public void testAddingTagsShouldModifyTheTagLabel() {
-		robot().waitForIdle();
+		String tagLabelText;
 		JLabelFixture tagLabel = window.label("tagLabel");
 		JComboBoxFixture tagCombo = window.comboBox("tagComboBox");
 		
 		// Initial status, no tag selected
-		assertThat(tagLabel.text()).isEqualTo(NewTodoDialog.TAG_LBL_NO_TAG_TEXT);
+		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
+		assertThat(tagLabelText).isEqualTo(NewTodoDialog.TAG_LBL_NO_TAG_TEXT);
 		assertThat(tagCombo.selectedItem()).isNull();
 		
 		// Selecting an element
 		tagCombo.click().selectItem(0);
 		assertThat(tagCombo.selectedItem()).isEqualTo("Bar");
-		assertThat(tagLabel.text()).isEqualTo("(Bar)");
+		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
+		assertThat(tagLabelText).isEqualTo("(Bar)");
 		
 		tagCombo.click().selectItem(1);
 		assertThat(tagCombo.selectedItem()).isEqualTo("Foo");
-		assertThat(tagLabel.text()).isEqualTo("(Bar)(Foo)");
+		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
+		assertThat(tagLabelText).isEqualTo("(Bar)(Foo)");
 		
 	}
 	
 	@Test @GUITest
 	public void testClearTagsShouldRestoreTagLabel() {
-		JLabelFixture tagLabel = window.label("tagLabel");
+		String tagLabelText, selectedTag;
+		JLabelFixture tagLabel = GuiActionRunner.execute(() -> window.label("tagLabel"));
+		JButtonFixture clearButton = GuiActionRunner.execute(() -> window.button("clearButton"));
 		JComboBoxFixture tagCombo = window.comboBox("tagComboBox");
 		
 		// Initial status, no tag selected
-		assertThat(tagLabel.text()).isEqualTo(NewTodoDialog.TAG_LBL_NO_TAG_TEXT);
-		assertThat(tagCombo.selectedItem()).isNull();
+		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
+		assertThat(tagLabelText).isEqualTo(NewTodoDialog.TAG_LBL_NO_TAG_TEXT);
+		selectedTag = GuiActionRunner.execute(() -> tagCombo.selectedItem());
+		assertThat(selectedTag).isNull();
 		
 		// Selecting an element
 		tagCombo.selectItem(0);
-		assertThat(tagCombo.selectedItem()).isEqualTo("Bar");
-		assertThat(tagLabel.text()).isEqualTo("(Bar)");
+		selectedTag = GuiActionRunner.execute(() -> tagCombo.selectedItem());
+		assertThat(selectedTag).isEqualTo("Bar");
+		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
+		assertThat(tagLabelText).isEqualTo("(Bar)");
 		
 		// Click on Clear Tag
-		window.button("clearButton").click();
-		assertThat(tagLabel.text()).isEqualTo(NewTodoDialog.TAG_LBL_NO_TAG_TEXT);
-		assertThat(tagCombo.selectedItem()).isNull();
+		clearButton.click();
+		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
+		assertThat(tagLabelText).isEqualTo(NewTodoDialog.TAG_LBL_NO_TAG_TEXT);
+		selectedTag = GuiActionRunner.execute(() -> tagCombo.selectedItem());
+		assertThat(selectedTag).isNull();
 	}
 	
 	@Test @GUITest
@@ -177,8 +189,8 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 		// assert that todoArg is a Todo with those tags.
 		
 		verify(todoController).addTodo(todoTaggedArg.capture());
-		
-		assertThat(window.textBox("todoTextBox").text()).isEmpty();
+		String textBoxText = GuiActionRunner.execute(() -> window.textBox("todoTextBox").text());
+		assertThat(textBoxText).isEmpty();
 	}
 	
 	@Test @GUITest
