@@ -36,7 +36,7 @@
 		<sonar.exclusions>
 			**/Tag.java,
 			**/Todo.java,
-			**/Main.java,
+			**/TodoList.java,
 			**/SimpleDocumentListener.java,
 			**/MessageBoxFactory.java
 		</sonar.exclusions>
@@ -349,7 +349,7 @@
 					<version>0.8.3</version>
 					<configuration>
 						<excludes>
-							<exclude>**/Main.*</exclude>
+							<exclude>**/TodoList.*</exclude>
 							<exclude>**/Tag.*</exclude>
 							<exclude>**/Todo.*</exclude>
 							<exclude>**/SimpleDocumentListener.*</exclude>
@@ -398,7 +398,7 @@
 							<param>com.riccardomalavolti.apps.todolist.*</param>
 						</targetClasses>
 						<excludedClasses>
-							<param>com.riccardomalavolti.apps.todolist.Main</param>
+							<param>com.riccardomalavolti.apps.todolist.TodoList</param>
 							<param>com.riccardomalavolti.apps.todolist.model.Tag</param>
 							<param>com.riccardomalavolti.apps.todolist.model.Todo</param>
 							<param>com.riccardomalavolti.apps.todolist.view.*</param>
