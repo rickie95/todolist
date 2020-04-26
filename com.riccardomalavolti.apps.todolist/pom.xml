@@ -17,6 +17,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<log4j.version>2.11.1</log4j.version>
+		<cucumber.version>4.2.2</cucumber.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
 		<!-- Sonar configuration mvn verify sonar:sonar -->
@@ -35,7 +36,7 @@
 		<sonar.exclusions>
 			**/Tag.java,
 			**/Todo.java,
-			**/Main.java,
+			**/TodoList.java,
 			**/SimpleDocumentListener.java,
 			**/MessageBoxFactory.java
 		</sonar.exclusions>
@@ -167,6 +168,25 @@
 			<version>1.12.5</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-java</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-junit</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>info.picocli</groupId>
+			<artifactId>picocli</artifactId>
+			<version>4.2.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -182,6 +202,21 @@
 							<goal>integration-test</goal>
 							<goal>verify</goal>
 						</goals>
+					</execution>
+					<execution>
+						<id>bdd-test</id>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+						<configuration>
+							<excludes>
+								<exclude>**/*IT.java</exclude>
+							</excludes>
+							<includes>
+								<include>**/*BDD.java</include>
+							</includes>
+						</configuration>
 					</execution>
 				</executions>
 				<configuration>
@@ -201,6 +236,10 @@
 								<ports>
 									<port>27017:27017</port>
 								</ports>
+								<network>
+									<mode>bridge</mode>
+									<name>todolist-network</name>
+								</network>
 							</run>
 						</image>
 					</images>
@@ -237,7 +276,23 @@
 						<configuration>
 							<sources>
 								<source>src/it/java</source>
+								<source>src/e2e/java</source>
+								<source>src/bdd/java</source>
 							</sources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>add-test-resource</id>
+						<phase>generate-test-resources</phase>
+						<goals>
+							<goal>add-test-resource</goal>
+						</goals>
+						<configuration>
+							<resources>
+								<resource>
+									<directory>src/bdd/resources</directory>
+								</resource>
+							</resources>
 						</configuration>
 					</execution>
 				</executions>
@@ -298,7 +353,7 @@
 					<version>0.8.3</version>
 					<configuration>
 						<excludes>
-							<exclude>**/Main.*</exclude>
+							<exclude>**/TodoList.*</exclude>
 							<exclude>**/Tag.*</exclude>
 							<exclude>**/Todo.*</exclude>
 							<exclude>**/SimpleDocumentListener.*</exclude>
@@ -347,7 +402,7 @@
 							<param>com.riccardomalavolti.apps.todolist.*</param>
 						</targetClasses>
 						<excludedClasses>
-							<param>com.riccardomalavolti.apps.todolist.Main</param>
+							<param>com.riccardomalavolti.apps.todolist.TodoList</param>
 							<param>com.riccardomalavolti.apps.todolist.model.Tag</param>
 							<param>com.riccardomalavolti.apps.todolist.model.Todo</param>
 							<param>com.riccardomalavolti.apps.todolist.view.*</param>

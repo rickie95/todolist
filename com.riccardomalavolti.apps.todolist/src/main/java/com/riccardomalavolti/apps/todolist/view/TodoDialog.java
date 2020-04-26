@@ -152,7 +152,7 @@ public abstract class TodoDialog extends JDialog {
         redrawTagLbl();
 	}
 	
-	private void clearTags() {
+	public void clearTags() {
 		selectedTagList.clear();
 		this.tagComboBox.setSelectedItem(null);
 		this.tagLabel.setText(TAG_LBL_NO_TAG_TEXT);
