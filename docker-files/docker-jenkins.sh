@@ -1,7 +1,9 @@
 #! /bin/bash -e
 getent group docker-host && delgroup --quiet docker-host
-DOCKER_USER_GROUP=$(stat -c '%g' ${DOCKER_SOCKET})
-echo "Creating Docker User Group: $DOCKER_USER_GROUP"
-addgroup -g $DOCKER_USER_GROUP docker-host
-addgroup jenkins docker-host
+DOCKER_GID=$(stat -c '%g' ${DOCKER_SOCKET})
+echo "Creating Docker User Group: $DOCKER_GIDP"
+addgroup -g $DOCKER_GID docker-host
+if [ $? -eq 0 ]; then 
+    addgroup jenkins docker-host
+fi
 su -s /bin/bash -c "/sbin/tini -- /usr/local/bin/jenkins.sh" jenkins
