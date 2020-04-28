@@ -22,6 +22,11 @@ import com.riccardomalavolti.apps.todolist.repositories.tag.TagRepository;
 
 public class TodoRepositoryMongoDB implements TodoRepository {
 
+	public static final String MONGO_KEY_FOR_TAGLIST = "tags";
+	public static final String MONGO_KEY_FOR_STATUS = "status";
+	public static final String MONGO_KEY_FOR_BODY = "body";
+	public static final String MONGO_KEY_FOR_ID = "id";
+	
 	public static final String SERVER_ADDRESS = "localhost";
 	public static final String DB_NAME = "TodoListDB";
 	public static final String COLLECTION_NAME = "TodoCollection";
@@ -45,19 +50,19 @@ public class TodoRepositoryMongoDB implements TodoRepository {
 		if (doc == null)
 			return null;
 
-		Todo todo = new Todo(doc.getString("id"), doc.getString("body"));
-		todo.setAsCompleted(doc.getBoolean("status"));
-		List<String> tagList = doc.getList("tags", String.class);
+		Todo todo = new Todo(doc.getString(MONGO_KEY_FOR_ID), doc.getString(MONGO_KEY_FOR_BODY));
+		todo.setAsCompleted(doc.getBoolean(MONGO_KEY_FOR_STATUS));
+		List<String> tagList = doc.getList(MONGO_KEY_FOR_TAGLIST, String.class);
 		todo.setTagSet(fromTagIdListToTagSet(tagList));
 		return todo;
 	}
 
 	private Document fromTodoToDocument(Todo todo) {
 		Document d = new Document();
-		d.append("id", todo.getId());
-		d.append("body", todo.getBody());
-		d.append("status", todo.getStatus());
-		d.append("tags", fromTagSetToStringList(todo.getTagList()));
+		d.append(MONGO_KEY_FOR_ID, todo.getId());
+		d.append(MONGO_KEY_FOR_BODY, todo.getBody());
+		d.append(MONGO_KEY_FOR_STATUS, todo.getStatus());
+		d.append(MONGO_KEY_FOR_TAGLIST, fromTagSetToStringList(todo.getTagList()));
 		return d;
 	}
 
@@ -87,20 +92,19 @@ public class TodoRepositoryMongoDB implements TodoRepository {
 
 	@Override
 	public List<Todo> findByTag(Tag t) {
-		LOGGER.debug("Fetching todo from database by tag {}", t.toString());
-		return StreamSupport.stream(todoCollection.find(Filters.all("tags", t.getId())).spliterator(), false)
+		LOGGER.debug("Fetching todo from database by tag {}", t);
+		return StreamSupport.stream(todoCollection.find(Filters.all(MONGO_KEY_FOR_TAGLIST, t.getId())).spliterator(), false)
 				.map(this::fromDocumentToTodo).collect(Collectors.toList());
 	}
 
 	@Override
 	public List<Todo> findByBody(String text) {
-		List<Todo> todoList = new ArrayList<>();
+		List<Todo> todoList;
 		
 		todoList = StreamSupport.stream(todoCollection.find().spliterator(), false)
 				.map(this::fromDocumentToTodo)
 				.filter(t -> t.getBody().toLowerCase().contains(text.toLowerCase()))
 				.collect(Collectors.toList());
-				//.map(todoList::add);
 		
 		LOGGER.debug("Fetched todo containg text '{}': {} found.", text, todoList.size());
 
@@ -109,7 +113,7 @@ public class TodoRepositoryMongoDB implements TodoRepository {
 
 	@Override
 	public Todo findById(Todo todo) {
-		Document doc = todoCollection.find(Filters.eq("id", todo.getId())).first();
+		Document doc = todoCollection.find(Filters.eq(MONGO_KEY_FOR_ID, todo.getId())).first();
 		return fromDocumentToTodo(doc);
 	}
 
@@ -118,18 +122,18 @@ public class TodoRepositoryMongoDB implements TodoRepository {
 		if(todo.getId() == null)
 			todo.setId(computeNewId());
 		
-		if (todoCollection.countDocuments(Filters.eq("id", todo.getId())) == 0)
+		if (todoCollection.countDocuments(Filters.eq(MONGO_KEY_FOR_ID, todo.getId())) == 0)
 			todoCollection.insertOne(fromTodoToDocument(todo));
 	}
 
 	@Override
 	public void updateTodoElement(Todo todo) {
-		todoCollection.updateOne(Filters.eq("id", todo.getId()), new Document("$set", fromTodoToDocument(todo)));
+		todoCollection.updateOne(Filters.eq(MONGO_KEY_FOR_ID, todo.getId()), new Document("$set", fromTodoToDocument(todo)));
 	}
 
 	@Override
 	public void removeTodoElement(Todo todo) {
-		todoCollection.deleteOne(Filters.eq("id", todo.getId()));
+		todoCollection.deleteOne(Filters.eq(MONGO_KEY_FOR_ID, todo.getId()));
 	}
 
 	@Override
@@ -141,7 +145,7 @@ public class TodoRepositoryMongoDB implements TodoRepository {
 	public String computeNewId() {
 		if(idCounter == -1) {
 			List<String> ids = StreamSupport.stream(todoCollection.find().spliterator(), false)
-					.map(doc -> (String) doc.get("id")).collect(Collectors.toCollection(ArrayList::new));
+					.map(doc -> (String) doc.get(MONGO_KEY_FOR_ID)).collect(Collectors.toCollection(ArrayList::new));
 
 			Collections.sort(ids);
 			idCounter = 0;
