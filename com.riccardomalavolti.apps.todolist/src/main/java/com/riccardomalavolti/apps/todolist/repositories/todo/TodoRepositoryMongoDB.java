@@ -46,6 +46,7 @@ public class TodoRepositoryMongoDB implements TodoRepository {
 			return null;
 
 		Todo todo = new Todo(doc.getString("id"), doc.getString("body"));
+		todo.setAsCompleted(doc.getBoolean("status"));
 		List<String> tagList = doc.getList("tags", String.class);
 		todo.setTagSet(fromTagIdListToTagSet(tagList));
 		return todo;
@@ -55,6 +56,7 @@ public class TodoRepositoryMongoDB implements TodoRepository {
 		Document d = new Document();
 		d.append("id", todo.getId());
 		d.append("body", todo.getBody());
+		d.append("status", todo.getStatus());
 		d.append("tags", fromTagSetToStringList(todo.getTagList()));
 		return d;
 	}
