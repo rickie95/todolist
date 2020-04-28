@@ -228,6 +228,18 @@ public class TodoRepositoryMongoDBTest {
 	}
 	
 	@Test
+	public void testUpdateTodoWhenStatusChanged() {
+		Todo todo = new Todo("0", "Foo");
+		todoRepository.addTodoElement(todo);
+		
+		todo.setAsCompleted(true);
+		
+		todoRepository.updateTodoElement(todo);
+		Todo recoveredTodo = todoRepository.findById(new Todo("0", "null"));
+		assertThat(recoveredTodo.getStatus()).isTrue();
+	}
+	
+	@Test
 	public void testUpdateANonExistentTodo() {
 		Todo todo = new Todo("0", "Foo");
 		
