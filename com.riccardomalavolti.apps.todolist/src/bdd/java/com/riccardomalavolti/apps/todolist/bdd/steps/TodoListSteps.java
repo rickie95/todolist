@@ -2,6 +2,7 @@ package com.riccardomalavolti.apps.todolist.bdd.steps;
 
 import static org.assertj.swing.launcher.ApplicationLauncher.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -20,6 +21,7 @@ import org.assertj.swing.fixture.FrameFixture;
 import org.bson.Document;
 
 import com.mongodb.MongoClient;
+import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.repositories.todo.TodoRepositoryMongoDB;
 
 import cucumber.api.java.After;
@@ -56,13 +58,17 @@ public class TodoListSteps {
 	@Given("the db contains a todo with ID {string} and text {string}")
 	public void db_contains_todo_ID_and_text(String string, String string2) {
 		mongoClient.getDatabase(DB_NAME).getCollection(COLLECTION_NAME)
-			.insertOne(new Document().append("id", string).append("body", string2));
+			.insertOne(new Document()
+					.append(TodoRepositoryMongoDB.MONGO_KEY_FOR_ID, string)
+					.append(TodoRepositoryMongoDB.MONGO_KEY_FOR_BODY, string2)
+					.append(TodoRepositoryMongoDB.MONGO_KEY_FOR_STATUS, false)
+					.append(TodoRepositoryMongoDB.MONGO_KEY_FOR_TAGLIST, new HashSet<Tag>()));
 		
 		
-		LOGGER.debug("I should wrote something on the db");
+		LOGGER.info("I should wrote something on the db");
 		List<Document> list = StreamSupport.stream(mongoClient.getDatabase(DB_NAME)
 				.getCollection(COLLECTION_NAME).find().spliterator(), false).collect(Collectors.toList());
-		list.forEach(doc -> LOGGER.debug(doc.toString()));
+		list.forEach(doc -> LOGGER.info(doc.toString()));
 	}
 	
 	@When("MainView is shown")
@@ -78,11 +84,11 @@ public class TodoListSteps {
 		}).using(BasicRobot.robotWithCurrentAwtHierarchy());
 	}
 	
-	@Then("the todo list contains a todo with ID {string} and text {string}")
-	public void todolist_should_contain_todo_with_id_and_text(String id, String text) {
+	@Then("the todo list contains a todo with text {string}")
+	public void todolist_should_contain_todo_with_text(String string) {
 		Object[][] tableContent = GuiActionRunner.execute(() -> window.table("todoTable").contents());
 		assertThat(tableContent).contains(new Object[][] {
-				{"false", text}
+				{"false", string}
 			});
 	}
 	
