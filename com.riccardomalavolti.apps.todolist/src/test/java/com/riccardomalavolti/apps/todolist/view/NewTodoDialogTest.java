@@ -7,8 +7,6 @@ import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertNotNull;
 import static org.assertj.core.api.Assertions.*;
 
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
@@ -20,7 +18,6 @@ import org.assertj.swing.fixture.JLabelFixture;
 import org.assertj.swing.fixture.JTextComponentFixture;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.annotation.GUITest;
-import org.assertj.swing.core.matcher.JLabelMatcher;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
