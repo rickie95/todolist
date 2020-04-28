@@ -13,27 +13,30 @@ public class Todo {
 	private Set<Tag> tags;
 	
 	public Todo() {
-		this.body = "";
 		this.id = null;
 		this.tags = new HashSet<>();
+		this.body = "";
+		this.completed = false;
 	}
 	
 	public Todo(String body) {
+		this();
 		this.body = body;
-		this.id = null;
-		this.tags = new HashSet<>();
 	}
 	
 	public Todo(String id, String body) {
-		this.body = body;
+		this(body);
 		this.id = id;
-		this.tags = new HashSet<>();
 	}
 	
 	public Todo(String id, String body, List<Tag> tagList) {
-		this.id = id;
-		this.body = body;
+		this(id, body);
 		this.tags = new HashSet<>(tagList);
+	}
+	
+	public Todo(String id, String body, List<Tag> tagList, Boolean status) {
+		this(id, body, tagList);
+		this.setAsCompleted(status);
 	}
 	
 	public Todo(Todo te) {
@@ -46,6 +49,8 @@ public class Todo {
 		this.completed = te.getStatus();	
 	}
 	
+	
+
 	public boolean isTaggedAs(Tag tag) {
 		return tags.contains(tag);
 	}
