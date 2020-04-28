@@ -236,9 +236,6 @@
 								<ports>
 									<port>27017:27017</port>
 								</ports>
-								<network>
-									<name>todolist-network</name>
-								</network>
 							</run>
 						</image>
 					</images>
