@@ -75,10 +75,6 @@ public class TodoRepositoryMongoDB implements TodoRepository {
 	private Set<Tag> fromTagIdListToTagSet(List<String> tagIdList) {		
 		Set<Tag> tagSet = new HashSet<>();
 		
-		if(tagIdList == null) {
-			LOGGER.debug("No tags attached to this todo.");
-			return tagSet;
-		}
 		tagIdList.forEach(id -> tagSet.add(tagRepository.findById(id)));
 		return tagSet;
 	}
