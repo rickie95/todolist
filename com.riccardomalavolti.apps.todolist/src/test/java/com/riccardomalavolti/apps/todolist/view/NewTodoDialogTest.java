@@ -9,6 +9,11 @@ import javax.swing.DefaultComboBoxModel;
 
 import static org.assertj.core.api.Assertions.*;
 
+import org.awaitility.Awaitility;
+import org.awaitility.Awaitility.*;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.fixture.DialogFixture;
@@ -134,11 +139,20 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 		
 	}
 	
+	public boolean dialogIsReady() {
+		return view.isVisible() && view.hasFocus();
+	}
+	
 	@Test @GUITest
 	public void testClearTagsShouldRestoreTagLabel() {
 		String tagLabelText, selectedTag;
-		JLabelFixture tagLabel = GuiActionRunner.execute(() -> window.label("tagLabel"));
-		JButtonFixture clearButton = GuiActionRunner.execute(() -> window.button("clearButton"));
+		
+		GuiActionRunner.execute(() -> view.requestFocus());
+		
+		Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> dialogIsReady());
+		
+		JLabelFixture tagLabel = window.label("tagLabel");
+		JButtonFixture clearButton = window.button("clearButton");
 		JComboBoxFixture tagCombo = window.comboBox("tagComboBox");
 		
 		// Initial status, no tag selected

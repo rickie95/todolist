@@ -137,6 +137,7 @@ public abstract class TodoDialog extends JDialog {
 		buttonPanel.add(cancelButton);	
 		getRootPane().setDefaultButton(confirmButton);
 		
+		this.requestFocus();
 	}
 	
 	/* Buttons and components callbacks */
