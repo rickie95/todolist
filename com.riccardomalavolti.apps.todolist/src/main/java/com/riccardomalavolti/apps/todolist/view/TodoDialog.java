@@ -37,7 +37,7 @@ public abstract class TodoDialog extends JDialog {
 	public static final String TAG_LBL_NO_TAG_TEXT = "No tags.";
 
 	private transient Todo todoElement;
-	private JComponent contentPanel = new JPanel();
+	private JComponent contentPanel;
 	
 	protected transient Set<Tag> selectedTagList;
 	protected transient TodoController todoController;
@@ -56,7 +56,8 @@ public abstract class TodoDialog extends JDialog {
 	}
 	
 	protected void initFrame(DefaultComboBoxModel<Tag> tagModel) {
-
+		contentPanel = new JPanel();
+		
 		setBounds(100, 100, 389, 219);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));

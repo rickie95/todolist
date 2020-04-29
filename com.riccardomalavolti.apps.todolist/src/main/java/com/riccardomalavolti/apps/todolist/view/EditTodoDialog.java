@@ -31,13 +31,15 @@ public class EditTodoDialog extends TodoDialog {
 		super.initFrame(tagModel);
 		
 		setTitle("Edit To Do");
+		setBounds(100, 100, 389, 219);
 		headingLabel.setText(HEADING_LABEL_TEXT);
 		
 		confirmButton.addActionListener(e -> updateTodo());	
 		confirmButton.setText("Update Todo");
-		
-		pack();
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		repaint();
 		setVisible(true);
+		requestFocus();
 	}
 	
 

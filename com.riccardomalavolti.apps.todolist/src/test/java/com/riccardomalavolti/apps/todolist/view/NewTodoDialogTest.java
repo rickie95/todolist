@@ -67,6 +67,11 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 		window.show();
 		
 		robot().waitForIdle();
+		
+		GuiActionRunner.execute(() -> {
+			view.requestFocus();
+			view.toFront();
+		});
 	}
 	
 	@Override
@@ -139,7 +144,7 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 		
 	}
 	
-	public boolean dialogIsReady() {
+	public boolean tagLabelIsReady() {
 		return view.isVisible() && view.hasFocus();
 	}
 	
@@ -147,9 +152,12 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 	public void testClearTagsShouldRestoreTagLabel() {
 		String tagLabelText, selectedTag;
 		
-		GuiActionRunner.execute(() -> view.requestFocus());
+		GuiActionRunner.execute(() -> {
+			view.requestFocus();
+			view.toFront();
+		});
 		
-		Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> dialogIsReady());
+		Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> tagLabelIsReady());
 		
 		JLabelFixture tagLabel = window.label("tagLabel");
 		JButtonFixture clearButton = window.button("clearButton");
