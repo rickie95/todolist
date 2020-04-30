@@ -77,8 +77,10 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 	@Override
 	protected void onTearDown() {
 		super.onTearDown();
-		GuiActionRunner.execute(()-> view.clearTags());
-		view.dispose();
+		if (window.button("clearButton").isEnabled())
+			window.button("clearButton").click();
+
+		GuiActionRunner.execute(() -> view.dispose());
 	}
 	
 
@@ -144,30 +146,13 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 		
 	}
 	
-	public boolean tagLabelIsReady() {
-		return view.isVisible() && view.hasFocus();
-	}
-	
 	@Test @GUITest
 	public void testClearTagsShouldRestoreTagLabel() {
 		String tagLabelText, selectedTag;
 		
-		GuiActionRunner.execute(() -> {
-			view.requestFocus();
-			view.toFront();
-		});
-		
-		Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> tagLabelIsReady());
-		
 		JLabelFixture tagLabel = window.label("tagLabel");
 		JButtonFixture clearButton = window.button("clearButton");
 		JComboBoxFixture tagCombo = window.comboBox("tagComboBox");
-		
-		// Initial status, no tag selected
-		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
-		assertThat(tagLabelText).isEqualTo(NewTodoDialog.TAG_LBL_NO_TAG_TEXT);
-		selectedTag = GuiActionRunner.execute(() -> tagCombo.selectedItem());
-		assertThat(selectedTag).isNull();
 		
 		// Selecting an element
 		tagCombo.selectItem(0);

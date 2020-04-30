@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 
 import com.riccardomalavolti.apps.todolist.controller.TodoController;
+import com.riccardomalavolti.apps.todolist.controller.TodoManager;
 import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.model.Todo;
 
@@ -19,6 +20,14 @@ public class NewTodoDialog extends TodoDialog {
 	private static final Logger LOGGER = LogManager.getLogger(NewTodoDialog.class);
 
 	public static final String HEADING_LABEL_TEXT = "Insert a new To Do";
+	
+	public static void main(String[] args) {
+		NewTodoDialog view = new NewTodoDialog(
+				new TodoController( (MainView)(null), (TodoManager)(null) ), 
+				new DefaultComboBoxModel<Tag>());
+		
+		view.setVisible(true);
+	}
 	
 	public NewTodoDialog(TodoController controller, DefaultComboBoxModel<Tag> tagModel) {
 		super(controller);
