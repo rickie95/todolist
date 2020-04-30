@@ -32,10 +32,11 @@ public class EditTodoDialog extends TodoDialog {
 		
 		setTitle("Edit To Do");
 		setBounds(100, 100, 389, 219);
-		headingLabel.setText(HEADING_LABEL_TEXT);
 		
-		confirmButton.addActionListener(e -> updateTodo());	
+		headingLabel.setText(HEADING_LABEL_TEXT);
 		confirmButton.setText("Update Todo");
+		confirmButton.addActionListener(e -> updateTodo());	
+		
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		repaint();
 		setVisible(true);
@@ -44,12 +45,11 @@ public class EditTodoDialog extends TodoDialog {
 	
 
 	private void updateTodo() {
-		
-		LOGGER.debug("Send request to controller.");
-		Todo todoElement = getTodoElement();
-		todoElement.setBody(todoTextBox.getText());
-		todoElement.setTagSet(selectedTagList);
-		todoController.updateTodo(todoElement);		
+		LOGGER.debug("Updating todo.");
+		Todo todo = getTodoElement();
+		todo.setBody(todoTextBox.getText());
+		todo.setTagSet(selectedTagList);
+		todoController.updateTodo(todo);		
 	}
 
 }

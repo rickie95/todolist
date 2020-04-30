@@ -9,11 +9,6 @@ import javax.swing.DefaultComboBoxModel;
 
 import static org.assertj.core.api.Assertions.*;
 
-import org.awaitility.Awaitility;
-import org.awaitility.Awaitility.*;
-
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.fixture.DialogFixture;
@@ -37,12 +32,12 @@ import com.riccardomalavolti.apps.todolist.model.Todo;
 
 @RunWith(GUITestRunner.class)
 public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
-		
+
 	private DialogFixture window;
 	private NewTodoDialog view;
 	private DefaultComboBoxModel<Tag> comboBoxModel;
 	private Tag t1, t2;
-	
+
 	@Mock
 	private TodoController todoController;
 	@Captor
@@ -53,27 +48,27 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 		MockitoAnnotations.initMocks(this);
 		t1 = new Tag("0", "Foo");
 		t2 = new Tag("1", "Bar");
-		
+
 		List<Tag> tagList = new ArrayList<Tag>(Arrays.asList(t1, t2));
-		tagList.sort((l, r)-> l.getText().compareTo(r.getText()));
+		tagList.sort((l, r) -> l.getText().compareTo(r.getText()));
 		comboBoxModel = new DefaultComboBoxModel<Tag>(tagList.toArray(new Tag[tagList.size()]));
-		
+
 		GuiActionRunner.execute(() -> {
 			view = new NewTodoDialog(todoController, comboBoxModel);
 			return view;
 		});
-		
+
 		window = new DialogFixture(robot(), view);
 		window.show();
-		
+
 		robot().waitForIdle();
-		
+
 		GuiActionRunner.execute(() -> {
 			view.requestFocus();
 			view.toFront();
 		});
 	}
-	
+
 	@Override
 	protected void onTearDown() {
 		super.onTearDown();
@@ -82,85 +77,87 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 
 		GuiActionRunner.execute(() -> view.dispose());
 	}
-	
 
-	@Test @GUITest
+	@Test
+	@GUITest
 	public void testInitialState() {
 		assertThat(window.label("headingLabel").text()).isEqualTo(NewTodoDialog.HEADING_LABEL_TEXT);
 		assertThat(window.label("tagLabel").text()).isEqualTo(NewTodoDialog.TAG_LBL_NO_TAG_TEXT);
-		
+
 		// Text box must be empty
 		String textBoxText = GuiActionRunner.execute(() -> window.textBox("todoTextBox").text());
 		assertThat(textBoxText).isEmpty();
 		// Tag selection must be void
 		assertThat(window.comboBox("tagComboBox").selectedItem()).isNull();
-		
-		
+
 		assertThat(window.button("clearButton").isEnabled()).isFalse();
 		assertThat(window.button("confirmButton").isEnabled()).isFalse();
 		assertThat(window.button("cancelButton").isEnabled()).isTrue();
-		
+
 	}
-	
-	@Test @GUITest
+
+	@Test
+	@GUITest
 	public void testChangingTextInTodoTextFieldShouldEnableInsertButton() {
 		JTextComponentFixture todoTextBox = window.textBox("todoTextBox");
 		JButtonFixture insertButton = window.button("confirmButton");
-		
+
 		// Starting empty, insertButton must be disabled
 		assertThat(GuiActionRunner.execute(() -> todoTextBox.text())).isEmpty();
 		assertThat(insertButton.isEnabled()).isFalse();
-		
+
 		// Write something, insertButton must be enabled
 		todoTextBox.setText("foo");
 		assertThat(GuiActionRunner.execute(() -> todoTextBox.text())).isNotEmpty();
 		assertThat(insertButton.isEnabled()).isTrue();
-		
+
 		// Cancel everything, insertButton must be disabled
 		todoTextBox.setText("");
 		assertThat(GuiActionRunner.execute(() -> todoTextBox.text())).isEmpty();
 		assertThat(insertButton.isEnabled()).isFalse();
 	}
-	
-	@Test @GUITest
+
+	@Test
+	@GUITest
 	public void testAddingTagsShouldModifyTheTagLabel() {
 		String tagLabelText;
 		JLabelFixture tagLabel = window.label("tagLabel");
 		JComboBoxFixture tagCombo = window.comboBox("tagComboBox");
-		
+
 		// Initial status, no tag selected
 		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
 		assertThat(tagLabelText).isEqualTo(NewTodoDialog.TAG_LBL_NO_TAG_TEXT);
 		assertThat(tagCombo.selectedItem()).isNull();
-		
+
 		// Selecting an element
 		tagCombo.click().selectItem(0);
 		assertThat(tagCombo.selectedItem()).isEqualTo("Bar");
 		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
 		assertThat(tagLabelText).isEqualTo("(Bar)");
-		
+
 		tagCombo.click().selectItem(1);
 		assertThat(tagCombo.selectedItem()).isEqualTo("Foo");
 		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
 		assertThat(tagLabelText).isEqualTo("(Bar)(Foo)");
-		
+
 	}
-	
-	@Test @GUITest
+
+	@Test
+	@GUITest
 	public void testClearTagsShouldRestoreTagLabel() {
 		String tagLabelText, selectedTag;
-		
+
 		JLabelFixture tagLabel = window.label("tagLabel");
 		JButtonFixture clearButton = window.button("clearButton");
 		JComboBoxFixture tagCombo = window.comboBox("tagComboBox");
-		
+
 		// Selecting an element
 		tagCombo.selectItem(0);
 		selectedTag = GuiActionRunner.execute(() -> tagCombo.selectedItem());
 		assertThat(selectedTag).isEqualTo("Bar");
 		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
 		assertThat(tagLabelText).isEqualTo("(Bar)");
-		
+
 		// Click on Clear Tag
 		clearButton.click();
 		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
@@ -168,35 +165,31 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 		selectedTag = GuiActionRunner.execute(() -> tagCombo.selectedItem());
 		assertThat(selectedTag).isNull();
 	}
-	
-	@Test @GUITest
+
+	@Test
+	@GUITest
 	public void testInsertTodo() {
 		String todoText = "A new Foo todo";
 		window.textBox("todoTextBox").setText(todoText);
-		
+
 		// add selected tags
 		window.comboBox("tagComboBox").selectItem(0);
 		window.comboBox("tagComboBox").selectItem(1);
-		
+
 		ArgumentCaptor<Todo> todoTaggedArg = ArgumentCaptor.forClass(Todo.class);
-		
+
 		window.button("confirmButton").click();
-		
-		
-		verify(todoController).tagTodo(todoTaggedArg.capture(), this.tagListCaptor.capture());
-		
-		assertThat(todoTaggedArg.getValue().getBody()).isEqualTo(todoText);
-		assertThat(tagListCaptor.getValue())
-			.containsAll(new ArrayList<Tag>(Arrays.asList(t1, t2)));
-		// assert that tagListCapture contains previous selected tags
-		// assert that todoArg is a Todo with those tags.
-		
 		verify(todoController).addTodo(todoTaggedArg.capture());
+
+		assertThat(todoTaggedArg.getValue().getBody()).isEqualTo(todoText);
+		assertThat(todoTaggedArg.getValue().getTagList()).containsAll(new ArrayList<Tag>(Arrays.asList(t1, t2)));
+
 		String textBoxText = GuiActionRunner.execute(() -> window.textBox("todoTextBox").text());
 		assertThat(textBoxText).isEmpty();
 	}
-	
-	@Test @GUITest
+
+	@Test
+	@GUITest
 	public void testCancelButtonAction() {
 		window.button("cancelButton").click();
 		verify(todoController).dispose(view);
