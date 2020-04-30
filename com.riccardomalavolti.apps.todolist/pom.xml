@@ -413,6 +413,7 @@
 						<avoidCallsTo>
 							<avoidCallsTo>java.awt.Window.toFront()</avoidCallsTo>
 							<avoidCallsTo>java.util.logging</avoidCallsTo>
+							<avoidCallsTo>org.apache.logging.log4j</avoidCallsTo>
 							<avoidCallsTo>org.apache.log4j</avoidCallsTo>
 							<avoidCallsTo>org.slf4j</avoidCallsTo>
 							<avoidCallsTo>org.apache.commons.logging</avoidCallsTo>
