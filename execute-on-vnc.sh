@@ -22,7 +22,7 @@ if [ "$CONTINUOUS_INTEGRATION" = "true" ] && [ "$TRAVIS" = "true" ] && [ $(whoam
 then
     expect vnc-prompt-password.exp
 fi
-vncserver ":${NEW_DISPLAY}" -localhost -geometry 1600x1200 -depth 16
+vncserver ":${NEW_DISPLAY}" -localhost -geometry 1920x1080 -depth 16
 export DISPLAY=:${NEW_DISPLAY}
 
 "$@"
