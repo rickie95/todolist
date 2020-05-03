@@ -97,20 +97,17 @@ public class TodoController {
 	}
 
 	public void newTodoDialog(DefaultComboBoxModel<Tag> tagListModel) {
-		if(newTodoDialog == null)
-			newTodoDialog = new NewTodoDialog(this, tagListModel);
+		newTodoDialog = new NewTodoDialog(this, tagListModel);
 		newTodoDialog.toFront();
 	}
 	
 	public void editTodoDialog(DefaultComboBoxModel<Tag> tagListModel, Todo todo) {
-		if(editTodoDialog == null)
-			editTodoDialog = new EditTodoDialog(this, tagListModel, todo);
+		editTodoDialog = new EditTodoDialog(this, tagListModel, todo);
 		editTodoDialog.toFront();
 	}
 
 	public void newTagDialog() {
-		if(newTagDialog == null)
-			newTagDialog = new NewTagDialog(this);
+		newTagDialog = new NewTagDialog(this);
 		newTagDialog.toFront();
 	}
 
