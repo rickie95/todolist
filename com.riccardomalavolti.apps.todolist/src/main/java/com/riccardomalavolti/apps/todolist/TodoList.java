@@ -1,6 +1,7 @@
 package com.riccardomalavolti.apps.todolist;
 
 import java.awt.EventQueue;
+import java.net.ConnectException;
 import java.util.concurrent.Callable;
 
 import org.apache.logging.log4j.Level;
@@ -11,6 +12,7 @@ import org.apache.logging.log4j.core.config.Configuration;
 import org.apache.logging.log4j.core.config.LoggerConfig;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoSocketOpenException;
 import com.mongodb.ServerAddress;
 import com.riccardomalavolti.apps.todolist.controller.TodoController;
 import com.riccardomalavolti.apps.todolist.controller.TodoManager;
@@ -19,6 +21,7 @@ import com.riccardomalavolti.apps.todolist.repositories.tag.TagRepositoryMongoDB
 import com.riccardomalavolti.apps.todolist.repositories.todo.TodoRepository;
 import com.riccardomalavolti.apps.todolist.repositories.todo.TodoRepositoryMongoDB;
 import com.riccardomalavolti.apps.todolist.view.MainView;
+import com.riccardomalavolti.apps.todolist.view.MessageBoxFactory;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -50,6 +53,10 @@ public class TodoList implements Callable<Void>{
 		EventQueue.invokeLater(() -> {
 			
 			MongoClient mongoClient = null;
+			TagRepository tagMongoRepo = null;
+			TodoRepository todoMongoRepo = null;
+			TodoController todoController = null;
+			MainView todoView = null;
 			
 			LoggerContext context = (LoggerContext) LogManager.getContext(false);
 			Configuration config = context.getConfiguration();
@@ -62,18 +69,25 @@ public class TodoList implements Callable<Void>{
 		
 			LOGGER.info("The application is starting.");
 			
-			mongoClient = new MongoClient(new ServerAddress("localhost"));
+			try {
+				mongoClient = new MongoClient(new ServerAddress("localhost"));
+				tagMongoRepo = new TagRepositoryMongoDB(mongoClient);
+				todoMongoRepo = new TodoRepositoryMongoDB(mongoClient, tagMongoRepo);
+				TodoManager todoManager = new TodoManager(todoMongoRepo, tagMongoRepo);
+				
+				
+				todoView = new MainView();
+				todoView.setVisible(true);
+				
+				todoController = new TodoController(todoView, todoManager);
+			}catch(MongoSocketOpenException ex) {
+				LOGGER.fatal("Cannot find Mongo instance on localhost:27017.");
+				MessageBoxFactory.showErrorMessage(null, "Cannot find mongo!");
+			}catch(RuntimeException ex) {
+				LOGGER.fatal("runtime");
+			}
 			
-			TagRepository tagMongoRepo = new TagRepositoryMongoDB(mongoClient);
-			TodoRepository todoMongoRepo = new TodoRepositoryMongoDB(mongoClient, tagMongoRepo);
 			
-			TodoManager todoManager = new TodoManager(todoMongoRepo, tagMongoRepo);
-			
-			
-			MainView todoView = new MainView();
-			todoView.setVisible(true);
-			
-			TodoController todoController = new TodoController(todoView, todoManager);
 			
 			todoView.setController(todoController);
 			

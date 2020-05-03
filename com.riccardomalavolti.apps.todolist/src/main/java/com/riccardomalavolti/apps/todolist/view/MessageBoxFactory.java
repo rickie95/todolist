@@ -15,4 +15,8 @@ public class MessageBoxFactory {
 		JOptionPane.showMessageDialog(this.parent, message, "Error", JOptionPane.ERROR_MESSAGE);
 	}
 	
+	public static void showErrorMessage(JFrame parent, String message) {
+		JOptionPane.showMessageDialog(parent, message, "Error", JOptionPane.ERROR_MESSAGE);
+	}
+	
 }

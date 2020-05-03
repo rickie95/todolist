@@ -37,7 +37,7 @@ public abstract class TodoDialog extends JDialog {
 	public static final String TAG_LBL_NO_TAG_TEXT = "No tags.";
 
 	private transient Todo todoElement;
-	private JComponent contentPanel;
+	protected JComponent contentPanel;
 	
 	protected transient Set<Tag> selectedTagList;
 	protected transient TodoController todoController;
@@ -143,12 +143,12 @@ public abstract class TodoDialog extends JDialog {
 	
 	/* Buttons and components callbacks */
 	
-	private void cancelButtonAction() {
+	protected void cancelButtonAction() {
 		LOGGER.debug("Exiting from New To Do dialog");
 		todoController.dispose(this);
 	}
 	
-	private void tagSelected(Object eventItem) {        
+	protected void tagSelected(Object eventItem) {        
         selectedTagList.add((Tag) eventItem);
         this.clearButton.setEnabled(true);
         redrawTagLbl();
