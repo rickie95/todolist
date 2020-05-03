@@ -39,7 +39,7 @@ public class NewTodoDialog extends TodoDialog {
 
 	@Override
 	protected void initFrame(DefaultComboBoxModel<Tag> tagModel) {
-		// wee super.initFrame(tagModel);
+		// removed call to super initFrame(tagModel) 
 		
 		contentPanel = new JPanel();
 		
@@ -123,7 +123,6 @@ public class NewTodoDialog extends TodoDialog {
 		buttonPanel.add(cancelButton);	
 		getRootPane().setDefaultButton(confirmButton);
 		
-		this.requestFocus();
 		
 		/* END */
 		setTitle("New To Do ");
