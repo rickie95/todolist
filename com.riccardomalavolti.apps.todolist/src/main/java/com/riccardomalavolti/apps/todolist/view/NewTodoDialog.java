@@ -43,7 +43,7 @@ public class NewTodoDialog extends TodoDialog {
 		
 		contentPanel = new JPanel();
 		
-		setBounds(100, 100, 389, 219);
+		setBounds(200, 200, 389, 219);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPanel.setName("contentPanel");
@@ -133,7 +133,6 @@ public class NewTodoDialog extends TodoDialog {
 		confirmButton.addActionListener(e -> addNewTodo());
 
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		pack();
 		repaint();
 		setVisible(true);
 		requestFocus();

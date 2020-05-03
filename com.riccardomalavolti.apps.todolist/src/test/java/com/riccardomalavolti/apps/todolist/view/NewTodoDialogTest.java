@@ -72,9 +72,6 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 	@Override
 	protected void onTearDown() {
 		super.onTearDown();
-		if (window.button("clearButton").isEnabled())
-			window.button("clearButton").click();
-
 		GuiActionRunner.execute(() -> view.dispose());
 	}
 
@@ -145,25 +142,15 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testClearTagsShouldRestoreTagLabel() {
-		String tagLabelText, selectedTag;
-
-		JLabelFixture tagLabel = window.label("tagLabel");
-		JButtonFixture clearButton = window.button("clearButton");
-		JComboBoxFixture tagCombo = window.comboBox("tagComboBox");
-
 		// Selecting an element
-		tagCombo.selectItem(0);
-		selectedTag = GuiActionRunner.execute(() -> tagCombo.selectedItem());
-		assertThat(selectedTag).isEqualTo("Bar");
-		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
-		assertThat(tagLabelText).isEqualTo("(Bar)");
+		window.comboBox("tagComboBox").selectItem(0);
+		assertThat(window.comboBox("tagComboBox").selectedItem()).isEqualTo("Bar");
+		assertThat(window.label("tagLabel").text()).isEqualTo("(Bar)");
 
 		// Click on Clear Tag
-		clearButton.click();
-		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
-		assertThat(tagLabelText).isEqualTo(NewTodoDialog.TAG_LBL_NO_TAG_TEXT);
-		selectedTag = GuiActionRunner.execute(() -> tagCombo.selectedItem());
-		assertThat(selectedTag).isNull();
+		window.button("clearButton").click();
+		assertThat(window.label("tagLabel").text()).isEqualTo(NewTodoDialog.TAG_LBL_NO_TAG_TEXT);
+		assertThat(window.comboBox("tagComboBox").selectedItem()).isNull();
 	}
 
 	@Test
