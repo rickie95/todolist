@@ -4,12 +4,15 @@ import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.DefaultComboBoxModel;
 
 import static org.assertj.core.api.Assertions.*;
 
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
+import org.awaitility.Awaitility;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.fixture.JButtonFixture;
@@ -17,6 +20,8 @@ import org.assertj.swing.fixture.JComboBoxFixture;
 import org.assertj.swing.fixture.JLabelFixture;
 import org.assertj.swing.fixture.JTextComponentFixture;
 import org.assertj.swing.edt.GuiActionRunner;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.assertj.swing.annotation.GUITest;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -32,6 +37,10 @@ import com.riccardomalavolti.apps.todolist.model.Todo;
 
 @RunWith(GUITestRunner.class)
 public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
+
+	private static final Logger LOGGER = LogManager.getLogger(NewTodoDialog.class);
+
+	private static int count = 0;
 
 	private DialogFixture window;
 	private NewTodoDialog view;
@@ -58,32 +67,26 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 			return view;
 		});
 
+		Awaitility.await().atMost(5, TimeUnit.SECONDS).until(dialogIsBloodyReady());
+
 		window = new DialogFixture(robot(), view);
 		window.show();
-
-		robot().waitForIdle();
-
-		GuiActionRunner.execute(() -> {
-			view.requestFocus();
-			view.toFront();
-		});
 	}
 
-	@Override
-	protected void onTearDown() {
-		super.onTearDown();
-		GuiActionRunner.execute(() -> view.dispose());
+	private Callable<Boolean> dialogIsBloodyReady() {
+		return () -> view.isValid() && view.isActive() && view.isEnabled() && view.isFocused() && view.isShowing()
+				&& view.isVisible() && view.isReady();
 	}
 
 	@Test
 	@GUITest
 	public void testInitialState() {
-		assertThat(window.label("headingLabel").text()).isEqualTo(NewTodoDialog.HEADING_LABEL_TEXT);
+		count += 1;
+		LOGGER.info("initialState {}", count);
 		assertThat(window.label("tagLabel").text()).isEqualTo(NewTodoDialog.TAG_LBL_NO_TAG_TEXT);
 
 		// Text box must be empty
-		String textBoxText = GuiActionRunner.execute(() -> window.textBox("todoTextBox").text());
-		assertThat(textBoxText).isEmpty();
+		assertThat(window.textBox("todoTextField").text()).isEmpty();
 		// Tag selection must be void
 		assertThat(window.comboBox("tagComboBox").selectedItem()).isNull();
 
@@ -96,55 +99,57 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testChangingTextInTodoTextFieldShouldEnableInsertButton() {
-		JTextComponentFixture todoTextBox = window.textBox("todoTextBox");
+		JTextComponentFixture todoTextBox = window.textBox("todoTextField");
 		JButtonFixture insertButton = window.button("confirmButton");
 
 		// Starting empty, insertButton must be disabled
-		assertThat(GuiActionRunner.execute(() -> todoTextBox.text())).isEmpty();
+		assertThat(todoTextBox.text()).isEmpty();
 		assertThat(insertButton.isEnabled()).isFalse();
 
 		// Write something, insertButton must be enabled
 		todoTextBox.setText("foo");
-		assertThat(GuiActionRunner.execute(() -> todoTextBox.text())).isNotEmpty();
+		assertThat(todoTextBox.text()).isNotEmpty();
 		assertThat(insertButton.isEnabled()).isTrue();
 
 		// Cancel everything, insertButton must be disabled
 		todoTextBox.setText("");
-		assertThat(GuiActionRunner.execute(() -> todoTextBox.text())).isEmpty();
+		assertThat(todoTextBox.text()).isEmpty();
 		assertThat(insertButton.isEnabled()).isFalse();
 	}
 
 	@Test
 	@GUITest
 	public void testAddingTagsShouldModifyTheTagLabel() {
-		String tagLabelText;
+		count += 1;
+		LOGGER.info("testAddingTagsShouldModifyTheTagLabel {}", count);
 		JLabelFixture tagLabel = window.label("tagLabel");
 		JComboBoxFixture tagCombo = window.comboBox("tagComboBox");
 
 		// Initial status, no tag selected
-		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
-		assertThat(tagLabelText).isEqualTo(NewTodoDialog.TAG_LBL_NO_TAG_TEXT);
+		assertThat(tagLabel.text()).isEqualTo(NewTodoDialog.TAG_LBL_NO_TAG_TEXT);
 		assertThat(tagCombo.selectedItem()).isNull();
 
 		// Selecting an element
 		tagCombo.click().selectItem(0);
 		assertThat(tagCombo.selectedItem()).isEqualTo("Bar");
-		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
-		assertThat(tagLabelText).isEqualTo("(Bar)");
+		assertThat(tagLabel.text()).isEqualTo("(Bar)");
 
 		tagCombo.click().selectItem(1);
 		assertThat(tagCombo.selectedItem()).isEqualTo("Foo");
-		tagLabelText = GuiActionRunner.execute(() -> tagLabel.text());
-		assertThat(tagLabelText).isEqualTo("(Bar)(Foo)");
+		assertThat(tagLabel.text()).isEqualTo("(Bar)(Foo)");
 
 	}
 
 	@Test
 	@GUITest
 	public void testClearTagsShouldRestoreTagLabel() {
+		count += 1;
+		LOGGER.info("testClearTagsShouldRestoreTagLabel {}", count);
+
 		// Selecting an element
-		window.comboBox("tagComboBox").selectItem(0);
-		assertThat(window.comboBox("tagComboBox").selectedItem()).isEqualTo("Bar");
+		GuiActionRunner.execute(() -> view.setTagLabel("(Bar)"));
+		GuiActionRunner.execute(() -> view.enableClearButton());
+		// assertThat(window.comboBox("tagComboBox").selectedItem()).isEqualTo("Bar");
 		assertThat(window.label("tagLabel").text()).isEqualTo("(Bar)");
 
 		// Click on Clear Tag
@@ -156,12 +161,10 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testInsertTodo() {
+		count += 1;
+		LOGGER.info("testInsertTodo {}", count);
 		String todoText = "A new Foo todo";
-		window.textBox("todoTextBox").setText(todoText);
-
-		// add selected tags
-		window.comboBox("tagComboBox").selectItem(0);
-		window.comboBox("tagComboBox").selectItem(1);
+		window.textBox("todoTextField").setText(todoText);
 
 		ArgumentCaptor<Todo> todoTaggedArg = ArgumentCaptor.forClass(Todo.class);
 
@@ -169,15 +172,18 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 		verify(todoController).addTodo(todoTaggedArg.capture());
 
 		assertThat(todoTaggedArg.getValue().getBody()).isEqualTo(todoText);
-		assertThat(todoTaggedArg.getValue().getTagList()).containsAll(new ArrayList<Tag>(Arrays.asList(t1, t2)));
 
-		String textBoxText = GuiActionRunner.execute(() -> window.textBox("todoTextBox").text());
-		assertThat(textBoxText).isEmpty();
+		// Check also that components were restored after insertion
+		assertThat(window.textBox("todoTextField").text()).isEmpty();
+		assertThat(window.button("confirmButton").isEnabled()).isFalse();
+		assertThat(window.button("clearButton").isEnabled()).isFalse();
 	}
 
 	@Test
 	@GUITest
 	public void testCancelButtonAction() {
+		count += 1;
+		LOGGER.info("testCancelButtonAction {}", count);
 		window.button("cancelButton").click();
 		verify(todoController).dispose(view);
 	}
