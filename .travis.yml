@@ -1,4 +1,3 @@
-dist: trusty
 jdk: openjdk8
 install: true
 
