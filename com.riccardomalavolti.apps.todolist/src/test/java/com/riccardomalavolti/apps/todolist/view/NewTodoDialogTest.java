@@ -6,6 +6,8 @@ import static org.mockito.Mockito.verify;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.DefaultComboBoxModel;
 
@@ -15,6 +17,7 @@ import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
+import org.awaitility.Awaitility;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -72,6 +75,12 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 			view.requestFocus();
 			view.toFront();
 		});
+		
+		Awaitility.await().atMost(5, TimeUnit.SECONDS).until(viewIsReady());
+	}
+	
+	private Callable<Boolean> viewIsReady() {
+		return () -> view.isValid() && view.hasFocus();
 	}
 
 	@Override

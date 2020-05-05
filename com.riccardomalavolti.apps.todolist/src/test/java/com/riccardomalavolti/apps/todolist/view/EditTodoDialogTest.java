@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.DefaultComboBoxModel;
 
@@ -21,6 +23,8 @@ import org.assertj.swing.fixture.JComboBoxFixture;
 import org.assertj.swing.fixture.JTextComponentFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
+import org.awaitility.Awaitility;
+import org.awaitility.core.ThrowingRunnable;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -82,14 +86,18 @@ public class EditTodoDialogTest extends AssertJSwingJUnitTestCase {
 			view.requestFocus();
 			view.toFront();
 		});
+		
+		Awaitility.await().atMost(5, TimeUnit.SECONDS).until(viewIsReady());
 
+	}
+
+	private Callable<Boolean> viewIsReady() {
+		return () -> view.isValid() && view.hasFocus();
 	}
 
 	@Override
 	protected void onTearDown() {
 		super.onTearDown();
-		if (window.button("clearButton").isEnabled())
-			window.button("clearButton").click();
 
 		GuiActionRunner.execute(() -> view.dispose());
 	}
