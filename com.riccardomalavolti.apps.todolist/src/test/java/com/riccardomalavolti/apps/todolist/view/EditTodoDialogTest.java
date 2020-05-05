@@ -1,9 +1,8 @@
 package com.riccardomalavolti.apps.todolist.view;
 
-import static org.mockito.Mockito.*;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,7 +49,7 @@ public class EditTodoDialogTest extends AssertJSwingJUnitTestCase {
 	private String todoText;
 
 	@BeforeClass
-	public static void setupOnce() {
+	public static void installViolationNotifier() {
 		FailOnThreadViolationRepaintManager.install();
 	}
 
@@ -120,15 +119,12 @@ public class EditTodoDialogTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testRemovingAllTagsFromATodoShouldBeAllowed() {
-		// We have a todo with a tag
 		JButtonFixture clearButton = window.button("clearButton");
 		assertThat(clearButton.isEnabled()).isTrue();
+
 		clearButton.click();
 
-		Set<Tag> tagList = GuiActionRunner.execute(() -> view.getTodoElement().getTagList());
-		assertThat(tagList).isEmpty();
-		String tagLabelText = GuiActionRunner.execute(() -> window.label("tagLabel").text());
-		assertThat(tagLabelText).isEqualTo(EditTodoDialog.TAG_LBL_NO_TAG_TEXT);
+		assertThat(window.label("tagLabel").text()).isEqualTo(EditTodoDialog.TAG_LBL_NO_TAG_TEXT);
 	}
 
 	@Test
@@ -147,6 +143,13 @@ public class EditTodoDialogTest extends AssertJSwingJUnitTestCase {
 		Set<Tag> tagList = GuiActionRunner.execute(() -> view.getTodoElement().getTagList());
 		assertThat(todoCaptor.getValue().getTagList()).containsExactlyElementsOf(tagList);
 		assertThat(todoCaptor.getValue().getBody()).isEqualTo(new_text);
+	}
+
+	@Test
+	@GUITest
+	public void testCancelButtonAction() {
+		window.button("cancelButton").click();
+		verify(todoController).dispose(view);
 	}
 
 }

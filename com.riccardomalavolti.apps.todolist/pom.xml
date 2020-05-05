@@ -399,7 +399,6 @@
 					<artifactId>pitest-maven</artifactId>
 					<version>1.4.3</version>
 					<configuration>
-						<threads>12</threads>
 						<targetClasses>
 							<param>com.riccardomalavolti.apps.todolist.*</param>
 						</targetClasses>

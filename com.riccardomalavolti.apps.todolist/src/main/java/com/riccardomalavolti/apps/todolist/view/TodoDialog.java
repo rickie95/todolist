@@ -48,7 +48,9 @@ public abstract class TodoDialog extends JDialog {
 	protected JButton cancelButton;
 	protected JLabel tagLabel;
 	protected JLabel headingLabel;
+	protected String headingLabelText;
 
+	protected abstract void confirmButtonAction();
 
 	public TodoDialog(TodoController controller) {
 		this.todoController = controller;
@@ -57,95 +59,121 @@ public abstract class TodoDialog extends JDialog {
 	
 	protected void initFrame(DefaultComboBoxModel<Tag> tagModel) {
 		contentPanel = new JPanel();
-		
+
 		setBounds(100, 100, 389, 219);
+		
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPanel.setName("contentPanel");
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
-		
+
 		headingLabel = new JLabel();
+		headingLabel.setText(headingLabelText);
 		headingLabel.setName("headingLabel");
 		headingLabel.setBounds(12, 12, 432, 17);
 		contentPanel.add(headingLabel);
-		
+
+		createTextField();
+		createTagLabel();
+		createComboBox(tagModel);
+
+		JLabel lblTags = new JLabel("Tags");
+		lblTags.setBounds(22, 114, 60, 17);
+		contentPanel.add(lblTags);
+
+		createButtonsPanel();
+
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		repaint();
+		setVisible(true);
+		requestFocus();
+	}
+	
+	protected void createButtonsPanel() {
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setName("buttonPanel");
+		buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+
+		createClearButton();
+		createConfirmButton();
+		createCancelButton();
+
+		buttonPanel.add(clearButton);
+		buttonPanel.add(confirmButton);
+		buttonPanel.add(cancelButton);
+		getRootPane().setDefaultButton(confirmButton);
+	}
+	
+	private void createCancelButton() {
+		cancelButton = new JButton("Cancel");
+		cancelButton.setName("cancelButton");
+		cancelButton.addActionListener(e -> cancelButtonAction());
+		cancelButton.setActionCommand("Cancel");
+	}
+
+	private void createConfirmButton() {
+		confirmButton = new JButton();
+		confirmButton.setName("confirmButton");
+		confirmButton.setEnabled(false);
+		confirmButton.setActionCommand("OK");
+		confirmButton.setText("Update Todo");
+		confirmButton.addActionListener(e -> confirmButtonAction());
+	}
+
+	private void createClearButton() {
+		clearButton = new JButton("Clear tags");
+		clearButton.setName("clearButton");
+		clearButton.setEnabled(false);
+		clearButton.addActionListener(e -> clearTags());
+		clearButton.setHorizontalAlignment(SwingConstants.LEFT);
+	}
+	
+	protected void cancelButtonAction() {
+		LOGGER.debug("Exiting from New To Do dialog");
+		todoController.dispose(this);
+	}
+	
+	protected void createComboBox(DefaultComboBoxModel<Tag> tagModel) {
+		class ItemChangeListener implements ItemListener {
+			@Override
+			public void itemStateChanged(ItemEvent event) {
+				if (event.getStateChange() == ItemEvent.SELECTED) {
+					tagSelected(event.getItem());
+				}
+			}
+		}
+
+		tagComboBox = new JComboBox<>();
+		tagComboBox.setName("tagComboBox");
+		tagComboBox.addItemListener(new ItemChangeListener());
+		tagComboBox.setModel(tagModel);
+		tagComboBox.setSelectedItem(null);
+		tagComboBox.setBounds(113, 109, 256, 26);
+
+		contentPanel.add(tagComboBox);
+	}
+	
+	private void createTextField() {
 		todoTextBox = new JFormattedTextField();
-		todoTextBox.setName("todoTextBox");
 		todoTextBox.getDocument().addDocumentListener(new SimpleDocumentListener() {
 			@Override
 			public void update(DocumentEvent e) {
 				textChanged();
 			}
 		});
-		
-		todoTextBox.setToolTipText("Write here");
+		todoTextBox.setName("todoTextBox");
 		todoTextBox.setBounds(12, 51, 357, 41);
 		contentPanel.add(todoTextBox);
-		
+	}
+	
+	private void createTagLabel() {
 		tagLabel = new JLabel(TAG_LBL_NO_TAG_TEXT);
 		tagLabel.setName("tagLabel");
 		tagLabel.setFont(new Font("Dialog", Font.PLAIN, 10));
 		tagLabel.setBounds(12, 30, 72, 17);
 		contentPanel.add(tagLabel);
-		
-		class ItemChangeListener implements ItemListener{
-		    @Override
-		    public void itemStateChanged(ItemEvent event) {
-		       if (event.getStateChange() == ItemEvent.SELECTED) {
-		    	  tagSelected(event.getItem());
-		       }
-		    }
-		}
-		
-		tagComboBox = new JComboBox<>();
-		tagComboBox.setName("tagComboBox");
-		tagComboBox.setToolTipText("Select a tag from here");
-		tagComboBox.addItemListener(new ItemChangeListener());
-		tagComboBox.setModel(tagModel);
-		tagComboBox.setSelectedItem(null);
-		tagComboBox.setBounds(113, 109, 256, 26);
-		
-		contentPanel.add(tagComboBox);
-		
-		JLabel lblTags = new JLabel("Tags");
-		lblTags.setBounds(22, 114, 60, 17);
-		contentPanel.add(lblTags);
-	
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.setName("buttonPanel");
-		buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		getContentPane().add(buttonPanel, BorderLayout.SOUTH);
-			
-		confirmButton = new JButton();
-		confirmButton.setName("confirmButton");
-		confirmButton.setEnabled(false);
-		confirmButton.setActionCommand("OK");
-		
-		clearButton = new JButton("Clear tags");
-		clearButton.setName("clearButton");
-		clearButton.setEnabled(false);
-		clearButton.addActionListener(e -> clearTags());
-		clearButton.setHorizontalAlignment(SwingConstants.LEFT);
-		
-		cancelButton = new JButton("Cancel");
-		cancelButton.setName("cancelButton");
-		cancelButton.addActionListener(e -> cancelButtonAction());
-		cancelButton.setActionCommand("Cancel");
-		
-		buttonPanel.add(clearButton);
-		buttonPanel.add(confirmButton);
-		buttonPanel.add(cancelButton);	
-		getRootPane().setDefaultButton(confirmButton);
-		
-		this.requestFocus();
-	}
-	
-	/* Buttons and components callbacks */
-	
-	protected void cancelButtonAction() {
-		LOGGER.debug("Exiting from New To Do dialog");
-		todoController.dispose(this);
 	}
 	
 	protected void tagSelected(Object eventItem) {        
