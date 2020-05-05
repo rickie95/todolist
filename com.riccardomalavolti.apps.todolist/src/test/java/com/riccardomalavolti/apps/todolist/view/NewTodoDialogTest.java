@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import javax.swing.DefaultComboBoxModel;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.Assert.assertNotNull;
 
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.awaitility.Awaitility;
@@ -19,15 +20,18 @@ import org.assertj.swing.fixture.JButtonFixture;
 import org.assertj.swing.fixture.JComboBoxFixture;
 import org.assertj.swing.fixture.JLabelFixture;
 import org.assertj.swing.fixture.JTextComponentFixture;
+import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.assertj.swing.annotation.GUITest;
+import org.assertj.swing.core.matcher.JLabelMatcher;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import java.util.Arrays;
 
@@ -51,6 +55,11 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 	private TodoController todoController;
 	@Captor
 	private ArgumentCaptor<ArrayList<Tag>> tagListCaptor;
+	
+	@BeforeClass
+	public static void installViolationNotifier() {
+		FailOnThreadViolationRepaintManager.install();
+	}
 
 	@Override
 	protected void onSetUp() {
@@ -64,35 +73,56 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 
 		GuiActionRunner.execute(() -> {
 			view = new NewTodoDialog(todoController, comboBoxModel);
+			Awaitility.await().atMost(5, TimeUnit.SECONDS).until(dialogIsBloodyReady());
 			return view;
 		});
 
-		Awaitility.await().atMost(5, TimeUnit.SECONDS).until(dialogIsBloodyReady());
-
 		window = new DialogFixture(robot(), view);
 		window.show();
+		
+		robot().waitForIdle();
+
+		GuiActionRunner.execute(() -> {
+			view.requestFocus();
+			view.toFront();
+		});
+		
 	}
 
 	private Callable<Boolean> dialogIsBloodyReady() {
-		return () -> view.isValid() && view.isActive() && view.isEnabled() && view.isFocused() && view.isShowing()
-				&& view.isVisible() && view.isReady();
+		return () -> view.isValid() && view.isVisible() && view.isShowing();
+				//&& view.isVisible();
+				//&& view.isReady();
+	}
+	
+	@Override
+	protected void onTearDown() {
+		super.onTearDown();
+		if (window.button("clearButton").isEnabled())
+			window.button("clearButton").click();
+
+		GuiActionRunner.execute(() -> view.dispose());
 	}
 
 	@Test
 	@GUITest
 	public void testInitialState() {
-		count += 1;
-		LOGGER.info("initialState {}", count);
-		assertThat(window.label("tagLabel").text()).isEqualTo(NewTodoDialog.TAG_LBL_NO_TAG_TEXT);
+		JTextComponentFixture textBox = window.textBox("todoTextField");
+		JComboBoxFixture comboBox = window.comboBox("tagComboBox");
+		JButtonFixture clearButton = window.button("clearButton");
+		JButtonFixture confirmButton = window.button("confirmButton");
+		JButtonFixture cancelButton = window.button("cancelButton");
 
+		assertNotNull(window.label(JLabelMatcher.withText(NewTodoDialog.HEADING_LABEL_TEXT)));
+		assertNotNull(window.label(JLabelMatcher.withText(NewTodoDialog.TAG_LBL_NO_TAG_TEXT)));
 		// Text box must be empty
-		assertThat(window.textBox("todoTextField").text()).isEmpty();
+		assertThat(textBox.text()).isEqualTo("");
 		// Tag selection must be void
-		assertThat(window.comboBox("tagComboBox").selectedItem()).isNull();
+		assertThat(comboBox.selectedItem()).isNull();
 
-		assertThat(window.button("clearButton").isEnabled()).isFalse();
-		assertThat(window.button("confirmButton").isEnabled()).isFalse();
-		assertThat(window.button("cancelButton").isEnabled()).isTrue();
+		assertThat(clearButton.isEnabled()).isFalse();
+		assertThat(confirmButton.isEnabled()).isFalse();
+		assertThat(cancelButton.isEnabled()).isTrue();
 
 	}
 
@@ -120,8 +150,6 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testAddingTagsShouldModifyTheTagLabel() {
-		count += 1;
-		LOGGER.info("testAddingTagsShouldModifyTheTagLabel {}", count);
 		JLabelFixture tagLabel = window.label("tagLabel");
 		JComboBoxFixture tagCombo = window.comboBox("tagComboBox");
 
@@ -143,13 +171,9 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testClearTagsShouldRestoreTagLabel() {
-		count += 1;
-		LOGGER.info("testClearTagsShouldRestoreTagLabel {}", count);
-
 		// Selecting an element
-		GuiActionRunner.execute(() -> view.setTagLabel("(Bar)"));
-		GuiActionRunner.execute(() -> view.enableClearButton());
-		// assertThat(window.comboBox("tagComboBox").selectedItem()).isEqualTo("Bar");
+		window.comboBox("tagComboBox").selectItem(0);
+		assertThat(window.comboBox("tagComboBox").selectedItem()).isEqualTo("Bar");
 		assertThat(window.label("tagLabel").text()).isEqualTo("(Bar)");
 
 		// Click on Clear Tag
@@ -161,8 +185,6 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testInsertTodo() {
-		count += 1;
-		LOGGER.info("testInsertTodo {}", count);
 		String todoText = "A new Foo todo";
 		window.textBox("todoTextField").setText(todoText);
 
@@ -182,8 +204,6 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testCancelButtonAction() {
-		count += 1;
-		LOGGER.info("testCancelButtonAction {}", count);
 		window.button("cancelButton").click();
 		verify(todoController).dispose(view);
 	}

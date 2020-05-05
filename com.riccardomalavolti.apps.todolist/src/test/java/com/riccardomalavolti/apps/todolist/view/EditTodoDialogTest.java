@@ -101,8 +101,8 @@ public class EditTodoDialogTest extends AssertJSwingJUnitTestCase {
 		JTextComponentFixture textBox = window.textBox("todoTextBox");
 		JComboBoxFixture comboBox = window.comboBox("tagComboBox");
 		JButtonFixture clearButton = window.button("clearButton");
-		JButtonFixture confirmButton = window.button("clearButton");
-		JButtonFixture cancelButton = window.button("clearButton");
+		JButtonFixture confirmButton = window.button("confirmButton");
+		JButtonFixture cancelButton = window.button("cancelButton");
 
 		assertNotNull(window.label(JLabelMatcher.withText(EditTodoDialog.HEADING_LABEL_TEXT)));
 		assertNotNull(window.label(JLabelMatcher.withText(Tag.listToString(new ArrayList<Tag>(todo.getTagList())))));
