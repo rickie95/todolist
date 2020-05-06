@@ -80,7 +80,7 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 	}
 	
 	private Callable<Boolean> viewIsReady() {
-		return () -> view.isValid() && view.hasFocus();
+		return () -> view.isValid() && view.hasFocus() && view.isShowing();
 	}
 
 	@Override

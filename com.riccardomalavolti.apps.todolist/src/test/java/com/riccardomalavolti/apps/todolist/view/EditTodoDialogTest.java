@@ -24,7 +24,6 @@ import org.assertj.swing.fixture.JTextComponentFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
 import org.awaitility.Awaitility;
-import org.awaitility.core.ThrowingRunnable;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -92,13 +91,12 @@ public class EditTodoDialogTest extends AssertJSwingJUnitTestCase {
 	}
 
 	private Callable<Boolean> viewIsReady() {
-		return () -> view.isValid() && view.hasFocus();
+		return () -> view.isValid() && view.hasFocus() && view.isShowing();
 	}
 
 	@Override
 	protected void onTearDown() {
 		super.onTearDown();
-
 		GuiActionRunner.execute(() -> view.dispose());
 	}
 
