@@ -1,6 +1,8 @@
 package com.riccardomalavolti.apps.todolist.view;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.swing.timing.Pause.pause;
+import static org.assertj.swing.timing.Timeout.timeout;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
@@ -17,6 +19,7 @@ import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.DialogFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
+import org.assertj.swing.timing.Condition;
 import org.awaitility.Awaitility;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,6 +35,8 @@ import com.riccardomalavolti.apps.todolist.model.Todo;
 
 @RunWith(GUITestRunner.class)
 public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
+
+	private static final int TIMEOUT = 5000;
 
 	@BeforeClass
 	public static void installViolationNotifier() {
@@ -76,11 +81,13 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 			view.toFront();
 		});
 		
-		Awaitility.await().atMost(5, TimeUnit.SECONDS).until(viewIsReady());
-	}
-	
-	private Callable<Boolean> viewIsReady() {
-		return () -> view.isValid() && view.hasFocus() && view.isShowing();
+		pause(
+				new Condition("") {
+					@Override
+					public boolean test() {
+						return view.isFocused() && view.isValid() && view.isShowing();
+					}
+				}, timeout(TIMEOUT));
 	}
 
 	@Override
@@ -102,13 +109,6 @@ public class NewTodoDialogTest extends AssertJSwingJUnitTestCase {
 		assertThat(todoCaptor.getValue().getBody()).isEqualTo(todoText);
 	}
 
-	@Test
-	@GUITest
-	public void testSelectingTagShouldUpdateTagLabel() {
-		window.comboBox("tagComboBox").selectItem(0);
-
-		assertThat(window.comboBox("tagComboBox").selectedItem()).isEqualTo("Bar");
-		assertThat(window.label("tagLabel").text()).isEqualTo(Tag.listToString(new ArrayList<Tag>(Arrays.asList(t2))));
-	}
+	
 
 }

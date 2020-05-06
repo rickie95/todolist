@@ -1,6 +1,8 @@
 package com.riccardomalavolti.apps.todolist.view;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.swing.timing.Pause.pause;
+import static org.assertj.swing.timing.Timeout.timeout;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.verify;
 
@@ -8,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 import javax.swing.DefaultComboBoxModel;
 
@@ -23,7 +23,7 @@ import org.assertj.swing.fixture.JComboBoxFixture;
 import org.assertj.swing.fixture.JTextComponentFixture;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
-import org.awaitility.Awaitility;
+import org.assertj.swing.timing.Condition;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +39,7 @@ import com.riccardomalavolti.apps.todolist.model.Todo;
 @RunWith(GUITestRunner.class)
 public class EditTodoDialogTest extends AssertJSwingJUnitTestCase {
 
+	private static final long TIMEOUT = 5000;
 	private DialogFixture window;
 	private EditTodoDialog view;
 	private DefaultComboBoxModel<Tag> comboBoxModel;
@@ -86,13 +87,16 @@ public class EditTodoDialogTest extends AssertJSwingJUnitTestCase {
 			view.toFront();
 		});
 		
-		Awaitility.await().atMost(5, TimeUnit.SECONDS).until(viewIsReady());
+		pause(
+				new Condition("") {
+					@Override
+					public boolean test() {
+						return view.isFocused() && view.isValid() && view.isShowing();
+					}
+				}, timeout(TIMEOUT));
 
 	}
 
-	private Callable<Boolean> viewIsReady() {
-		return () -> view.isValid() && view.hasFocus() && view.isShowing();
-	}
 
 	@Override
 	protected void onTearDown() {
@@ -156,6 +160,15 @@ public class EditTodoDialogTest extends AssertJSwingJUnitTestCase {
 	public void testCancelButtonAction() {
 		window.button("cancelButton").click();
 		verify(todoController).dispose(view);
+	}
+	
+	@Test
+	@GUITest
+	public void testSelectingTagShouldUpdateTagLabel() {
+		window.comboBox("tagComboBox").selectItem(0);
+
+		assertThat(window.comboBox("tagComboBox").selectedItem()).isEqualTo("Bar");
+		assertThat(window.label("tagLabel").text()).isEqualTo(Tag.listToString(new ArrayList<Tag>(todo.getTagList())));
 	}
 
 }
