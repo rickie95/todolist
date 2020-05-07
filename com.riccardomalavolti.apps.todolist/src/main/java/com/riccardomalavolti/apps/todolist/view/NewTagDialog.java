@@ -73,8 +73,13 @@ public class NewTagDialog extends JDialog {
 		cancelButton.setActionCommand("Cancel");
 		buttonPanel.add(cancelButton);		
 		
-		this.pack();
-		this.setVisible(true);
+		setAlwaysOnTop(true);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		repaint();
+		validate();
+		setVisible(true);
+		toFront();
+		requestFocus();
 	}
 	
 	private void textChanged() {

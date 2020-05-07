@@ -7,9 +7,10 @@ import javax.swing.JDialog;
 
 import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.model.Todo;
-import com.riccardomalavolti.apps.todolist.view.EditTodoDialog;
+import com.riccardomalavolti.apps.todolist.view.EditTodoAction;
 import com.riccardomalavolti.apps.todolist.view.NewTagDialog;
-import com.riccardomalavolti.apps.todolist.view.NewTodoDialog;
+import com.riccardomalavolti.apps.todolist.view.NewTodoAction;
+import com.riccardomalavolti.apps.todolist.view.TodoDialog;
 import com.riccardomalavolti.apps.todolist.view.TodoView;
 
 public class TodoController {
@@ -97,42 +98,27 @@ public class TodoController {
 	}
 
 	public void newTodoDialog(DefaultComboBoxModel<Tag> tagListModel) {
-		newTodoDialog = new NewTodoDialog(this, tagListModel);
-		newTodoDialog.toFront();
+		newTodoDialog = new TodoDialog(tagListModel, new NewTodoAction(this));
 	}
 	
 	public void editTodoDialog(DefaultComboBoxModel<Tag> tagListModel, Todo todo) {
-		editTodoDialog = new EditTodoDialog(this, tagListModel, todo);
-		editTodoDialog.toFront();
+		editTodoDialog = new TodoDialog(tagListModel, new EditTodoAction(this, todo));
 	}
 
 	public void newTagDialog() {
 		newTagDialog = new NewTagDialog(this);
-		newTagDialog.toFront();
 	}
 
 	public void dispose(JDialog aDialog) {
 		aDialog.dispose();
 	}
 	
-	public void setNewTodoDialog(JDialog newTodoDialog) {
-		this.newTodoDialog = newTodoDialog;
-	}
-	
 	public JDialog getNewTodoDialog() {
 		return newTodoDialog;
-	}
-
-	public void setEditTodoDialog(JDialog editTodoDialog) {
-		this.editTodoDialog = editTodoDialog;
 	}
 	
 	public JDialog getEditTodoDialog() {
 		return editTodoDialog;
-	}
-
-	public void setNewTagDialog(JDialog newTagDialog) {
-		this.newTagDialog = newTagDialog;
 	}
 
 	public JDialog getNewTagDialog() {

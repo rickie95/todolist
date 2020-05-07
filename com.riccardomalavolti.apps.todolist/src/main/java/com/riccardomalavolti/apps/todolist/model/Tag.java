@@ -1,6 +1,7 @@
 package com.riccardomalavolti.apps.todolist.model;
 
 import java.util.List;
+import java.util.Set;
 
 public class Tag {
 	
@@ -82,6 +83,13 @@ public class Tag {
 	}
 
 	public static String listToString(List<Tag> tagList) {
+		StringBuilder ssBld = new StringBuilder();
+		for(Tag t : tagList)
+			ssBld.append("("+t.getText()+")");
+		return ssBld.toString();
+	}
+	
+	public static String listToString(Set<Tag> tagList) {
 		StringBuilder ssBld = new StringBuilder();
 		for(Tag t : tagList)
 			ssBld.append("("+t.getText()+")");

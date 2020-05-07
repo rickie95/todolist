@@ -18,9 +18,6 @@ import com.riccardomalavolti.apps.todolist.controller.TodoController;
 import com.riccardomalavolti.apps.todolist.controller.TodoManager;
 import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.model.Todo;
-import com.riccardomalavolti.apps.todolist.view.EditTodoDialog;
-import com.riccardomalavolti.apps.todolist.view.NewTagDialog;
-import com.riccardomalavolti.apps.todolist.view.NewTodoDialog;
 import com.riccardomalavolti.apps.todolist.view.TodoView;
 
 
@@ -254,7 +251,7 @@ public class TodoControllerTest {
 	}
 	
 	@Test
-	public void testDisposeNewTodoDialog() {
+	public void testDisposeTodoDialog() {
 		DefaultComboBoxModel<Tag> tagListModel = new DefaultComboBoxModel<Tag>();
 		
 		todoController.newTodoDialog(tagListModel);
@@ -263,27 +260,6 @@ public class TodoControllerTest {
 		
 		// The dialog should be not visible at least 
 		assertThat(todoController.getNewTodoDialog().isVisible()).isFalse();
-	}
-	
-	@Test
-	public void testSetNewTodoDialog() {
-		NewTodoDialog newTodoD = mock(NewTodoDialog.class);
-		todoController.setNewTodoDialog(newTodoD);
-		assertThat(todoController.getNewTodoDialog()).isEqualTo(newTodoD);
-	}
-	
-	@Test
-	public void testSetNewTagDialog() {
-		NewTagDialog newTagD = mock(NewTagDialog.class);
-		todoController.setNewTagDialog(newTagD);
-		assertThat(todoController.getNewTagDialog()).isEqualTo(newTagD);
-	}
-	
-	@Test
-	public void testSetEdiTodoDialog() {
-		EditTodoDialog editTodoD = mock(EditTodoDialog.class);
-		todoController.setEditTodoDialog(editTodoD);
-		assertThat(todoController.getEditTodoDialog()).isEqualTo(editTodoD);
 	}
 
 }
