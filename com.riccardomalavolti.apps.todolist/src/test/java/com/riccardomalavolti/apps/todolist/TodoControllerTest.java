@@ -18,9 +18,6 @@ import com.riccardomalavolti.apps.todolist.controller.TodoController;
 import com.riccardomalavolti.apps.todolist.controller.TodoManager;
 import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.model.Todo;
-import com.riccardomalavolti.apps.todolist.view.EditTodoDialog;
-import com.riccardomalavolti.apps.todolist.view.NewTagDialog;
-import com.riccardomalavolti.apps.todolist.view.NewTodoDialog;
 import com.riccardomalavolti.apps.todolist.view.TodoView;
 
 
@@ -224,9 +221,7 @@ public class TodoControllerTest {
 		
 		// Repeat again, the dialog should be the same.
 		todoController.newTodoDialog(tagListModel);
-		assertThat(todoController.getNewTodoDialog()).isEqualTo(todoDialog);
-		assertThat(todoDialog.isVisible()).isTrue();
-		assertThat(todoDialog.isShowing()).isTrue();
+		assertThat(todoController.getNewTodoDialog()).isNotEqualTo(todoDialog);
 	}
 	
 	@Test
@@ -238,39 +233,7 @@ public class TodoControllerTest {
 		assertThat(tagDialog.isVisible()).isTrue();
 		
 		todoController.newTagDialog();
-		assertThat(todoController.getNewTagDialog()).isEqualTo(tagDialog);
-	}
-	
-	@Test
-	public void testTodoDialogShouldHaveFocusIfAlreadyExists() {
-		DefaultComboBoxModel<Tag> tagListModel = new DefaultComboBoxModel<Tag>();
-		NewTodoDialog todoDialog = mock(NewTodoDialog.class);
-		EditTodoDialog editDialog = mock(EditTodoDialog.class);
-		
-		todoController.setNewTodoDialog(todoDialog);
-		
-		todoController.newTodoDialog(tagListModel);
-		
-		verify(todoDialog).toFront();
-		
-		// Same for edit 
-		
-		todoController.setEditTodoDialog(editDialog);
-		
-		todoController.editTodoDialog(tagListModel, new Todo("0", "Foo"));
-		
-		verify(editDialog).toFront();
-	}
-	
-	@Test
-	public void testTagDialogShouldHaveFocusIfAlreadyExists() {
-		NewTagDialog tagDialog = mock(NewTagDialog.class);
-		
-		todoController.setNewTagDialog(tagDialog);
-		
-		todoController.newTagDialog();
-		
-		verify(tagDialog).toFront();
+		assertThat(todoController.getNewTagDialog()).isNotEqualTo(tagDialog);
 	}
 	
 	@Test
@@ -284,13 +247,11 @@ public class TodoControllerTest {
 		assertThat(editTodoDialog.isVisible()).isTrue();
 		
 		todoController.editTodoDialog(tagListModel, todo);
-		assertThat(todoController.getEditTodoDialog()).isEqualTo(editTodoDialog);
-		assertThat(editTodoDialog.isVisible()).isTrue();
-		assertThat(editTodoDialog.isShowing()).isTrue();
+		assertThat(todoController.getEditTodoDialog()).isNotEqualTo(editTodoDialog);
 	}
 	
 	@Test
-	public void testDisposeNewTodoDialog() {
+	public void testDisposeTodoDialog() {
 		DefaultComboBoxModel<Tag> tagListModel = new DefaultComboBoxModel<Tag>();
 		
 		todoController.newTodoDialog(tagListModel);

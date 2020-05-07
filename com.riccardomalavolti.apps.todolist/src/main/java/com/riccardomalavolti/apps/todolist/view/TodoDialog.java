@@ -14,9 +14,9 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
@@ -28,7 +28,7 @@ import com.riccardomalavolti.apps.todolist.controller.TodoController;
 import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.model.Todo;
 
-public abstract class TodoDialog extends JDialog {
+public class TodoDialog extends JDialog {
 
 	private static final long serialVersionUID = 5443345577609514544L;
 
@@ -36,155 +36,200 @@ public abstract class TodoDialog extends JDialog {
 	
 	public static final String TAG_LBL_NO_TAG_TEXT = "No tags.";
 
-	private transient Todo todoElement;
-	private JComponent contentPanel = new JPanel();
+	protected JComponent contentPanel;
 	
 	protected transient Set<Tag> selectedTagList;
 	protected transient TodoController todoController;
-	protected JFormattedTextField todoTextBox;
+	protected JTextField todoTextBox;
 	protected JComboBox<Tag> tagComboBox;
 	protected JButton confirmButton;
 	protected JButton clearButton;
 	protected JButton cancelButton;
 	protected JLabel tagLabel;
 	protected JLabel headingLabel;
+	protected String headingLabelText;
+
+	private DefaultComboBoxModel<Tag> tagModel;
+
+	private transient TodoAction todoAction;
+	private transient Todo todo;
 
 
-	public TodoDialog(TodoController controller) {
-		this.todoController = controller;
+	public TodoDialog(DefaultComboBoxModel<Tag> tagModel, TodoAction todoAction) {
+		this.tagModel = tagModel;
 		this.selectedTagList = new HashSet<>();
+		this.todoAction = todoAction;
+		this.todoController = todoAction.getController();
+		this.todo = todoAction.getTodo();
+		initFrame();
 	}
 	
-	protected void initFrame(DefaultComboBoxModel<Tag> tagModel) {
+	private void initFrame() {
+		contentPanel = new JPanel();
 
 		setBounds(100, 100, 389, 219);
+		setTitle(todoAction.getTitle());
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPanel.setName("contentPanel");
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
-		
+		getContentPane().add(contentPanel, BorderLayout.CENTER);
+
 		headingLabel = new JLabel();
+		headingLabel.setText(todoAction.getHeading());
 		headingLabel.setName("headingLabel");
 		headingLabel.setBounds(12, 12, 432, 17);
 		contentPanel.add(headingLabel);
 		
-		todoTextBox = new JFormattedTextField();
-		todoTextBox.setName("todoTextBox");
+		createTagLabel();
+		createTextField(todo.getBody());
+		
+		JLabel lblTags = new JLabel("Tags");
+		lblTags.setBounds(22, 114, 60, 17);
+		contentPanel.add(lblTags);
+		
+		createComboBox();
+		createButtonsPanel();
+
+		setAlwaysOnTop(true);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		repaint();
+		validate();
+		setVisible(true);
+		toFront();
+		requestFocus();
+	}
+	
+	private void createButtonsPanel() {
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.setName("buttonPanel");
+		buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		getContentPane().add(buttonPanel, BorderLayout.SOUTH);
+
+		createClearButton();
+		createConfirmButton();
+		createCancelButton();
+
+		buttonPanel.add(clearButton);
+		buttonPanel.add(confirmButton);
+		buttonPanel.add(cancelButton);
+	}
+	
+	private void createCancelButton() {
+		cancelButton = new JButton("Cancel");
+		cancelButton.setName("cancelButton");
+		cancelButton.setEnabled(true);
+		cancelButton.addActionListener(e -> cancelButtonAction());
+		cancelButton.setActionCommand("Cancel");
+	}
+
+	private void createConfirmButton() {
+		confirmButton = new JButton("Save");
+		confirmButton.setName("confirmButton");
+		confirmButton.setEnabled(true);
+		if(todo.getBody().isEmpty())
+			confirmButton.setEnabled(false);
+		confirmButton.addActionListener(e -> confirmButtonAction());
+	}
+	
+	private void createClearButton() {
+		clearButton = new JButton("Clear tags");
+		clearButton.setName("clearButton");
+		clearButton.setEnabled(false);
+		if(!todoAction.getTodo().getTagList().isEmpty())
+			clearButton.setEnabled(true);
+		clearButton.addActionListener(e -> clearTags());
+		clearButton.setHorizontalAlignment(SwingConstants.LEFT);
+	}
+	
+	private void confirmButtonAction() {
+		LOGGER.info("Sending todo");
+		String body = todoTextBox.getText();
+		todoAction.sendToController(body, selectedTagList);
+		todoController.dispose(this);
+	}
+
+	private void cancelButtonAction() {
+		LOGGER.debug("Exiting from New To Do dialog");
+		todoController.dispose(this);
+	}
+	
+	private void createComboBox() {
+		class ItemChangeListener implements ItemListener {
+			@Override
+			public void itemStateChanged(ItemEvent event) {
+				if (event.getStateChange() == ItemEvent.SELECTED) {
+					tagSelected(event.getItem());
+				}
+			}
+		}
+
+		tagComboBox = new JComboBox<>();
+		tagComboBox.setName("tagComboBox");
+		tagComboBox.addItemListener(new ItemChangeListener());
+		tagComboBox.setModel(tagModel);
+		tagComboBox.setSelectedItem(null);
+		tagComboBox.setBounds(113, 109, 256, 26);
+
+		contentPanel.add(tagComboBox);
+	}
+	
+	private void createTextField(String text) {
+		todoTextBox = new JTextField(text);
 		todoTextBox.getDocument().addDocumentListener(new SimpleDocumentListener() {
 			@Override
 			public void update(DocumentEvent e) {
 				textChanged();
 			}
 		});
-		
-		todoTextBox.setToolTipText("Write here");
+		todoTextBox.setName("todoTextBox");
 		todoTextBox.setBounds(12, 51, 357, 41);
 		contentPanel.add(todoTextBox);
+	}
+	
+	protected void textChanged() {
+		Boolean isTextEmpty = todoTextBox.getText().isEmpty();
+		confirmButton.setEnabled(true);
 		
-		tagLabel = new JLabel(TAG_LBL_NO_TAG_TEXT);
+		if(Boolean.TRUE.equals(isTextEmpty)) {
+			confirmButton.setEnabled(false);
+		}
+		
+	}
+
+	private void createTagLabel() {
+		String text = Tag.listToString(todo.getTagList());
+		if (text.equals(""))
+			text = TAG_LBL_NO_TAG_TEXT;
+		tagLabel = new JLabel(text);
 		tagLabel.setName("tagLabel");
 		tagLabel.setFont(new Font("Dialog", Font.PLAIN, 10));
 		tagLabel.setBounds(12, 30, 72, 17);
 		contentPanel.add(tagLabel);
-		
-		class ItemChangeListener implements ItemListener{
-		    @Override
-		    public void itemStateChanged(ItemEvent event) {
-		       if (event.getStateChange() == ItemEvent.SELECTED) {
-		    	  tagSelected(event.getItem());
-		       }
-		    }
-		}
-		
-		tagComboBox = new JComboBox<>();
-		tagComboBox.setName("tagComboBox");
-		tagComboBox.setToolTipText("Select a tag from here");
-		tagComboBox.addItemListener(new ItemChangeListener());
-		tagComboBox.setModel(tagModel);
-		tagComboBox.setSelectedItem(null);
-		tagComboBox.setBounds(113, 109, 256, 26);
-		
-		contentPanel.add(tagComboBox);
-		
-		JLabel lblTags = new JLabel("Tags");
-		lblTags.setBounds(22, 114, 60, 17);
-		contentPanel.add(lblTags);
-	
-		JPanel buttonPanel = new JPanel();
-		buttonPanel.setName("buttonPanel");
-		buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		getContentPane().add(buttonPanel, BorderLayout.SOUTH);
-			
-		confirmButton = new JButton();
-		confirmButton.setName("confirmButton");
-		confirmButton.setEnabled(false);
-		confirmButton.setActionCommand("OK");
-		
-		clearButton = new JButton("Clear tags");
-		clearButton.setName("clearButton");
-		clearButton.setEnabled(false);
-		clearButton.addActionListener(e -> clearTags());
-		clearButton.setHorizontalAlignment(SwingConstants.LEFT);
-		
-		cancelButton = new JButton("Cancel");
-		cancelButton.setName("cancelButton");
-		cancelButton.addActionListener(e -> cancelButtonAction());
-		cancelButton.setActionCommand("Cancel");
-		
-		buttonPanel.add(clearButton);
-		buttonPanel.add(confirmButton);
-		buttonPanel.add(cancelButton);	
-		getRootPane().setDefaultButton(confirmButton);
-		
-	}
-	
-	/* Buttons and components callbacks */
-	
-	private void cancelButtonAction() {
-		LOGGER.debug("Exiting from New To Do dialog");
-		todoController.dispose(this);
 	}
 	
 	private void tagSelected(Object eventItem) {        
         selectedTagList.add((Tag) eventItem);
-        this.clearButton.setEnabled(true);
-        redrawTagLbl();
+        clearButton.setEnabled(true);
+        updateTagLabelText();
 	}
 	
-	private void clearTags() {
+	public void clearTags() {
 		selectedTagList.clear();
-		this.tagComboBox.setSelectedItem(null);
-		this.tagLabel.setText(TAG_LBL_NO_TAG_TEXT);
-		this.todoElement.clearTags();
-		this.clearButton.setEnabled(false);
+		tagComboBox.setSelectedItem(null);
+		clearButton.setEnabled(false);
+		updateTagLabelText();
 	}
 	
-	protected void textChanged() {
-		confirmButton.setEnabled(!todoTextBox.getText().trim().isEmpty());
-	}
-	
-	public void redrawTagLbl() {
+	private void updateTagLabelText() {
 		tagLabel.setText(TAG_LBL_NO_TAG_TEXT);
 		
 		if(!selectedTagList.isEmpty())
 			tagLabel.setText(Tag.listToString(new ArrayList<Tag>(selectedTagList)));
 	}
-	
-	/* Getters and setters */ 
-	
-	public Todo getTodoElement() {
-		return todoElement;
-	}
-	
-	public void setTodoElement(Todo todo) {
-		this.todoElement = todo;
-		if(!todo.getTagList().isEmpty()) {
-			clearButton.setEnabled(true);
-			selectedTagList = getTodoElement().getTagList();
-		}
-		todoTextBox.setText(todo.getBody());
-		redrawTagLbl();
+
+	public Set<Tag> getTagList() {
+		return selectedTagList;
 	}
 	
 }

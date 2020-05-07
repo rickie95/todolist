@@ -2,19 +2,23 @@ version: "3.7"
 services:
     jenkins:
         build: 
-            context: ./docker-files
-            dockerfile: jenkins.dockerfile
+            context: ./
+            dockerfile: ./docker-files/jenkins.dockerfile
+        networks: 
+            - todolist-network
         image: riccardomalavolti/jenkins-opjdk8-mvn363
         ports:
             - "8090:8080"
+            - "50000:50000"
         env_file:
             - variables.env
+        environment:
+            DOCKER_SOCKET: /var/run/docker.sock
+            DOCKER_HOST: unix://var/run/docker.sock
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
 
-#    mongo:
-#        image: mverts/alpine-mongo
-#        networks:
-#            - riccardo-network
-            
-#networks:
-#    riccardo-network:
-#        driver: bridge
+networks:
+    todolist-network:
+        name: todolist-network
+        driver: bridge
