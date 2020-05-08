@@ -239,6 +239,7 @@
 						<image>
 							<name>mongo:4.0.5</name>
 							<run>
+							<hostname>localhost</hostname>
 								<ports>
 									<port>27017:27017</port>
 								</ports>
