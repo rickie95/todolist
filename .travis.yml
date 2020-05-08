@@ -17,6 +17,10 @@ matrix:
       env: PROFILES="-Pjacoco"
     - if: type = cron
       env: PROFILES="-Pjacoco,mutation-testing"
+
+before_install:
+- sudo apt install -y tightvncserver
+- sudo apt install -y expect
       
 script:
 - ./execute-on-vnc.sh mvn -f com.riccardomalavolti.apps.todolist/pom.xml clean verify $PROFILES jacoco:report coveralls:report sonar:sonar
