@@ -4,12 +4,7 @@ services:
         build: 
             context: ./
             dockerfile: ./docker-files/jenkins.dockerfile
-        networks: 
-            - todolist-network
         image: riccardomalavolti/jenkins-opjdk8-mvn363
-        ports:
-            - "8090:8080"
-            - "50000:50000"
         env_file:
             - variables.env
         environment:
@@ -17,8 +12,4 @@ services:
             DOCKER_HOST: unix://var/run/docker.sock
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-
-networks:
-    todolist-network:
-        name: todolist-network
-        driver: bridge
+        network_mode: "host"
