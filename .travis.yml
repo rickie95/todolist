@@ -1,3 +1,5 @@
+dist: trusty
+
 language: java
 jdk: openjdk8
 install: true
@@ -7,10 +9,8 @@ cache:
   - $HOME/.m2
   - $HOME/.sonar/cache
   
-env: DISPLAY=99.0
 
 services:
-  - xvfb
   - docker
 
 matrix:
@@ -19,6 +19,10 @@ matrix:
       env: PROFILES="-Pjacoco"
     - if: type = cron
       env: PROFILES="-Pjacoco,mutation-testing"
+
+before_install:
+- sudo apt-get install -y tightvncserver
+- sudo apt-get install -y expect
       
 script:
-- mvn -f com.riccardomalavolti.apps.todolist/pom.xml clean verify $PROFILES jacoco:report coveralls:report sonar:sonar
+- ./execute-on-vnc.sh mvn -f com.riccardomalavolti.apps.todolist/pom.xml clean verify $PROFILES jacoco:report coveralls:report sonar:sonar
