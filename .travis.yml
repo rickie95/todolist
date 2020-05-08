@@ -19,4 +19,4 @@ matrix:
       env: PROFILES="-Pjacoco,mutation-testing"
       
 script:
-- execute-on.vnc.sh mvn -f com.riccardomalavolti.apps.todolist/pom.xml clean verify $PROFILES jacoco:report coveralls:report sonar:sonar
+- execute-on-vnc.sh mvn -f com.riccardomalavolti.apps.todolist/pom.xml clean verify $PROFILES jacoco:report coveralls:report sonar:sonar
