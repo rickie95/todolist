@@ -14,23 +14,35 @@ pipeline{
                 echo '======= Build finished ======='
                 }
         }
-        stage('Testing'){
+        stage('Unit Testing'){
             steps{
                 echo 'Testing started'
                 sh 'export DISPLAY=33'
                 wrap([$class: 'Xvfb', additionalOptions: '', assignedLabels: '', autoDisplayName: true, debug: true, displayNameOffset: 33, screen: '1366x768x16']){
-                    sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml verify -Pjacoco,mutation-testing jacoco:report surefire-report:report-only surefire-report:failsafe-report-only org.apache.maven.plugins:maven-site-plugin:3.7.1:site -DgenerateReports=false'
-                    junit 'com.riccardomalavolti.apps.todolist/target/*/*.xml'
+                    sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml test -Pjacoco,mutation-testing jacoco:report'
                     jacoco()
                 }
                 echo 'Ending testing phase'
             }
         }
+        
+        stage('Integration and E2E testing'){
+            steps{
+                echo 'Testing started'
+                sh 'export DISPLAY=33'
+                wrap([$class: 'Xvfb', additionalOptions: '', assignedLabels: '', autoDisplayName: true, debug: true, displayNameOffset: 33, screen: '1366x768x16']){
+                    sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml verify surefire-report:failsafe-report-only org.apache.maven.plugins:maven-site-plugin:3.7.1:site -Dsurefire.skipTest=true'
+                }
+                echo 'Ending testing phase'
+            }
+        }
 
-        stage('Verifing'){
+        stage('Code analysis'){
             steps{
                 echo 'Code quality analysis started'
                 sh 'mvn -f ./com.riccardomalavolti.apps.todolist/pom.xml coveralls:report sonar:sonar'
+                junit '**/target/*/*.xml'
+                sh 'mvn site'
                 echo 'Code analysis ended.'
             }
         }
