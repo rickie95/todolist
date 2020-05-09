@@ -28,8 +28,11 @@
 		<sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
 
 		<!-- Unit and Integration test reports -->
-		<sonar.junit.reportPaths>${project.build.directory}/surefire-reports</sonar.junit.reportPaths>
-		<sonar.junit.reportPaths>${project.build.directory}/failsafe-reports</sonar.junit.reportPaths>
+		<sonar.junit.reportPaths>
+            ${project.build.directory}/surefire-reports,
+            ${project.build.directory}/failsafe-reports
+        </sonar.junit.reportPaths>
+        
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.dynamicAnalysis>reuseReport</sonar.dynamicAnalysis>
 		<sonar.language>java</sonar.language>
