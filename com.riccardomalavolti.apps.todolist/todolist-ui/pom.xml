@@ -10,23 +10,11 @@
 
 	<artifactId>todolist-ui</artifactId>
 
-	<properties>
-		<assertj.swing.version>3.9.2</assertj.swing.version>
-	</properties>
-
-
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>todolist-core</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.assertj</groupId>
-			<artifactId>assertj-swing-junit</artifactId>
-			<version>${assertj.swing.version}</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

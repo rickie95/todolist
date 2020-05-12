@@ -9,6 +9,20 @@
 	<artifactId>todolist</artifactId>
 	<version>1.0.0</version>
 
+	<packaging>pom</packaging>
+
+
+	<modules>
+		<module>todolist-core</module>
+		<module>todolist-ui</module>
+		<module>todolist-core-tests</module>
+		<module>todolist-ui-tests</module>
+		<module>todolist-tests-integration</module>
+		<module>todolist-tests-e2e</module>
+		<module>todolist-jacoco-report-aggregator</module>
+	</modules>
+
+
 	<name>todolist</name>
 	<url>http://www.example.com</url>
 
@@ -17,8 +31,19 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<log4j.version>2.11.1</log4j.version>
-		<cucumber.version>4.2.2</cucumber.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<junit.version>4.11</junit.version>
+		<docker.maven.plugin.version>0.27.2</docker.maven.plugin.version>
+		<slf4j.version>1.7.5</slf4j.version>
+		<slf4j.simple.version>1.6.4</slf4j.simple.version>
+		<mockito.core.version>3.2.4</mockito.core.version>
+		<mongo.java.driver.version>3.12.1</mongo.java.driver.version>
+		<mongo.java.server.version>1.18.2</mongo.java.server.version>
+		<assertj.core.version>3.15.0</assertj.core.version>
+		<picocli.version>4.2.0</picocli.version>
+		<failsafe.version>2.18.1</failsafe.version>
+		<jacoco.version>0.8.3</jacoco.version>
+		<coveralls.version>4.3.0</coveralls.version>
+		<pitest.version>1.4.3</pitest.version>
 
 		<!-- Sonar configuration mvn verify sonar:sonar -->
 		<aggregate.report.dir>${project.build.directory}/site/jacoco/jacoco.xml</aggregate.report.dir>
@@ -26,13 +51,10 @@
 		<sonar.organization>rickie95</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
-
-		<!-- Unit and Integration test reports -->
 		<sonar.junit.reportPaths>
-            ${project.build.directory}/surefire-reports,
-            ${project.build.directory}/failsafe-reports
-        </sonar.junit.reportPaths>
-        
+			${project.build.directory}/surefire-reports,
+			${project.build.directory}/failsafe-reports
+		</sonar.junit.reportPaths>
 		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 		<sonar.dynamicAnalysis>reuseReport</sonar.dynamicAnalysis>
 		<sonar.language>java</sonar.language>
@@ -67,13 +89,58 @@
 
 		<profile>
 			<id>jacoco</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
 			<build>
 				<plugins>
 					<plugin>
-						<!-- configuration in pluginManagement -->
 						<groupId>org.jacoco</groupId>
-						<artifactId>jacoco-maven-plugin</artifactId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<version>${jacoco.version}</version>
+					<configuration>
+                    	<destFile>${project.basedir}/target/jacoco.exec</destFile>
+                    	<append>true</append>
+						<excludes>
+							<exclude>**/TodoList.*</exclude>
+							<exclude>**/Tag.*</exclude>
+							<exclude>**/Todo.*</exclude>
+							<exclude>**/SimpleDocumentListener.*</exclude>
+							<exclude>**/MessageBoxFactory.*</exclude>
+						</excludes>
+						<rules>
+							<rule>
+								<element>PACKAGE</element>
+								<limits>
+									<limit>
+										<counter>LINE</counter>
+										<value>COVEREDRATIO</value>
+										<minimum>1</minimum>
+									</limit>
+								</limits>
+							</rule>
+						</rules>
+					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>prepare-agent</goal>
+								<goal>report</goal>
+							</goals>
+						</execution>
+					</executions>
 					</plugin>
+					
+					<plugin>
+					<groupId>org.eluder.coveralls</groupId>
+					<artifactId>coveralls-maven-plugin</artifactId>
+					<version>${coveralls.version}</version>
+					<configuration>
+						<repoToken>${env.COVERALLS_REPO_TOKEN}</repoToken>
+						<jacocoReports>${project.build.directory}/target/site/jacoco/jacoco.xml</jacocoReports>
+					</configuration>
+				</plugin>
+					
 				</plugins>
 			</build>
 		</profile>
@@ -83,7 +150,6 @@
 			<build>
 				<plugins>
 					<plugin>
-						<!-- additional conf in pluginManagement -->
 						<groupId>org.pitest</groupId>
 						<artifactId>pitest-maven</artifactId>
 						<executions>
@@ -105,7 +171,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.11</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -122,79 +188,46 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.7.5</version>
+			<version>${slf4j.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
-			<version>1.6.4</version>
+			<version>${slf4j.simple.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>3.2.4</version>
+			<version>${mockito.core.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongo-java-driver</artifactId>
-			<version>3.12.1</version>
+			<version>${mongo.java.driver.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>de.bwaldvogel</groupId>
 			<artifactId>mongo-java-server</artifactId>
-			<version>1.18.2</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.assertj</groupId>
-			<artifactId>assertj-swing-junit</artifactId>
-			<version>3.9.2</version>
+			<version>${mongo.java.server.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
-			<version>3.15.0</version>
+			<version>${assertj.core.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>testcontainers</artifactId>
-			<version>1.12.5</version>
-			<scope>test</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>io.cucumber</groupId>
-			<artifactId>cucumber-java</artifactId>
-			<version>${cucumber.version}</version>
-			<scope>test</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>io.cucumber</groupId>
-			<artifactId>cucumber-junit</artifactId>
-			<version>${cucumber.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>info.picocli</groupId>
 			<artifactId>picocli</artifactId>
-			<version>4.2.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.awaitility</groupId>
-			<artifactId>awaitility</artifactId>
-			<version>3.1.6</version>
-			<scope>test</scope>
+			<version>${picocli.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -202,9 +235,44 @@
 
 		<plugins>
 			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>${docker.maven.plugin.version}</version>
+				<configuration>
+					<images>
+						<image>
+							<name>mongo:4.0.5</name>
+							<run>
+								<hostname>localhost</hostname>
+								<ports>
+									<port>27017:27017</port>
+								</ports>
+							</run>
+						</image>
+					</images>
+				</configuration>
+				<executions>
+					<execution>
+						<id>docker:start</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>docker:stop</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.18.1</version>
+				<version>${failsafe.version}</version>
 				<executions>
 					<execution>
 						<goals>
@@ -234,41 +302,6 @@
 			</plugin>
 
 			<plugin>
-				<groupId>io.fabric8</groupId>
-				<artifactId>docker-maven-plugin</artifactId>
-				<version>0.27.2</version>
-				<configuration>
-					<images>
-						<image>
-							<name>mongo:4.0.5</name>
-							<run>
-							<hostname>localhost</hostname>
-								<ports>
-									<port>27017:27017</port>
-								</ports>
-							</run>
-						</image>
-					</images>
-				</configuration>
-				<executions>
-					<execution>
-						<id>docker:start</id>
-						<phase>pre-integration-test</phase>
-						<goals>
-							<goal>start</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>docker:stop</id>
-						<phase>post-integration-test</phase>
-						<goals>
-							<goal>stop</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<version>3.0.0</version>
@@ -281,9 +314,9 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>src/it/java</source>
+								<source>todolist-integrationTests/src/it/java</source>
 								<source>src/e2e/java</source>
-								<source>src/bdd/java</source>
+								<source>todolist-bdd/src/bdd/java</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -296,7 +329,7 @@
 						<configuration>
 							<resources>
 								<resource>
-									<directory>src/bdd/resources</directory>
+									<directory>todolist-bdd/src/bdd/resources</directory>
 								</resource>
 							</resources>
 						</configuration>
@@ -326,9 +359,9 @@
 				<plugin>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>2.22.1</version>
-                    <configuration>
-                        <skip>${skipSurefire}</skip>
-                    </configuration>
+					<configuration>
+						<skip>${skipSurefire}</skip>
+					</configuration>
 				</plugin>
 
 				<plugin>
@@ -357,54 +390,9 @@
 				</plugin>
 
 				<plugin>
-					<groupId>org.jacoco</groupId>
-					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>0.8.3</version>
-					<configuration>
-						<excludes>
-							<exclude>**/TodoList.*</exclude>
-							<exclude>**/Tag.*</exclude>
-							<exclude>**/Todo.*</exclude>
-							<exclude>**/SimpleDocumentListener.*</exclude>
-							<exclude>**/MessageBoxFactory.*</exclude>
-						</excludes>
-						<rules>
-							<rule>
-								<element>PACKAGE</element>
-								<limits>
-									<limit>
-										<counter>LINE</counter>
-										<value>COVEREDRATIO</value>
-										<minimum>1</minimum>
-									</limit>
-								</limits>
-							</rule>
-						</rules>
-					</configuration>
-					<executions>
-						<execution>
-							<goals>
-								<goal>prepare-agent</goal>
-								<goal>report</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-
-				<plugin>
-					<groupId>org.eluder.coveralls</groupId>
-					<artifactId>coveralls-maven-plugin</artifactId>
-					<version>4.3.0</version>
-					<configuration>
-						<repoToken>${env.COVERALLS_REPO_TOKEN}</repoToken>
-						<jacocoReports>./target/site/jacoco/jacoco.xml</jacocoReports>
-					</configuration>
-				</plugin>
-
-				<plugin>
 					<groupId>org.pitest</groupId>
 					<artifactId>pitest-maven</artifactId>
-					<version>1.4.3</version>
+					<version>${pitest.version}</version>
 					<configuration>
 						<targetClasses>
 							<param>com.riccardomalavolti.apps.todolist.*</param>
