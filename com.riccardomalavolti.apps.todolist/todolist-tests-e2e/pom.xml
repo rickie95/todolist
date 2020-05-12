@@ -40,12 +40,51 @@
 			<version>4.2.2</version>
 			<scope>test</scope>
 		</dependency>
-		
-			<dependency>
+
+		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-swing-junit</artifactId>
 			<version>${assertj.swing.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>${docker.maven.plugin.version}</version>
+				<configuration>
+					<images>
+						<image>
+							<name>mongo:4.0.5</name>
+							<run>
+								<hostname>localhost</hostname>
+								<ports>
+									<port>27017:27017</port>
+								</ports>
+							</run>
+						</image>
+					</images>
+				</configuration>
+				<executions>
+					<execution>
+						<id>docker:start</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>docker:stop</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

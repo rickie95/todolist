@@ -6,8 +6,9 @@
     <version>1.0.0</version>
   </parent>
   <artifactId>todolist-jacoco-report-aggregator</artifactId>
-  
+
   <profiles>
+    
 		<profile>
 			<id>jacoco</id>
 			<activation>
@@ -31,6 +32,49 @@
 				</plugins>
 			</build>
 		</profile>
+		<!--  
+		<profile>
+			<id>code-analysis</id>
+			<build>
+				<plugins>
+
+					<plugin>
+						<groupId>org.eluder.coveralls</groupId>
+						<artifactId>coveralls-maven-plugin</artifactId>
+						<version>${coveralls.version}</version>
+						<configuration>
+							<repoToken>${env.COVERALLS_REPO_TOKEN}</repoToken>
+							<jacocoReports>${project.build.directory}/target/site/jacoco/jacoco.xml</jacocoReports>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>report</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.sonarsource.scanner.maven</groupId>
+						<artifactId>sonar-maven-plugin</artifactId>
+						<version>3.5.0.1254</version>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>sonar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+
+				</plugins>
+			</build>
+		</profile>
+		 -->
 	</profiles>
   
   
