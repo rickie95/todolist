@@ -1,14 +1,20 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>com.riccardomalavolti.apps</groupId>
-    <artifactId>todolist</artifactId>
-    <version>1.0.0</version>
-  </parent>
-  <artifactId>todolist-jacoco-report-aggregator</artifactId>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.riccardomalavolti.apps</groupId>
+		<artifactId>todolist</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<artifactId>todolist-jacoco-report-aggregator</artifactId>
 
-  <profiles>
-    
+	<properties>
+		<sonar.coverage.jacoco.xmlReportPaths>${project.build.directory}/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+	</properties>
+
+	<profiles>
+
 		<profile>
 			<id>jacoco</id>
 			<activation>
@@ -32,8 +38,9 @@
 				</plugins>
 			</build>
 		</profile>
-		<!--  
+		
 		<profile>
+		<!-- Extends code-analysis profile in parent .pom -->
 			<id>code-analysis</id>
 			<build>
 				<plugins>
@@ -44,7 +51,14 @@
 						<version>${coveralls.version}</version>
 						<configuration>
 							<repoToken>${env.COVERALLS_REPO_TOKEN}</repoToken>
-							<jacocoReports>${project.build.directory}/target/site/jacoco/jacoco.xml</jacocoReports>
+							<jacocoReports>
+								<jacocoReport>../todolist-core/target/site/jacoco/jacoco.xml</jacocoReport>
+								<jacocoReport>../todolist-ui/target/site/jacoco/jacoco.xml</jacocoReport>
+							</jacocoReports>
+							<sourceDirectories>
+								<sourceDirectory>../todolist-core/src/main/java</sourceDirectory>
+								<sourceDirectory>../todolist-ui/src/main/java</sourceDirectory>
+							</sourceDirectories>
 						</configuration>
 						<executions>
 							<execution>
@@ -56,56 +70,28 @@
 						</executions>
 					</plugin>
 
-					<plugin>
-						<groupId>org.sonarsource.scanner.maven</groupId>
-						<artifactId>sonar-maven-plugin</artifactId>
-						<version>3.5.0.1254</version>
-						<executions>
-							<execution>
-								<phase>verify</phase>
-								<goals>
-									<goal>sonar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-
 
 				</plugins>
 			</build>
 		</profile>
-		 -->
 	</profiles>
-  
-  
-  <dependencies>
-  		<dependency>
+
+
+	<dependencies>
+		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>todolist-core</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>todolist-ui</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>todolist-core-tests</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>todolist-ui-tests</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
-  </dependencies>
-  
+
+	</dependencies>
+
 </project>

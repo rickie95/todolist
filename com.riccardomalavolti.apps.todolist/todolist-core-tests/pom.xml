@@ -16,5 +16,21 @@
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
+	
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+						<groupId>org.eluder.coveralls</groupId>
+						<artifactId>coveralls-maven-plugin</artifactId>
+						<version>${coveralls.version}</version>
+						<configuration>
+							<jacocoReports>${project.build.directory}/site/jacoco/jacoco.xml</jacocoReports>
+							<sourceDirectories>${project.basedir}/todolist-core/src/main/java</sourceDirectories>
+						</configuration>
+					</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 
 </project>
