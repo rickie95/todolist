@@ -12,6 +12,7 @@
 	<properties>
 		<cucumber.version>4.2.2</cucumber.version>
 		<assertj.swing.version>3.9.2</assertj.swing.version>
+		<failsafe.version>2.18.1</failsafe.version>
 	</properties>
 
 	<dependencies>
@@ -51,6 +52,41 @@
 
 	<build>
 		<plugins>
+		
+		<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>${failsafe.version}</version>
+				<executions>
+
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+
+					<execution>
+						<id>bdd-test</id>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+						<configuration>
+							<excludes>
+								<exclude>**/*IT.java</exclude>
+							</excludes>
+							<includes>
+								<include>**/*BDD.java</include>
+							</includes>
+						</configuration>
+					</execution>
+
+				</executions>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
 
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
