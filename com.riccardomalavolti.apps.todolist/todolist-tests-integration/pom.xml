@@ -62,6 +62,7 @@
 				<version>${failsafe.version}</version>
 				<executions>
 					<execution>
+						<id>integration-tests</id>
 						<goals>
 							<goal>integration-test</goal>
 							<goal>verify</goal>
@@ -70,6 +71,7 @@
 				</executions>
 				<configuration>
 					<encoding>${project.build.sourceEncoding}</encoding>
+					<skipTests>${skipITests}</skipTests>
 				</configuration>
 			</plugin>
 
@@ -98,6 +100,7 @@
 				<artifactId>docker-maven-plugin</artifactId>
 				<version>${docker.maven.plugin.version}</version>
 				<configuration>
+					<skip>${skipITests}</skip>
 					<images>
 						<image>
 							<name>mongo:4.0.5</name>

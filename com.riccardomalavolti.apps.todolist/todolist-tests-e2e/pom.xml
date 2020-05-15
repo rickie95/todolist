@@ -67,14 +67,6 @@
 				<artifactId>maven-failsafe-plugin</artifactId>
 				<version>${failsafe.version}</version>
 				<executions>
-
-					<execution>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-					</execution>
-
 					<execution>
 						<id>bdd-test</id>
 						<goals>
@@ -90,10 +82,10 @@
 							</includes>
 						</configuration>
 					</execution>
-
 				</executions>
 				<configuration>
 					<encoding>${project.build.sourceEncoding}</encoding>
+					<skipTests>${skipITests}</skipTests>
 				</configuration>
 			</plugin>
 
@@ -136,6 +128,7 @@
 				<artifactId>docker-maven-plugin</artifactId>
 				<version>${docker.maven.plugin.version}</version>
 				<configuration>
+					<skip>${skipITests}</skip>
 					<images>
 						<image>
 							<name>mongo:4.0.5</name>
