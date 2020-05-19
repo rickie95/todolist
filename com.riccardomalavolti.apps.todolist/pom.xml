@@ -260,7 +260,7 @@
 						<param>com.riccardomalavolti.apps.todolist.model.*</param>
 					</excludedClasses>
 					<targetModules>
-						<param>todolist-core-tests</param>
+						<param>todolist-core</param>
 					</targetModules>
 					<targetTests>
 						<param>com.riccardomalavolti.apps.todolist.*Test</param>
