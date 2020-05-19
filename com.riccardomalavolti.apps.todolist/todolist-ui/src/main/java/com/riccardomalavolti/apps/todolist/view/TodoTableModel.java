@@ -62,9 +62,14 @@ public class TodoTableModel extends DefaultTableModel {
 		int indexOfRow = -1;
 		
 		for(Vector<?> row : dataVector)
-			if(((Todo) row.elementAt(1)).equals(todo))
+			if(getTodoFromRow(row).equals(todo))
 				indexOfRow = dataVector.indexOf(row);
 		
 		this.removeRow(indexOfRow);
 	}
+	
+	private Todo getTodoFromRow(Vector<?> row) {
+		return ((Todo) (row.elementAt(1)));
+	}
+	
 }
