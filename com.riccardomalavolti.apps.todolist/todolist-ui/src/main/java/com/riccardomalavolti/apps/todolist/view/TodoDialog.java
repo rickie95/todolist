@@ -228,7 +228,7 @@ public class TodoDialog extends JDialog {
 		tagLabel.setText(TAG_LBL_NO_TAG_TEXT);
 		
 		if(!selectedTagList.isEmpty())
-			tagLabel.setText(Tag.listToString(new ArrayList<Tag>(selectedTagList)));
+			tagLabel.setText(Tag.listToString(new ArrayList<>(selectedTagList)));
 	}
 
 	public Set<Tag> getTagList() {
