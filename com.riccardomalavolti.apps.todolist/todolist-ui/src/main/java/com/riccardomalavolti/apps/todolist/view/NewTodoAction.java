@@ -31,18 +31,4 @@ public class NewTodoAction implements TodoAction {
 		return todo;
 	}
 
-	@Override
-	public String getTitle() {
-		return TITLE_TEXT;
-	}
-
-	@Override
-	public String getHeading() {
-		return HEADING_LABEL_TEXT;
-	}
-
-	@Override
-	public TodoController getController() {
-		return todoController;
-	}
 }

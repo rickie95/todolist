@@ -53,19 +53,4 @@ public class EditTodoActionTest {
 		assertThat(todo.getBody()).isEqualTo(todo.getBody());
 	}
 
-	@Test
-	public void testGetTitle() {
-		assertThat(todoAction.getTitle()).isEqualTo(EditTodoAction.TITLE_TEXT);
-	}
-
-	@Test
-	public void testGetHeadingLabelText() {
-		assertThat(todoAction.getHeading()).isEqualTo(EditTodoAction.HEADING_LABEL_TEXT);
-	}
-
-	@Test
-	public void testGetController() {
-		assertThat(todoAction.getController()).isEqualTo(todoController);
-	}
-
 }

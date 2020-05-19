@@ -54,13 +54,16 @@ public class TodoDialog extends JDialog {
 	private transient TodoAction todoAction;
 	private transient Todo todo;
 
+	private String dialogTitle;
 
-	public TodoDialog(DefaultComboBoxModel<Tag> tagModel, TodoAction todoAction) {
+
+	public TodoDialog(TodoController todoController, DefaultComboBoxModel<Tag> tagModel, TodoAction todoAction, String dialogTitle) {
 		this.tagModel = tagModel;
 		this.selectedTagList = new HashSet<>();
 		this.todoAction = todoAction;
-		this.todoController = todoAction.getController();
+		this.todoController = todoController;
 		this.todo = todoAction.getTodo();
+		this.dialogTitle = dialogTitle;
 		initFrame();
 	}
 	
@@ -68,7 +71,7 @@ public class TodoDialog extends JDialog {
 		contentPanel = new JPanel();
 
 		setBounds(100, 100, 389, 219);
-		setTitle(todoAction.getTitle());
+		setTitle(dialogTitle);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPanel.setName("contentPanel");
@@ -76,8 +79,8 @@ public class TodoDialog extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 
 		headingLabel = new JLabel();
-		headingLabel.setText(todoAction.getHeading());
 		headingLabel.setName("headingLabel");
+		headingLabel.setText(dialogTitle);
 		headingLabel.setBounds(12, 12, 432, 17);
 		contentPanel.add(headingLabel);
 		

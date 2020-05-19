@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.swing.timing.Pause.pause;
 import static org.assertj.swing.timing.Timeout.timeout;
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -70,13 +69,10 @@ public class TodoDialogNewActionTest extends AssertJSwingJUnitTestCase {
 		tagList.sort((l, r) -> l.getText().compareTo(r.getText()));
 		comboBoxModel = new DefaultComboBoxModel<Tag>(tagList.toArray(new Tag[tagList.size()]));
 
-		when(todoAction.getHeading()).thenReturn(NewTodoAction.HEADING_LABEL_TEXT);
-		when(todoAction.getTitle()).thenReturn(NewTodoAction.TITLE_TEXT);
-		when(todoAction.getController()).thenReturn(todoController);
 		when(todoAction.getTodo()).thenReturn(todo);
 
 		GuiActionRunner.execute(() -> {
-			view = new TodoDialog(comboBoxModel, todoAction);
+			view = new TodoDialog(todoController, comboBoxModel, todoAction, TodoController.NEW_DIALOG_TITLE);
 			return view;
 		});
 
@@ -109,8 +105,8 @@ public class TodoDialogNewActionTest extends AssertJSwingJUnitTestCase {
 		JButtonFixture confirmButton = window.button("confirmButton");
 		JButtonFixture cancelButton = window.button("cancelButton");
 
-		verify(todoAction).getHeading();
-		verify(todoAction).getTitle();
+		assertThat(window.label("headingLabel").text()).isEqualTo(TodoController.NEW_DIALOG_TITLE);
+		assertThat(view.getTitle()).isEqualTo(TodoController.NEW_DIALOG_TITLE);
 
 		assertNotNull(window.label(JLabelMatcher.withText(TodoDialog.TAG_LBL_NO_TAG_TEXT)));
 

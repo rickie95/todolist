@@ -75,13 +75,10 @@ public class TodoDialogEditActionTest extends AssertJSwingJUnitTestCase {
 		tagList.sort((l, r) -> l.getText().compareTo(r.getText()));
 		comboBoxModel = new DefaultComboBoxModel<Tag>(tagList.toArray(new Tag[tagList.size()]));
 		
-		when(todoAction.getHeading()).thenReturn(EditTodoAction.HEADING_LABEL_TEXT);
-		when(todoAction.getTitle()).thenReturn(EditTodoAction.TITLE_TEXT);
-		when(todoAction.getController()).thenReturn(todoController);
 		when(todoAction.getTodo()).thenReturn(todo);
 		
 		GuiActionRunner.execute(() -> {
-			view = new TodoDialog(comboBoxModel, todoAction);
+			view = new TodoDialog(todoController, comboBoxModel, todoAction, TodoController.EDIT_DIALOG_TITLE);
 			return view;
 		});
 
@@ -122,8 +119,8 @@ public class TodoDialogEditActionTest extends AssertJSwingJUnitTestCase {
 		JButtonFixture confirmButton = window.button("confirmButton");
 		JButtonFixture cancelButton = window.button("cancelButton");
 		
-		verify(todoAction).getHeading();
-		verify(todoAction).getTitle();
+		assertThat(window.label("headingLabel").text()).isEqualTo(TodoController.EDIT_DIALOG_TITLE);
+		assertThat(view.getTitle()).isEqualTo(TodoController.EDIT_DIALOG_TITLE);
 		
 		assertNotNull(window.label(JLabelMatcher.withText(Tag.listToString(todo.getTagList()))));
 		

@@ -16,6 +16,8 @@ import com.riccardomalavolti.apps.todolist.view.TodoView;
 
 public class TodoController {
 	
+	public static final String EDIT_DIALOG_TITLE = "Edit To Do";
+	public static final String NEW_DIALOG_TITLE = "New To Do";
 	TodoView todoView;
 	TodoManager todoManager;
 	
@@ -99,11 +101,11 @@ public class TodoController {
 	}
 
 	public void newTodoDialog(DefaultComboBoxModel<Tag> tagListModel) {
-		newTodoDialog = new TodoDialog(tagListModel, new NewTodoAction(this));
+		newTodoDialog = new TodoDialog(this, tagListModel, new NewTodoAction(this), TodoController.NEW_DIALOG_TITLE);
 	}
 	
 	public void editTodoDialog(DefaultComboBoxModel<Tag> tagListModel, Todo todo) {
-		editTodoDialog = new TodoDialog(tagListModel, new EditTodoAction(this, todo));
+		editTodoDialog = new TodoDialog(this, tagListModel, new EditTodoAction(this, todo), TodoController.EDIT_DIALOG_TITLE);
 	}
 
 	public void newTagDialog() {

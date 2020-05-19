@@ -49,19 +49,4 @@ public class NewTodoActionTest {
 		assertThat(todo.getBody()).isEqualTo("");
 	}
 
-	@Test
-	public void testGetTitle() {
-		assertThat(todoAction.getTitle()).isEqualTo(NewTodoAction.TITLE_TEXT);
-	}
-
-	@Test
-	public void testGetHeadingLabelText() {
-		assertThat(todoAction.getHeading()).isEqualTo(NewTodoAction.HEADING_LABEL_TEXT);
-	}
-
-	@Test
-	public void testGetController() {
-		assertThat(todoAction.getController()).isEqualTo(todoController);
-	}
-
 }
