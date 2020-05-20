@@ -14,4 +14,4 @@ else
 	echo "User jenkins already in docker-host group" 
 fi
 
-su -s /bin/bash -c "/sbin/tini -- /usr/local/bin/jenkins.sh" jenkins
+su -s /bin/bash -c "/usr/local/bin/jenkins.sh" jenkins
