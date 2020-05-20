@@ -58,6 +58,7 @@ public class TodoDialog extends JDialog {
 
 
 	public TodoDialog(TodoController todoController, DefaultComboBoxModel<Tag> tagModel, TodoAction todoAction, String dialogTitle) {
+		super();
 		this.tagModel = tagModel;
 		this.selectedTagList = new HashSet<>();
 		this.todoAction = todoAction;
@@ -69,6 +70,7 @@ public class TodoDialog extends JDialog {
 	
 	private void initFrame() {
 		contentPanel = new JPanel();
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
 		setBounds(100, 100, 389, 219);
 		setTitle(dialogTitle);
@@ -95,10 +97,9 @@ public class TodoDialog extends JDialog {
 		createButtonsPanel();
 
 		setAlwaysOnTop(true);
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		repaint();
 		validate();
 		setVisible(true);
+		repaint();
 		toFront();
 		requestFocus();
 	}
