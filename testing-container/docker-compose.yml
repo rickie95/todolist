@@ -1,0 +1,17 @@
+version: "3.7"
+services:
+    builder:
+        build: 
+            context: ./
+            dockerfile: testing-container.dockerfile
+        image: riccardomalavolti/builder-opjdk8-mvn363
+        environment:
+            DOCKER_SOCKET: /var/run/docker.sock
+            DOCKER_HOST: unix://var/run/docker.sock
+            BRANCH: develop
+            PROFILES: "-Pjacoco,mutation-testing,code-analysis"
+        env_file:
+            - variables.env
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+        network_mode: "host"
