@@ -2,6 +2,7 @@
 *.classpath
 *.project
 *.prefs
+./resources/*
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -12,3 +13,4 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 /variables.env
+**/variables.env
