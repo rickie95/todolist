@@ -93,10 +93,10 @@ public class TodoDialogEditActionTest extends AssertJSwingJUnitTestCase {
 		});
 		
 		pause(
-				new Condition("get view ready and focusable.") {
+				new Condition("get view focuses+valid+showing+active+visible") {
 					@Override
 					public boolean test() {
-						return view.isFocused() && view.isValid() && view.isShowing();
+						return view.isFocused() && view.isValid() && view.isShowing() && view.isActive() && view.isVisible();
 					}
 				}, timeout(TIMEOUT));
 

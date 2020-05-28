@@ -3,6 +3,8 @@ package com.riccardomalavolti.apps.todolist.view;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.assertj.core.api.Assertions.*;
+import static org.assertj.swing.timing.Pause.pause;
+import static org.assertj.swing.timing.Timeout.timeout;
 import static org.mockito.Mockito.*;
 
 
@@ -15,6 +17,7 @@ import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.*;
 import org.assertj.swing.junit.runner.GUITestRunner;
 import org.assertj.swing.junit.testcase.AssertJSwingJUnitTestCase;
+import org.assertj.swing.timing.Condition;
 
 import com.riccardomalavolti.apps.todolist.controller.TodoController;
 import com.riccardomalavolti.apps.todolist.model.Tag;
@@ -23,6 +26,7 @@ import com.riccardomalavolti.apps.todolist.model.Tag;
 @RunWith(GUITestRunner.class)
 public class NewTagDialogTest extends AssertJSwingJUnitTestCase{
 
+	private static final long TIMEOUT = 5000;
 	private DialogFixture window;
 	private NewTagDialog view;
 	
@@ -39,6 +43,14 @@ public class NewTagDialogTest extends AssertJSwingJUnitTestCase{
 		window.show();
 		
 		robot().waitForIdle();
+		
+		pause(
+				new Condition("get view focuses+valid+showing+active+visible") {
+					@Override
+					public boolean test() {
+						return view.isFocused() && view.isValid() && view.isShowing() && view.isActive() && view.isVisible();
+					}
+				}, timeout(TIMEOUT));
 	}
 	
 	@Override
