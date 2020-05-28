@@ -1,6 +1,7 @@
 package com.riccardomalavolti.apps.todolist.view;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
@@ -73,6 +74,8 @@ public class TodoDialog extends JDialog {
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
 		setBounds(100, 100, 389, 219);
+		setMinimumSize(new Dimension(389, 219));
+		contentPanel.setMinimumSize(new Dimension(350, 200));
 		setTitle(dialogTitle);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
