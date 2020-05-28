@@ -1,3 +1,4 @@
+code-coverage-api:latest
 jacoco:latest
 junit:latest
 git:latest
@@ -5,6 +6,7 @@ credentials:latest
 git-client:latest
 workflow-api:latest
 workflow-basic-steps:latest
+pipeline-utility-steps:latest
 pipeline-build-step:latest
 pipeline-model-definition:latest
 pipeline-model-extensions:latest
