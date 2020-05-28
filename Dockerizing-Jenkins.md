@@ -34,9 +34,9 @@ So, now we should be able to build and start our `jenkins-lts-alpine` image.
 
 ```docker run -t jenkins-lts-alpine```
 
-If you visit `localhost:8080` you should be greeted with something like this.
+If you visit `localhost:8080` you should be greeted with Jenkins asking for a password. We will set up everything so that the password won't be necessary.
 
-    ![Jenkins' dashboard](./resources/jenkins-dashboard.png)
+![Jenkins' dashboard](assets/jenkins-first-run.png)
 
 Now that we have a working image of Jenkins we can start to customize it to our needs.
 
@@ -160,7 +160,8 @@ Since it's our entrypoint, `docker-jenkins` will also start Jenkins executing `/
 
 Pay attention to the `network` section: it has been changed to `host` since we need that Jenkins container must be able to reach MongoDB on host's ports. See the diagram below to understand the differences.
 
-    ![Jenkins container with default network and host network](./resources/jenkins-diagram.png)
+#![Jenkins container with default network and host network](assets/jenkins-diagram.png =400x200)
+<img src="assets/jenkins-diagram.png" alt="drawing" width="200"/>
 
 The `variables.env` contains SonarCloud and Coveralls tokens:
 
@@ -168,3 +169,5 @@ The `variables.env` contains SonarCloud and Coveralls tokens:
     COVERALLS_REPO_TOKEN=<your token here>
 
 If you start your Jenkins service with `docker-compose up`, the container will bind to the 8080 port and you shuld be able to complete the pipeline job.
+
+![Jenkins dashboard with ready to build pipeline](assets/jenkins-pipeline-ready.png)
