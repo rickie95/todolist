@@ -1,7 +1,5 @@
-[![Coverage Status](https://coveralls.io/repos/github/rickie95/todolist/badge.svg?branch=end-2-end-experiments)](https://coveralls.io/github/rickie95/todolist?branch=end-2-end-experiments) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=rickie95_todolist&metric=alert_status)](https://sonarcloud.io/dashboard?id=rickie95_todolist) [![Build Status](https://travis-ci.org/rickie95/todolist.svg?branch=end-2-end-experiments)](https://travis-ci.org/rickie95/todolist)
-
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=rickie95_todolist&metric=code_smells)](https://sonarcloud.io/dashboard?id=rickie95_todolist)
-[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=rickie95_todolist&metric=sqale_index)](https://sonarcloud.io/dashboard?id=rickie95_todolist)
+[![Coverage Status](https://coveralls.io/repos/github/rickie95/todolist/badge.svg?branch=master)](https://coveralls.io/github/rickie95/todolist?branch=master) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.riccardomalavolti.apps%3Atodolist&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.riccardomalavolti.apps%3Atodolist) [![Build Status](https://travis-ci.org/rickie95/todolist.svg?branch=master)](https://travis-ci.org/rickie95/todolist)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=com.riccardomalavolti.apps%3Atodolist&metric=code_smells)](https://sonarcloud.io/dashboard?id=com.riccardomalavolti.apps%3Atodolist)[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=com.riccardomalavolti.apps%3Atodolist&metric=sqale_index)](https://sonarcloud.io/dashboard?id=com.riccardomalavolti.apps%3Atodolist)
 
 # todolist
 A GUI todo list developed with Maven, Jenkins and a lot of friends.
