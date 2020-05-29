@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.awt.Dialog;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,8 +42,8 @@ import com.riccardomalavolti.apps.todolist.model.Todo;
 public class TodoDialogEditActionTest extends AssertJSwingJUnitTestCase {
 
 	private static final long TIMEOUT = 5000;
-	private DialogFixture window;
-	private TodoDialog view;
+	private DialogFixture dialogFixture;
+	private TodoDialog dialog;
 	private DefaultComboBoxModel<Tag> comboBoxModel;
 	private Tag t1, t2;
 	private Todo todo;
@@ -78,25 +79,21 @@ public class TodoDialogEditActionTest extends AssertJSwingJUnitTestCase {
 		when(todoAction.getTodo()).thenReturn(todo);
 		
 		GuiActionRunner.execute(() -> {
-			view = new TodoDialog(todoController, comboBoxModel, todoAction, TodoController.EDIT_DIALOG_TITLE);
-			return view;
+			dialog = new TodoDialog(todoController, comboBoxModel, todoAction, TodoController.EDIT_DIALOG_TITLE);
 		});
 
-		window = new DialogFixture(robot(), view);
-		window.show();
-
+		dialogFixture = new DialogFixture(robot(), dialog);
+		dialog.setModalityType(Dialog.ModalityType.MODELESS);
+		
+		GuiActionRunner.execute(() -> dialogFixture.show());
+		
 		robot().waitForIdle();
-
-		GuiActionRunner.execute(() -> {
-			view.requestFocus();
-			view.toFront();
-		});
 		
 		pause(
 				new Condition("get view focuses+valid+showing+active+visible") {
 					@Override
 					public boolean test() {
-						return view.isFocused() && view.isValid() && view.isShowing() && view.isActive() && view.isVisible();
+						return dialog.isFocused() && dialog.isValid() && dialog.isShowing() && dialog.isActive() && dialog.isVisible();
 					}
 				}, timeout(TIMEOUT));
 
@@ -106,23 +103,25 @@ public class TodoDialogEditActionTest extends AssertJSwingJUnitTestCase {
 	@Override
 	protected void onTearDown() {
 		super.onTearDown();
-		GuiActionRunner.execute(() -> view.dispose());
+		if (dialogFixture != null)
+            dialogFixture.cleanUp();
+		GuiActionRunner.execute(() -> dialog.dispose());  
 	}
 
 	@Test
 	@GUITest
 	public void testInitialState() {
 		
-		JTextComponentFixture textBox = window.textBox("todoTextBox");
-		JComboBoxFixture comboBox = window.comboBox("tagComboBox");
-		JButtonFixture clearButton = window.button("clearButton");
-		JButtonFixture confirmButton = window.button("confirmButton");
-		JButtonFixture cancelButton = window.button("cancelButton");
+		JTextComponentFixture textBox = dialogFixture.textBox("todoTextBox");
+		JComboBoxFixture comboBox = dialogFixture.comboBox("tagComboBox");
+		JButtonFixture clearButton = dialogFixture.button("clearButton");
+		JButtonFixture confirmButton = dialogFixture.button("confirmButton");
+		JButtonFixture cancelButton = dialogFixture.button("cancelButton");
 		
-		assertThat(window.label("headingLabel").text()).isEqualTo(TodoController.EDIT_DIALOG_TITLE);
-		assertThat(view.getTitle()).isEqualTo(TodoController.EDIT_DIALOG_TITLE);
+		assertThat(dialogFixture.label("headingLabel").text()).isEqualTo(TodoController.EDIT_DIALOG_TITLE);
+		assertThat(dialog.getTitle()).isEqualTo(TodoController.EDIT_DIALOG_TITLE);
 		
-		assertNotNull(window.label(JLabelMatcher.withText(Tag.listToString(todo.getTagList()))));
+		assertNotNull(dialogFixture.label(JLabelMatcher.withText(Tag.listToString(todo.getTagList()))));
 		
 		assertThat(textBox.text()).isEqualTo(todo.getBody());
 		// Tag selection must be void
@@ -137,47 +136,47 @@ public class TodoDialogEditActionTest extends AssertJSwingJUnitTestCase {
 	@Test
 	@GUITest
 	public void testSelectingTagShouldUpdateTagLabel() {
-		window.comboBox("tagComboBox").selectItem(0);
+		dialogFixture.comboBox("tagComboBox").selectItem(0);
 
-		assertThat(window.comboBox("tagComboBox").selectedItem()).isEqualTo("Bar");
-		Set<Tag> tagList = GuiActionRunner.execute(() -> view.getTagList());
-		assertThat(window.label("tagLabel").text()).isEqualTo(Tag.listToString(new ArrayList<Tag>(tagList)));
+		assertThat(dialogFixture.comboBox("tagComboBox").selectedItem()).isEqualTo("Bar");
+		Set<Tag> tagList = GuiActionRunner.execute(() -> dialog.getTagList());
+		assertThat(dialogFixture.label("tagLabel").text()).isEqualTo(Tag.listToString(new ArrayList<Tag>(tagList)));
 	}
 
 	@Test
 	@GUITest
 	public void testRemovingAllTagsFromATodoShouldBeAllowedIfThereAreTagSelected() {
-		JButtonFixture clearButton = window.button("clearButton");
+		JButtonFixture clearButton = dialogFixture.button("clearButton");
 		assertThat(clearButton.isEnabled()).isTrue();
 
 		clearButton.click();
 
-		assertThat(window.label("tagLabel").text()).isEqualTo(TodoDialog.TAG_LBL_NO_TAG_TEXT);
+		assertThat(dialogFixture.label("tagLabel").text()).isEqualTo(TodoDialog.TAG_LBL_NO_TAG_TEXT);
 	}
 
 	@Test
 	@GUITest
 	public void testEditAndCommitUpdate() {
 		String new_text = "Updated todo";
-		JTextComponentFixture textBox = window.textBox("todoTextBox");
+		JTextComponentFixture textBox = dialogFixture.textBox("todoTextBox");
 
 		textBox.setText("");
-		assertThat(window.button("confirmButton").isEnabled()).isFalse();
+		assertThat(dialogFixture.button("confirmButton").isEnabled()).isFalse();
 		textBox.enterText(new_text);
 
-		assertThat(window.button("confirmButton").isEnabled()).isTrue();
-		window.button("confirmButton").click();
+		assertThat(dialogFixture.button("confirmButton").isEnabled()).isTrue();
+		dialogFixture.button("confirmButton").click();
 		
 		assertThat(textBox.text()).isEqualTo(new_text);
-		Set<Tag> tagList = GuiActionRunner.execute(() -> view.getTagList());
+		Set<Tag> tagList = GuiActionRunner.execute(() -> dialog.getTagList());
 		verify(todoAction).sendToController(new_text, tagList);
 	}
 
 	@Test
 	@GUITest
 	public void testCancelButtonAction() {
-		window.button("cancelButton").click();
-		verify(todoController).dispose(view);
+		dialogFixture.button("cancelButton").click();
+		verify(todoController).dispose(dialog);
 	}
 	
 	

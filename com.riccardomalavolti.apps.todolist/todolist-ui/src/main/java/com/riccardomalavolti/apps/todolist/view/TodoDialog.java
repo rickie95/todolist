@@ -1,6 +1,7 @@
 package com.riccardomalavolti.apps.todolist.view;
 
 import java.awt.BorderLayout;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -72,7 +73,8 @@ public class TodoDialog extends JDialog {
 	private void initFrame() {
 		contentPanel = new JPanel();
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
+		setAlwaysOnTop(true);
+		setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
 		setBounds(100, 100, 389, 219);
 		setMinimumSize(new Dimension(389, 219));
 		contentPanel.setMinimumSize(new Dimension(350, 200));
@@ -99,10 +101,14 @@ public class TodoDialog extends JDialog {
 		createComboBox();
 		createButtonsPanel();
 
-		setAlwaysOnTop(true);
 		validate();
-		setVisible(true);
 		repaint();
+	}
+	
+	@Override
+	public void show() {
+		pack();
+		setVisible(true);
 		toFront();
 		requestFocus();
 	}

@@ -7,6 +7,7 @@ import static org.assertj.swing.timing.Pause.pause;
 import static org.assertj.swing.timing.Timeout.timeout;
 import static org.mockito.Mockito.*;
 
+import java.awt.Dialog;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,20 +28,23 @@ import com.riccardomalavolti.apps.todolist.model.Tag;
 public class NewTagDialogTest extends AssertJSwingJUnitTestCase{
 
 	private static final long TIMEOUT = 5000;
-	private DialogFixture window;
-	private NewTagDialog view;
+	private DialogFixture dialogFixture;
+	private NewTagDialog dialog;
 	
 	private TodoController todoController;
 	
 	@Override
 	public void onSetUp() {
 		todoController = mock(TodoController.class);
+		
 		GuiActionRunner.execute(() -> {
-			view = new NewTagDialog(todoController);
-			return view;
+			dialog = new NewTagDialog(todoController);
 		});
-		window = new DialogFixture(robot(), view);
-		window.show();
+		
+		dialogFixture = new DialogFixture(robot(), dialog);
+		dialog.setModalityType(Dialog.ModalityType.MODELESS);
+		
+		GuiActionRunner.execute(() -> dialogFixture.show());
 		
 		robot().waitForIdle();
 		
@@ -48,7 +52,7 @@ public class NewTagDialogTest extends AssertJSwingJUnitTestCase{
 				new Condition("get view focuses+valid+showing+active+visible") {
 					@Override
 					public boolean test() {
-						return view.isFocused() && view.isValid() && view.isShowing() && view.isActive() && view.isVisible();
+						return dialog.isFocused() && dialog.isValid() && dialog.isShowing() && dialog.isActive() && dialog.isVisible();
 					}
 				}, timeout(TIMEOUT));
 	}
@@ -57,20 +61,20 @@ public class NewTagDialogTest extends AssertJSwingJUnitTestCase{
 	public void onTearDown() {		
 		super.onTearDown();
 		// https://github.com/joel-costigliola/assertj-swing/issues/157
-		if (window != null)
-            window.cleanUp();
-		GuiActionRunner.execute(() -> view.dispose());        
+		if (dialogFixture != null)
+            dialogFixture.cleanUp();
+		GuiActionRunner.execute(() -> dialog.dispose());        
 	}
 
 	@Test @GUITest
 	public void testInitialState() {		
-		assertNotNull(window.label(JLabelMatcher.withText("Insert tag name")));
-		assertTrue(window.textBox("tagTextField").isEnabled());
-		String tagTextField = GuiActionRunner.execute(() -> window.textBox("tagTextField").text());
+		assertNotNull(dialogFixture.label(JLabelMatcher.withText("Insert tag name")));
+		assertTrue(dialogFixture.textBox("tagTextField").isEnabled());
+		String tagTextField = GuiActionRunner.execute(() -> dialogFixture.textBox("tagTextField").text());
 		assertThat(tagTextField).isEmpty();
 
 		
-		JPanelFixture buttonPanel = window.panel("buttonPanel");
+		JPanelFixture buttonPanel = dialogFixture.panel("buttonPanel");
 		
 		assertThat(buttonPanel.button("insertButton").isEnabled()).isFalse();
 		assertThat(buttonPanel.button("cancelButton").isEnabled()).isTrue();
@@ -79,24 +83,24 @@ public class NewTagDialogTest extends AssertJSwingJUnitTestCase{
 	@Test @GUITest
 	public void testInsertTag() {
 		String TAG_TEXT = "Foo";
-		window.textBox("tagTextField").setText(TAG_TEXT);
+		dialogFixture.textBox("tagTextField").setText(TAG_TEXT);
 		
 		Tag emptyTag = new Tag(TAG_TEXT);
-		JButtonFixture insertButton = window.button("insertButton");
+		JButtonFixture insertButton = dialogFixture.button("insertButton");
 		insertButton.click();
 		ArgumentCaptor<Tag> tagCaptor = ArgumentCaptor.forClass(Tag.class);
 		
 		verify(todoController).addTag(tagCaptor.capture());
 		assertThat(tagCaptor.getValue()).isEqualTo(emptyTag);
-		String tagTextField = GuiActionRunner.execute(() -> window.textBox("tagTextField").text());
+		String tagTextField = GuiActionRunner.execute(() -> dialogFixture.textBox("tagTextField").text());
 		assertThat(tagTextField).isEqualTo("");
 	}
 	
 	@Test @GUITest
 	public void testWritingAndCancellingText() {
 		String TAG_TEXT = "Foo";
-		JTextComponentFixture tagTextFixture = window.textBox("tagTextField");
-		JButtonFixture insertButton = window.button("insertButton");
+		JTextComponentFixture tagTextFixture = dialogFixture.textBox("tagTextField");
+		JButtonFixture insertButton = dialogFixture.button("insertButton");
 		
 		// As first, we test that tagTextFixture is empty and insertButton is disabled.
 		String tagTextFieldText = GuiActionRunner.execute(() -> tagTextFixture.text());
@@ -118,10 +122,10 @@ public class NewTagDialogTest extends AssertJSwingJUnitTestCase{
 	
 	@Test @GUITest
 	public void testDisposeOnCancelClick() {
-		JButtonFixture cancel = window.button("cancelButton");
+		JButtonFixture cancel = dialogFixture.button("cancelButton");
 		cancel.click();
 		
-		assertThat(view.isVisible()).isFalse();
+		assertThat(dialog.isVisible()).isFalse();
 	}
 
 }
