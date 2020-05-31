@@ -248,5 +248,25 @@ public class TodoControllerTest {
 
 		verify(dialogController).disposeDialog(aDialog);
 	}
+	
+	@Test
+	public void testGetTodoDialog() {
+		DialogController dialogController = mock(DialogController.class);
+		todoController.setDialogController(dialogController);
+		
+		todoController.getTodoDialog();
+		
+		verify(dialogController).getTodoDialog();
+	}
+	
+	@Test
+	public void testGetNewTagDialog() {
+		DialogController dialogController = mock(DialogController.class);
+		todoController.setDialogController(dialogController);
+		
+		todoController.getNewTagDialog();
+		
+		verify(dialogController).getNewTagDialog();
+	}
 
 }
