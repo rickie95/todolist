@@ -107,7 +107,7 @@ public class ModelViewControllerIT extends AssertJSwingJUnitTestCase {
 		assertThat(newTodoBtn).isNotNull();
 		newTodoBtn.click();
 
-		DialogFixture todoWindow = new DialogFixture(robot(), todoController.getNewTodoDialog());
+		DialogFixture todoWindow = new DialogFixture(robot(), todoController.getTodoDialog());
 
 		todoWindow.textBox("todoTextBox").setText(TODO_TEXT);
 		todoWindow.button("confirmButton").click();
@@ -121,7 +121,7 @@ public class ModelViewControllerIT extends AssertJSwingJUnitTestCase {
 		GuiActionRunner.execute(() -> todoController.addTodo(new Todo(TODO_ID, TODO_TEXT_2)));
 		window.table("todoTable").selectCell(TableCell.row(0).column(1)).doubleClick();
 
-		DialogFixture todoWindow = new DialogFixture(robot(), todoController.getEditTodoDialog());
+		DialogFixture todoWindow = new DialogFixture(robot(), todoController.getTodoDialog());
 
 		todoWindow.textBox("todoTextBox").setText(EMPTY_TEXT);
 		todoWindow.textBox("todoTextBox").setText(TODO_TEXT);

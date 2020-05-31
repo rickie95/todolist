@@ -9,11 +9,13 @@ import static org.mockito.Mockito.*;
 
 import java.awt.Dialog;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.assertj.swing.annotation.GUITest;
 import org.assertj.swing.core.matcher.JLabelMatcher;
+import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
 import org.assertj.swing.edt.GuiActionRunner;
 import org.assertj.swing.fixture.*;
 import org.assertj.swing.junit.runner.GUITestRunner;
@@ -33,6 +35,11 @@ public class NewTagDialogTest extends AssertJSwingJUnitTestCase{
 	
 	private TodoController todoController;
 	
+	@BeforeClass
+	public static void installViolationNotifier() {
+		FailOnThreadViolationRepaintManager.install();
+	}
+	
 	@Override
 	public void onSetUp() {
 		todoController = mock(TodoController.class);
@@ -44,7 +51,7 @@ public class NewTagDialogTest extends AssertJSwingJUnitTestCase{
 		dialogFixture = new DialogFixture(robot(), dialog);
 		dialog.setModalityType(Dialog.ModalityType.MODELESS);
 		
-		GuiActionRunner.execute(() -> dialogFixture.show());
+		GuiActionRunner.execute(() -> dialog.showDialog());
 		
 		robot().waitForIdle();
 		

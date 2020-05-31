@@ -105,8 +105,7 @@ public class TodoDialog extends JDialog {
 		repaint();
 	}
 	
-	@Override
-	public void show() {
+	public void showDialog() {
 		pack();
 		setVisible(true);
 		toFront();

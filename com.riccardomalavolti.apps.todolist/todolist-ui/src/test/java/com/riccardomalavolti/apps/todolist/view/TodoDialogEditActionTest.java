@@ -85,7 +85,7 @@ public class TodoDialogEditActionTest extends AssertJSwingJUnitTestCase {
 		dialogFixture = new DialogFixture(robot(), dialog);
 		dialog.setModalityType(Dialog.ModalityType.MODELESS);
 		
-		GuiActionRunner.execute(() -> dialogFixture.show());
+		GuiActionRunner.execute(() -> dialog.showDialog());
 		
 		robot().waitForIdle();
 		

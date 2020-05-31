@@ -1,6 +1,5 @@
 package com.riccardomalavolti.apps.todolist.controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -14,12 +13,16 @@ import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDialog;
 
+import org.assertj.swing.edt.FailOnThreadViolationRepaintManager;
+import org.assertj.swing.edt.GuiActionRunner;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.riccardomalavolti.apps.todolist.manager.TodoManager;
 import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.model.Todo;
+import com.riccardomalavolti.apps.todolist.view.DialogController;
 import com.riccardomalavolti.apps.todolist.view.TodoView;
 
 public class TodoControllerTest {
@@ -28,6 +31,11 @@ public class TodoControllerTest {
 	TodoManager todoManager;
 
 	TodoController todoController;
+
+	@BeforeClass
+	public static void installViolationNotifier() {
+		FailOnThreadViolationRepaintManager.install();
+	}
 
 	@Before
 	public void setup() {
@@ -127,19 +135,6 @@ public class TodoControllerTest {
 	}
 
 	@Test
-	public void testEditTodoShouldOpenTheNewTodoDialog() {
-		Todo todo = new Todo("0", "Foo");
-		DefaultComboBoxModel<Tag> tagListModel = new DefaultComboBoxModel<>();
-		tagListModel.addElement(new Tag("0", "Foo"));
-
-		todoController.editTodoDialog(tagListModel, todo);
-
-		assertThat(todoController.getEditTodoDialog()).isNotNull();
-
-		todoController.editTodoDialog(tagListModel, todo);
-	}
-
-	@Test
 	public void testRemoveTag() {
 		Tag tag = new Tag("Foo");
 
@@ -209,56 +204,49 @@ public class TodoControllerTest {
 	}
 
 	@Test
-	public void testNewTodoButtonPressedShouldShowANewDialog() {
+	public void testPressingNewTodoButtonShouldShowANewDialog() {
+		DialogController dialogController = mock(DialogController.class);
+		todoController.setDialogController(dialogController);
 		DefaultComboBoxModel<Tag> tagListModel = new DefaultComboBoxModel<Tag>();
 
-		todoController.newTodoDialog(tagListModel);
+		GuiActionRunner.execute(() -> todoController.newTodoDialog(tagListModel));
 
-		JDialog todoDialog = todoController.getNewTodoDialog();
-		assertThat(todoDialog).isNotNull();
-		assertThat(todoDialog.isVisible()).isTrue();
-
-		// Repeat again, the dialog should be the same.
-		todoController.newTodoDialog(tagListModel);
-		assertThat(todoController.getNewTodoDialog()).isNotEqualTo(todoDialog);
+		verify(dialogController).todoDialog(todoController, tagListModel, null);
 	}
 
 	@Test
-	public void testNewTagButtonPressedShouldShowANewAdUniqueDialog() {
-		todoController.newTagDialog();
+	public void testPressingEditTodoButtonShouldShowANewAdUniqueDialog() {
+		DialogController dialogController = mock(DialogController.class);
+		todoController.setDialogController(dialogController);
 
-		JDialog tagDialog = todoController.getNewTagDialog();
-		assertThat(tagDialog).isNotNull();
-		assertThat(tagDialog.isVisible()).isTrue();
-
-		todoController.newTagDialog();
-		assertThat(todoController.getNewTagDialog()).isNotEqualTo(tagDialog);
-	}
-
-	@Test
-	public void testEditTodoButtonPressedShouldShowANewAdUniqueDialog() {
 		DefaultComboBoxModel<Tag> tagListModel = new DefaultComboBoxModel<Tag>();
 		Todo todo = new Todo("0", "foo");
-		todoController.editTodoDialog(tagListModel, todo);
 
-		JDialog editTodoDialog = todoController.getEditTodoDialog();
-		assertThat(editTodoDialog).isNotNull();
-		assertThat(editTodoDialog.isVisible()).isTrue();
+		GuiActionRunner.execute(() -> todoController.editTodoDialog(tagListModel, todo));
 
-		todoController.editTodoDialog(tagListModel, todo);
-		assertThat(todoController.getEditTodoDialog()).isNotEqualTo(editTodoDialog);
+		verify(dialogController).todoDialog(todoController, tagListModel, todo);
+	}
+
+	@Test
+	public void testPressingNewTagButtonShouldShowANewAdUniqueDialog() {
+		DialogController dialogController = mock(DialogController.class);
+		todoController.setDialogController(dialogController);
+
+		GuiActionRunner.execute(() -> todoController.newTagDialog());
+
+		verify(dialogController).newTagDialog();
 	}
 
 	@Test
 	public void testDisposeTodoDialog() {
-		DefaultComboBoxModel<Tag> tagListModel = new DefaultComboBoxModel<Tag>();
+		DialogController dialogController = mock(DialogController.class);
+		todoController.setDialogController(dialogController);
 
-		todoController.newTodoDialog(tagListModel);
+		JDialog aDialog = GuiActionRunner.execute(() -> new JDialog());
 
-		todoController.dispose(todoController.getNewTodoDialog());
+		todoController.dispose(aDialog);
 
-		// The dialog should be not visible at least
-		assertThat(todoController.getNewTodoDialog().isVisible()).isFalse();
+		verify(dialogController).disposeDialog(aDialog);
 	}
 
 }

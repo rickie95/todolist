@@ -80,12 +80,11 @@ public class NewTagDialog extends JDialog {
 		validate();
 	}
 	
-	@Override
-	public void show() {
+	public void showDialog() {
 		pack();
-		setVisible(true);
 		toFront();
 		requestFocus();
+		setVisible(true);
 	}
 	
 	private void textChanged() {
