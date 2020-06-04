@@ -12,6 +12,7 @@
 
 	<properties>
 		<assertj.swing.version>3.9.2</assertj.swing.version>
+		<sonar.junit.reportPaths>${project.build.directory}/surefire-reports</sonar.junit.reportPaths>
 	</properties>
 
 	<dependencies>

@@ -13,6 +13,7 @@
 		<cucumber.version>4.2.2</cucumber.version>
 		<assertj.swing.version>3.9.2</assertj.swing.version>
 		<failsafe.version>2.18.1</failsafe.version>
+		<sonar.junit.reportPaths>${project.build.directory}/failsafe-reports</sonar.junit.reportPaths>
 	</properties>
 
 	<dependencies>
