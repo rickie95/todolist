@@ -25,4 +25,5 @@ before_install:
 - sudo apt-get install -y expect
       
 script:
-- ./execute-on-vnc.sh mvn -f com.riccardomalavolti.apps.todolist/pom.xml -Pjacoco,code-analysis$MUTATION clean verify
+  - git fetch --unshallow origin master:master
+  - ./execute-on-vnc.sh mvn -f com.riccardomalavolti.apps.todolist/pom.xml -Pjacoco,code-analysis$MUTATION verify

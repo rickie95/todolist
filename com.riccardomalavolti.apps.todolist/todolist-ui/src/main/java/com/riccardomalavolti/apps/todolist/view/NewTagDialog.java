@@ -1,6 +1,7 @@
 package com.riccardomalavolti.apps.todolist.view;
 
 import java.awt.BorderLayout;
+import java.awt.Dialog;
 import java.awt.FlowLayout;
 
 import javax.swing.JButton;
@@ -30,7 +31,9 @@ public class NewTagDialog extends JDialog {
 	public NewTagDialog(TodoController c) {
 		setTitle("New Tag");
 		this.controller = c;
-		
+		setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+		setAlwaysOnTop(true);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		contentPanel.setName("contentPanel");
 		setBounds(100, 100, 346, 119);
 		getContentPane().setLayout(new BorderLayout());
@@ -73,13 +76,15 @@ public class NewTagDialog extends JDialog {
 		cancelButton.setActionCommand("Cancel");
 		buttonPanel.add(cancelButton);		
 		
-		setAlwaysOnTop(true);
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		repaint();
 		validate();
-		setVisible(true);
+	}
+	
+	public void showDialog() {
+		pack();
 		toFront();
 		requestFocus();
+		setVisible(true);
 	}
 	
 	private void textChanged() {

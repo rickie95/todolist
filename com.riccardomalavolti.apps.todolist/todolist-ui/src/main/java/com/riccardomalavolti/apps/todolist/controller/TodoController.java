@@ -8,28 +8,23 @@ import javax.swing.JDialog;
 import com.riccardomalavolti.apps.todolist.manager.TodoManager;
 import com.riccardomalavolti.apps.todolist.model.Tag;
 import com.riccardomalavolti.apps.todolist.model.Todo;
-import com.riccardomalavolti.apps.todolist.view.EditTodoAction;
-import com.riccardomalavolti.apps.todolist.view.NewTagDialog;
-import com.riccardomalavolti.apps.todolist.view.NewTodoAction;
-import com.riccardomalavolti.apps.todolist.view.TodoDialog;
+import com.riccardomalavolti.apps.todolist.view.DialogController;
 import com.riccardomalavolti.apps.todolist.view.TodoView;
 
 public class TodoController {
-	
+
 	public static final String EDIT_DIALOG_TITLE = "Edit To Do";
 	public static final String NEW_DIALOG_TITLE = "New To Do";
 	TodoView todoView;
 	TodoManager todoManager;
-	
-	private JDialog newTodoDialog;
-	private JDialog editTodoDialog;
-	private JDialog newTagDialog;
-	
-	
+
+	private DialogController dialogController;
+
 	public TodoController(TodoView todoView, TodoManager todoManager) {
 		this.todoView = todoView;
 		this.todoManager = todoManager;
-		
+		this.dialogController = new DialogController(this);
+
 		showTodos();
 		showTags();
 	}
@@ -41,12 +36,12 @@ public class TodoController {
 	public void showTags() {
 		todoView.showAllTags(todoManager.getTagList());
 	}
-	
+
 	public void addTodo(Todo todo) {
 		try {
 			todoManager.addTodo(todo);
 			todoView.addTodo(todo);
-		}catch(RuntimeException ex){
+		} catch (RuntimeException ex) {
 			String message = "A problem as occurred while insering a new todo: ";
 			todoView.error(message + ex.toString());
 		}
@@ -56,7 +51,7 @@ public class TodoController {
 		try {
 			todoManager.addTag(tag);
 			todoView.addTag(tag);
-		} catch(RuntimeException ex) {
+		} catch (RuntimeException ex) {
 			String message = "A problem as occurred while insering a new tag: ";
 			todoView.error(message + ex.toString());
 		}
@@ -95,36 +90,36 @@ public class TodoController {
 	public void tagTodo(Todo todo, Tag tag) {
 		todoManager.tagTodo(todo, tag);
 	}
-	
+
 	public void tagTodo(Todo todo, List<Tag> tagList) {
 		tagList.forEach(tag -> todoManager.tagTodo(todo, tag));
 	}
 
 	public void newTodoDialog(DefaultComboBoxModel<Tag> tagListModel) {
-		newTodoDialog = new TodoDialog(this, tagListModel, new NewTodoAction(this), TodoController.NEW_DIALOG_TITLE);
+		dialogController.todoDialog(this, tagListModel, null);
 	}
-	
+
 	public void editTodoDialog(DefaultComboBoxModel<Tag> tagListModel, Todo todo) {
-		editTodoDialog = new TodoDialog(this, tagListModel, new EditTodoAction(this, todo), TodoController.EDIT_DIALOG_TITLE);
+		dialogController.todoDialog(this, tagListModel, todo);
 	}
 
 	public void newTagDialog() {
-		newTagDialog = new NewTagDialog(this);
+		dialogController.newTagDialog();
 	}
 
 	public void dispose(JDialog aDialog) {
-		aDialog.dispose();
+		dialogController.disposeDialog(aDialog);
 	}
-	
-	public JDialog getNewTodoDialog() {
-		return newTodoDialog;
-	}
-	
-	public JDialog getEditTodoDialog() {
-		return editTodoDialog;
+
+	public JDialog getTodoDialog() {
+		return dialogController.getTodoDialog();
 	}
 
 	public JDialog getNewTagDialog() {
-		return newTagDialog;
+		return dialogController.getNewTagDialog();
+	}
+
+	public void setDialogController(DialogController dialogController) {
+		this.dialogController = dialogController;
 	}
 }

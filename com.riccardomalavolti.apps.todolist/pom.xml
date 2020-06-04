@@ -62,7 +62,8 @@
 			**/Todo.java,
 			**/TodoList.java,
 			**/SimpleDocumentListener.java,
-			**/MessageBoxFactory.java
+			**/MessageBoxFactory.java,
+			**/DialogController.java
 		</sonar.exclusions>
 		<!-- Disabled rules for sonar analysis -->
 		<sonar.issue.ignore.multicriteria>e11</sonar.issue.ignore.multicriteria>
@@ -107,6 +108,7 @@
 								<exclude>**/Todo.*</exclude>
 								<exclude>**/SimpleDocumentListener.*</exclude>
 								<exclude>**/MessageBoxFactory.*</exclude>
+								<exclude>**/DialogController.*</exclude>
 							</excludes>
 							<rules>
 								<rule>
