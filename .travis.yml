@@ -25,4 +25,4 @@ before_install:
       
 script:
   - git fetch --unshallow origin develop:develop
-  - ./execute-on-vnc.sh mvn -f com.riccardomalavolti.apps.todolist/pom.xml -Pjacoco,code-analysis$MUTATION clean verify
+  - ./execute-on-vnc.sh mvn -f com.riccardomalavolti.apps.todolist/pom.xml -Pjacoco,code-analysis$MUTATION clean install
