@@ -11,16 +11,6 @@
 
 	<packaging>pom</packaging>
 
-
-	<modules>
-		<module>todolist-tests-integration</module>
-		<module>todolist-tests-e2e</module>
-		<module>todolist-ui</module>
-		<module>todolist-core</module>
-		<module>todolist-jacoco-report-aggregator</module>
-	</modules>
-
-
 	<name>todolist</name>
 
 	<properties>
