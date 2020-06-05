@@ -9,7 +9,7 @@ pipeline{
         stage('Build'){
             steps {
                 echo 'Build started'
-                sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml clean'
+                sh 'mvn -f com.riccardomalavolti.apps.todolist/todolist-jacoco-report-aggregator/pom.xml clean compile'
                 echo '======= Build finished ======='
                 }
         }
@@ -18,7 +18,7 @@ pipeline{
                 echo 'Testing started'
                 sh 'export DISPLAY=33'
                 wrap([$class: 'Xvfb', additionalOptions: '', assignedLabels: '', autoDisplayName: true, debug: true, displayNameOffset: 33, screen: '1366x768x16']){
-                    sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml test -Pjacoco,mutation-testing jacoco:report'
+                    sh 'mvn -f com.riccardomalavolti.apps.todolist/todolist-jacoco-report-aggregator/pom.xml test -Pjacoco,mutation-testing jacoco:report'
                 }
                 publishCoverage adapters: [jacocoAdapter('**/target/site/jacoco/*.xml')]
                 sh 'ls com.riccardomalavolti.apps.todolist/todolist-core/target/site/jacoco/'
@@ -32,7 +32,7 @@ pipeline{
                 echo 'Testing started'
                 sh 'export DISPLAY=33'
                 wrap([$class: 'Xvfb', additionalOptions: '', assignedLabels: '', autoDisplayName: true, debug: true, displayNameOffset: 33, screen: '1366x768x16']){
-                    sh 'mvn -f com.riccardomalavolti.apps.todolist/pom.xml -Pjacoco verify -DskipUnitTests=true'
+                    sh 'mvn -f com.riccardomalavolti.apps.todolist/todolist-jacoco-report-aggregator/pom.xml -Pjacoco verify -DskipUnitTests=true'
                 }
                 junit '**/target/failsafe-reports/*.xml'
                 echo 'Ending testing phase'
@@ -42,7 +42,7 @@ pipeline{
         stage('Code analysis'){
             steps{
                 echo 'Code quality analysis started'
-                sh 'mvn -f ./com.riccardomalavolti.apps.todolist/pom.xml -Pjacoco,code-analysis verify -DskipUnitTests=true -DskipITests=true'
+                sh 'mvn -f ./com.riccardomalavolti.apps.todolist/todolist-jacoco-report-aggregator/pom.xml -Pjacoco,code-analysis verify -DskipUnitTests=true -DskipITests=true'
                 echo 'Code analysis ended.'
             }
         }
