@@ -3,7 +3,7 @@
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=com.riccardomalavolti.apps%3Atodolist&metric=code_smells)](https://sonarcloud.io/dashboard?id=com.riccardomalavolti.apps%3Atodolist) [![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=com.riccardomalavolti.apps%3Atodolist&metric=sqale_index)](https://sonarcloud.io/dashboard?id=com.riccardomalavolti.apps%3Atodolist)
 
 # todolist
-A GUI todo list developed with Maven, Jenkins and a lot of friends.
+A GUI todo list developed with Maven, Jenkins and all the gang.
 
 ## Project structure
 
@@ -37,6 +37,13 @@ Multiple Maven profiles are available (use `-Pprofile1,profile2` to enable them)
   - **mutation-testing**: performs a mutation on `core` code and his tests.
   - **code-analysis**: sends data to Coveralls and Sonarcloud services.
 
+# Build reproducibility
+
+You have multiple choices to test this project:
+
+- **Jenkins' container**: Uses a instance of Jenkins to build, test and analyse the app, also providing a nice view for tests reports.
+- **Testing-Container**: An Ubunutu Docker image with fixed versions of both Maven and JDK, UI tests are made possible by TightVNC.
+- A **Travis CI instance** is available but for this repository only.
 
 ## Jenkins CI container
 
@@ -47,7 +54,7 @@ A fully CI experience, with coverage and JUnit reports for Unit/Integration/End-
   - `docker-compose up`
   - Visit `localhost:8080` for the Jenkins web interface and launch jobs.
 
-## Maven container setup
+## Testing-Container setup
 
 Useful if you only want to check the build process.
 
@@ -61,7 +68,7 @@ Useful if you only want to check the build process.
 | Software | Version |
 |----------|--------|
 | Maven | 3.6.3 |
-| Java | openJDk 1.8.252 |
-| Xvfb | For Jenkins and Maven containers |
-| tightVNC | For Travis CI build |
+| Java | openJDK 1.8.252 |
+| Xvfb | Used in Jenkins' container |
+| tightVNC | Used for Travis CI build and Testing Container |
 
