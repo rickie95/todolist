@@ -12,8 +12,8 @@
 	<properties>
 		<testcontainers.version>1.12.5</testcontainers.version>
 		<assertjSwing.version>3.9.2</assertjSwing.version>
-
 		<failsafe.version>2.18.1</failsafe.version>
+		<sonar.junit.reportPaths>${project.build.directory}/failsafe-reports</sonar.junit.reportPaths>
 	</properties>
 
 	<dependencies>

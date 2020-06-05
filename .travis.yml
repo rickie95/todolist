@@ -2,7 +2,6 @@ dist: trusty
 
 language: java
 jdk: openjdk8
-install: true
 
 cache:
   directories:
@@ -25,5 +24,5 @@ before_install:
 - sudo apt-get install -y expect
       
 script:
-  - git fetch --unshallow origin master:master
-  - ./execute-on-vnc.sh mvn -f com.riccardomalavolti.apps.todolist/pom.xml -Pjacoco,code-analysis$MUTATION verify
+  - git fetch --unshallow origin develop:develop
+  - ./execute-on-vnc.sh mvn -f com.riccardomalavolti.apps.todolist/todolist-jacoco-report-aggregator/pom.xml -Pjacoco,code-analysis$MUTATION clean install

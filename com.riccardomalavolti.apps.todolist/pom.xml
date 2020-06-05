@@ -11,16 +11,6 @@
 
 	<packaging>pom</packaging>
 
-
-	<modules>
-		<module>todolist-core</module>
-		<module>todolist-ui</module>
-		<module>todolist-tests-integration</module>
-		<module>todolist-tests-e2e</module>
-		<module>todolist-jacoco-report-aggregator</module>
-	</modules>
-
-
 	<name>todolist</name>
 
 	<properties>
@@ -49,12 +39,6 @@
 		<sonar.organization>rickie95</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
-		
-		
-		<sonar.junit.reportPaths>
-			${project.build.directory}/surefire-reports,
-			${project.build.directory}/failsafe-reports
-		</sonar.junit.reportPaths>
 		
 		<sonar.language>java</sonar.language>
 		<sonar.exclusions>

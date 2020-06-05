@@ -10,4 +10,8 @@
 	</parent>
 	<artifactId>todolist-core</artifactId>
 	
+	<properties>
+		<sonar.junit.reportPaths>${project.build.directory}/surefire-reports</sonar.junit.reportPaths>
+	</properties>
+	
 </project>
