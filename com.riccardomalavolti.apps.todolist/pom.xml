@@ -7,31 +7,42 @@
 
 	<groupId>com.riccardomalavolti.apps</groupId>
 	<artifactId>todolist</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 
 	<packaging>pom</packaging>
 
 	<name>todolist</name>
+	
+	<modules>
+		<module>todolist-core</module>
+		<module>todolist-ui</module>
+		<module>todolist-tests-integration</module>
+		<module>todolist-tests-e2e</module>
+	</modules>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<log4j.version>2.11.1</log4j.version>
-		<junit.version>4.11</junit.version>
+		
+		<assertj.core.version>3.15.0</assertj.core.version>
+		<assertj.swing.version>3.9.2</assertj.swing.version>
+		<coveralls.version>4.3.0</coveralls.version>
+		<cucumber.version>4.2.2</cucumber.version>
 		<docker.maven.plugin.version>0.27.2</docker.maven.plugin.version>
-		<slf4j.version>1.7.5</slf4j.version>
-		<slf4j.simple.version>1.6.4</slf4j.simple.version>
+		<failsafe.version>2.18.1</failsafe.version>
+		<log4j.version>2.11.1</log4j.version>
+		<jacoco.version>0.8.3</jacoco.version>
+		<junit.version>4.11</junit.version>
 		<mockito.core.version>3.2.4</mockito.core.version>
 		<mongo.java.driver.version>3.12.1</mongo.java.driver.version>
 		<mongo.java.server.version>1.18.2</mongo.java.server.version>
-		<assertj.core.version>3.15.0</assertj.core.version>
-		<picocli.version>4.2.0</picocli.version>
-		<failsafe.version>2.18.1</failsafe.version>
-		<jacoco.version>0.8.3</jacoco.version>
-		<coveralls.version>4.3.0</coveralls.version>
+		<slf4j.version>1.7.5</slf4j.version>
+		<slf4j.simple.version>1.6.4</slf4j.simple.version>
+		<testcontainers.version>1.12.5</testcontainers.version>
 		<pitest.version>1.4.2</pitest.version>
 		<pitmp.version>1.3.6</pitmp.version>
+		<picocli.version>4.2.0</picocli.version>
 		
 		<skipUnitTests>false</skipUnitTests>
 		<skipITests>false</skipITests>

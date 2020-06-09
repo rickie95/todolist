@@ -5,14 +5,11 @@
 	<parent>
 		<groupId>com.riccardomalavolti.apps</groupId>
 		<artifactId>todolist</artifactId>
-		<version>1.0.0</version>
+		<version>1.1.0</version>
 	</parent>
 	<artifactId>todolist-tests-integration</artifactId>
 
 	<properties>
-		<testcontainers.version>1.12.5</testcontainers.version>
-		<assertjSwing.version>3.9.2</assertjSwing.version>
-		<failsafe.version>2.18.1</failsafe.version>
 		<sonar.junit.reportPaths>${project.build.directory}/failsafe-reports</sonar.junit.reportPaths>
 	</properties>
 
@@ -39,7 +36,7 @@
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-swing-junit</artifactId>
-			<version>${assertjSwing.version}</version>
+			<version>${assertj.swing.version}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
