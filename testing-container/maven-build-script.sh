@@ -31,7 +31,7 @@ echo "Cloning repository, branch: $BRANCH"
 git clone https://github.com/rickie95/todolist /var/todolist/
 cd /var/todolist/
 git checkout $BRANCH
-mvn -f com.riccardomalavolti.apps.todolist/todolist-jacoco-report-aggregator/pom.xml $PROFILES clean install
+mvn -f com.riccardomalavolti.apps.todolist/pom.xml $PROFILES clean install
 
 EXIT_CODE=$?
 
