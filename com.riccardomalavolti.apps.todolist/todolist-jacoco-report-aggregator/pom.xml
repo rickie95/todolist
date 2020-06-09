@@ -5,18 +5,10 @@
 	<parent>
 		<groupId>com.riccardomalavolti.apps</groupId>
 		<artifactId>todolist</artifactId>
-		<version>1.0.0</version>
+		<version>1.1.0</version>
 	</parent>
 	<artifactId>todolist-jacoco-report-aggregator</artifactId>
 	<packaging>pom</packaging>
-
-	<modules>
-		<module>../../com.riccardomalavolti.apps.todolist</module>
-		<module>../todolist-core</module>
-		<module>../todolist-ui</module>
-		<module>../todolist-tests-integration</module>
-		<module>../todolist-tests-e2e</module>
-	</modules>
 
 
 	<properties>
