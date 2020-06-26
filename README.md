@@ -18,7 +18,7 @@ A GUI todo list developed with Maven, Jenkins and all the gang.
 Basic functionality, backend logic, businness model, database/repositories. + Tests + Mutations (if enabled)
 
 #### todolist-ui
-UI views and controls. + Tests via AssertJ Swing. *This module requires a graphic server.*
+UI views and controls. + Tests via AssertJ Swing.
 
 #### todolist-tests-integration
 Integration tests performed with components of both `core` and `ui`.
@@ -27,6 +27,7 @@ Integration tests performed with components of both `core` and `ui`.
 End to end tests performed with Cucumber.
 
 Note: you'll need Docker installed on your machine for building both `integration` and `e2e`.
+Note #2: A graphic environment must be available in order to test `ui`, `test-integration` and `test-e2e` modules.
 
 
 ### About the build
