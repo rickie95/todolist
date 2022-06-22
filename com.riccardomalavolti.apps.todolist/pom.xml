@@ -35,7 +35,7 @@
 		<jacoco.version>0.8.3</jacoco.version>
 		<junit.version>4.13.1</junit.version>
 		<mockito.core.version>3.2.4</mockito.core.version>
-		<mongo.java.driver.version>3.12.1</mongo.java.driver.version>
+		<mongo.java.driver.version>3.12.8</mongo.java.driver.version>
 		<mongo.java.server.version>1.18.2</mongo.java.server.version>
 		<slf4j.version>1.7.5</slf4j.version>
 		<slf4j.simple.version>1.6.4</slf4j.simple.version>
