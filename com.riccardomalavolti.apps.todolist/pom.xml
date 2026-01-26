@@ -25,7 +25,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		
-		<assertj.core.version>3.15.0</assertj.core.version>
+		<assertj.core.version>3.27.7</assertj.core.version>
 		<assertj.swing.version>3.9.2</assertj.swing.version>
 		<coveralls.version>4.3.0</coveralls.version>
 		<cucumber.version>4.2.2</cucumber.version>
